@@ -1,0 +1,111 @@
+﻿/* Navbar Brand */
+.navbar{
+  padding: 5px 10px 5px 10px;
+}
+
+a.navbar-brand {
+  display: flex;
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+}
+
+.navbar-brand .main {
+  color: #275ca0;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.navbar-brand .secondary {
+  width: fit-content;
+  color: #275ca0;
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.navbar-brand .logo-line {
+  border: 1px solid #ff8000;
+}
+
+/* Navbar Links */
+.navbar-nav {
+  color: #275ca0;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+/* Global Links */
+a {
+  height: fit-content;
+  text-decoration: none; /* Prevent underlines unless necessary */
+}
+
+/* Buttons */
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Nav Pills */
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Borders */
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+/* Shadow */
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+/* Footer */
+.footer {
+  position: absolute;
+  bottom: 0;
+  padding: 0px 10px 0px 10px;
+  width: 100%;
+  font-size: 14px;
+  white-space: nowrap;
+  line-height: 60px;
+  background-color: #fff;
+}
+
+.footer .container{
+  width: fit-content;
+  margin: 0;
+  padding: 0;
+  color: #000000;
+}
+.footer .social-media{
+  margin: 0px 10px 0px 10px;
+}
+
+.footer .social-media a{
+  margin: 5px;
+  color: #275ca0;
+}
+
+.footer .social-media a:hover{
+  color: #ff8000;
+}
+
+@media (min-width: 500px) {
+  html {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,458 @@
+html {
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #ff8000;
+}
+
+.form-control:focus {
+  border-color: #ff8000;
+}
+
+.form-control:hover {
+  border-color: #ff8000;
+}
+
+.form-control:active {
+  border-color: #ff8000;
+}
+
+.btn-custom {
+  color: #fff;
+  background-color: #ff8000;
+}
+
+.btn:hover {
+  color: #fff;
+  background-color: #ff8000;
+}
+
+.bg-custom-blue {
+  background-color: #275ca0;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+header {
+  z-index: 1000;
+}
+
+.navbar-toggler:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.navbar-nav .nav-item a.nav-link {
+  color: #275ca0 !important;
+}
+
+.navbar-nav .nav-item a.nav-link:hover {
+  color: #ff8000 !important;
+}
+
+.navbar-nav .nav-item a.nav-link.active {
+  color: #ff8000 !important;
+}
+
+footer {
+  position: relative;
+  /* Ensures the pseudo-element is positioned relative to the footer */
+  z-index: 2;
+  /* Keeps footer content above the pseudo-element */
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  bottom: 62px;
+  left: 0;
+  width: 100%;
+  height: 39px;
+  margin-top: 10px;
+  background-image: url('/images/back2.png');
+  background-repeat: repeat;
+  background-size: 40px;
+  opacity: 5;
+  z-index: 1;
+  pointer-events: none;
+}
+
+@media (max-width: 570px) {
+  footer::before{
+    opacity: 0;
+  }
+}
+
+.footer .container {
+  max-width: fit-content;
+  color: #000000;
+  margin: 0;
+}
+
+.social-media a {
+  margin: 0 10px;
+  color: inherit;
+  /* Inherits the color of the parent element */
+  text-decoration: none;
+}
+
+.social-media a:hover {
+  color: #ff8000;
+  /* Adds hover effect for social media icons */
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+}
+
+/* Home Page */
+.container-home {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 600px;
+  width: 100%;
+  background-color: #275ca0;
+}
+
+.banner .container {
+  margin: auto;
+  color: #fff;
+  z-index: 400;
+}
+
+.banner h1,
+h4 {
+  font-optical-sizing: auto;
+  padding: 10px 20px;
+}
+
+.welcome {
+  font-family: "Source Code Pro", monospace;
+  font-optical-sizing: auto;
+  padding: 10px 20px;
+  color: #ff8000;
+}
+
+.banner p {
+  padding: 0px 20px;
+  max-width: 900px;
+}
+
+.banner .banner-btn {
+  font-family: "Source Code Pro", monospace;
+  font-optical-sizing: auto;
+  padding: 10px;
+  margin: 20px;
+  border-radius: 5px;
+  outline: #ff8000;
+  background-color: transparent;
+  color: #ff8000;
+  border: 1px solid #ff8000;
+}
+
+.banner .banner-btn:hover {
+  background-color: #245595;
+}
+
+.banner .banner-btn:active {
+  background-color: #ff8000;
+  color: #275ca0;
+}
+
+.banner-logo-container {
+  position: absolute;
+  top: 100;
+  right: 0;
+  max-width: 410px;
+  max-height: 600px;
+  z-index: 100;
+}
+
+.banner .banner-logo {
+  width: 100%;
+  height: 100%;
+}
+
+#typing-effect-heading,
+#typing-effect-paragraph {
+  display: inline-block;
+}
+
+/* Optional: Add a blinking cursor effect */
+#typing-effect-heading::after,
+#typing-effect-paragraph::after {
+  content: '|';
+  animation: blink 0.7s step-end infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.features {
+  position: relative;
+  /* Ensures pseudo-element is positioned correctly */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 10px;
+  z-index: 1;
+  /* Ensures content appears above the background */
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  justify-content: start;
+  margin: 20px;
+  color: #000;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.features .feature h2 {
+  width: fit-content;
+  padding: 10px;
+}
+
+.features .feature p {
+  max-width: 300px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.tech {
+  position: relative;
+  padding: 60px 10px;
+  background-color: #275ca0;
+  color: #fff;
+}
+
+.tech .container {
+  position: relative;
+  z-index: 10;
+}
+
+.tech-icon {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.tech-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 5px;
+  z-index: 100;
+  color: #000;
+}
+
+.tech-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tech .banner-logo-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: 440px;
+  max-height: 100%;
+  z-index: 1;
+}
+
+.tech .banner-logo {
+  width: 100%;
+  height: 100%;
+}
+
+
+.logo {
+  padding: 20px 0px;
+}
+
+.logo .logo-brand {
+  color: #275ca0;
+  text-decoration: none;
+}
+
+.logo .logo-brand .logo-line {
+  border: 1px solid #ff8000;
+}
+
+.logo .logo-brand .main {
+  color: #275ca0;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.logo .logo-brand .secondary {
+  width: fit-content;
+  color: #275ca0;
+  font-size: 9px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Services Page */
+
+.services .card {
+  border-radius: 5px;
+  height: 100%;
+}
+
+.services .card-header:first-child {
+  border-radius: calc(5px - 1px) calc(5px - 1px) 0 0;
+}
+
+.services .card a {
+  color: #000;
+  text-decoration: none;
+}
+
+.services .card a:hover {
+  text-decoration: underline;
+}
+
+/* contact us */
+/* Custom styles for card design */
+.container.contact{
+  margin: 0;
+  width: 100%;
+  max-width: none;
+}
+
+.contact .header{
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px;
+  background-color: #275ca0;
+}
+
+.contact .header .contact-image{
+  max-width: 500px;
+}
+
+.contact .main{
+  display: flex;
+  position: relative;
+  padding: 30px;
+}
+
+.contact .card {
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.contact .card-body p i {
+  font-size: 1.25rem;
+  vertical-align: middle;
+}
+
+
+.blogs .card h3.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card .card-img-top{
+  object-fit:cover;
+  max-height: 400px;
+}
+
+.blogs .card .card-body p.card-text {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+.blogs .card img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.blogs .card .stretched-link {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.blogs .card .stretched-link:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+.blogs .card .card-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.blogs .scrollable-list {
+  max-height: 500px; /* Set the max height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding-right: 5px; /* Add padding for better UX */
+}
+
+.blogs .scrollable-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.blogs .scrollable-list::-webkit-scrollbar-thumb {
+  background-color: #007bff; /* Scrollbar color */
+  border-radius: 4px;
+}
+
+.blogs .scrollable-list::-webkit-scrollbar-thumb:hover {
+  background-color: #0056b3;
+}
+
+.blogs .scrollable-list .card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.blogs .scrollable-list .card:hover {
+  transform: translateX(5px);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}

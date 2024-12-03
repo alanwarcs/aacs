@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "Contact Us";
+}
+
+<div class="contact container">
+    <!-- Header Section -->
+    <div class="header row align-items-center mb-5">
+        <!-- Text Section -->
+        <div class="col-md-6 text-white">
+            <h1 class="display-4">Get in Contact</h1>
+            <p>Let's build something amazing together. Reach out to discuss your project or ask any questions.</p>
+            <div class="d-flex flex-wrap">
+                <div class="card d-flex flex-row align-items-center justify-contant-center text-black p-2 shadow m-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ff8000" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    <p class="m-0 ms-1">aacs@gmail.com</p>
+                </div>
+                <div class="card d-flex flex-row align-items-center justify-contant-center text-black p-2 shadow m-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ff8000" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <p class="m-0 ms-1">+91 7984348018</p>
+                </div>
+            </div>
+        </div>
+        <!-- Image Section -->
+        <div class="contact-image col-md-6">
+            <img src="https://images.unsplash.com/photo-1704440305758-4adae3af55ed?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="Contact Us" class="img-fluid rounded">
+        </div>
+    </div>
+
+    <!-- Contact and Map Section -->
+    <div class="main row g-4 my-5">
+        <!-- Map Card -->
+        <div class="col-md-6">
+            <div class="card border-0 h-100">
+                <div class="card-body p-0">
+                    <div class="ratio h-100">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3668.9581702586056!2d72.03707477537178!3d23.1352041790951!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c010a3b26ab51%3A0xd7af1bed7bde9f82!2sAl%20Anwar%20Businesses!5e0!3m2!1sen!2sin!4v1733151835436!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form Card -->
+        <div class="col-md-6">
+            <div class="card border-0">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Contact Us</h2>
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Your Name</label>
+                            <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Your Email</label>
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Your Message</label>
+                            <textarea id="message" class="form-control" rows="4"
+                                placeholder="Tell us about your project" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-custom ">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

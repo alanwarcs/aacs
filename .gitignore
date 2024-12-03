@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.cache
+*.dll
+*.pdb
+*.exe
+*.db
+*.log

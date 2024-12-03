@@ -1,0 +1,85 @@
+@{
+    ViewBag.Title = "Blogs";
+}
+
+<div class="container my-5">
+    <!-- Blogs Header -->
+    <div class="row text-center mb-5">
+        <div class="col-12">
+            <h1 class="display-4">Our Blogs</h1>
+            <p class="text-muted fs-5">Insights, stories, and updates from Al Anwar Creativity Studio.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Most Recent Blog (Left Section) -->
+        <div class="col-lg-8 mb-4">
+            <h4 class="m-0">Most Recent</h4>
+            <div class="card border-0 h-100">
+                <img src="https://www.corporatevision-news.com/wp-content/uploads/2023/04/SaaS-Business.jpg" class="card-img-top" alt="Most Recent Blog">
+                <div class="card-body">
+                    <h3 class="card-title">How SaaS is Transforming Businesses</h3>
+                    <p class="card-text text-muted">
+                        SaaS has revolutionized the way businesses operate. Learn how modern SaaS applications are driving efficiency and innovation across industries.
+                    </p>
+                    <a href="/Blogs/how-saas-transforming-businesses" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blog List (Right Section) -->
+        <div class="col-lg-4">
+            <h5 class="mb-4 fw-bold">Other Blogs</h5>
+
+            <!-- Scrollable Blog List -->
+            <div class="scrollable-list" style="max-height: 500px; overflow-y: auto;">
+                <!-- Blog List Item -->
+                <div class="card mb-3 shadow-sm border-0">
+                    <div class="row g-0">
+                        <div class="col-4">
+                            <img src="~/images/blog.png" class="img-fluid rounded-start" alt="Blog 1">
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h6 class="card-title">5 Tips for Effective Web Development</h6>
+                                <a href="/Blogs/5-tips-effective-web-development" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog List Item -->
+                <div class="card mb-3 shadow-sm border-0">
+                    <div class="row g-0">
+                        <div class="col-4">
+                            <img src="~/images/blog.png" class="img-fluid rounded-start" alt="Blog 2">
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h6 class="card-title">Best Practices for UI/UX Design</h6>
+                                <a href="/Blogs/best-practices-ui-ux-design" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Blog List Item -->
+                <div class="card mb-3 shadow-sm border-0">
+                    <div class="row g-0">
+                        <div class="col-4">
+                            <img src="~/images/blog.png" class="img-fluid rounded-start" alt="Blog 3">
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h6 class="card-title">10 Reasons to Adopt Cloud Solutions</h6>
+                                <a href="/Blogs/10-reasons-to-adopt-cloud-solutions" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add more blog items here -->
+            </div>
+        </div>
+    </div>
+</div>
