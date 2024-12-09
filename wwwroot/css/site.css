@@ -1,132 +1,5 @@
-html {
-  font-size: 14px;
-  font-family: 'Roboto', sans-serif;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus,
-.btn:active:focus,
-.btn-link.nav-link:focus,
-.form-control:focus,
-.form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #ff8000;
-}
-
-.form-control:focus {
-  border-color: #ff8000;
-}
-
-.form-control:hover {
-  border-color: #ff8000;
-}
-
-.form-control:active {
-  border-color: #ff8000;
-}
-
-.btn-custom {
-  color: #fff;
-  background-color: #ff8000;
-}
-
-.btn:hover {
-  color: #fff;
-  background-color: #ff8000;
-}
-
-.bg-custom-blue {
-  background-color: #275ca0;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-
-header {
-  z-index: 1000;
-}
-
-.navbar-toggler:focus {
-  border: none;
-  box-shadow: none;
-}
-
-.navbar-nav .nav-item a.nav-link {
-  color: #275ca0 !important;
-}
-
-.navbar-nav .nav-item a.nav-link:hover {
-  color: #ff8000 !important;
-}
-
-.navbar-nav .nav-item a.nav-link.active {
-  color: #ff8000 !important;
-}
-
-footer {
-  position: relative;
-  /* Ensures the pseudo-element is positioned relative to the footer */
-  z-index: 2;
-  /* Keeps footer content above the pseudo-element */
-}
-
-footer::before {
-  content: '';
-  position: absolute;
-  bottom: 62px;
-  left: 0;
-  width: 100%;
-  height: 39px;
-  margin-top: 10px;
-  background-image: url('/images/back2.png');
-  background-repeat: repeat;
-  background-size: 40px;
-  opacity: 5;
-  z-index: 1;
-  pointer-events: none;
-}
-
-@media (max-width: 570px) {
-  footer::before{
-    opacity: 0;
-  }
-}
-
-.footer .container {
-  max-width: fit-content;
-  color: #000000;
-  margin: 0;
-}
-
-.social-media a {
-  margin: 0 10px;
-  color: inherit;
-  /* Inherits the color of the parent element */
-  text-decoration: none;
-}
-
-.social-media a:hover {
-  color: #ff8000;
-  /* Adds hover effect for social media icons */
-}
-
-.main-container {
-  display: flex;
-  flex-direction: column;
-  height: fit-content;
-}
-
 /* Home Page */
+
 .container-home {
   margin: 0;
   padding: 0;
@@ -206,7 +79,6 @@ h4 {
   display: inline-block;
 }
 
-/* Optional: Add a blinking cursor effect */
 #typing-effect-heading::after,
 #typing-effect-paragraph::after {
   content: '|';
@@ -217,19 +89,17 @@ h4 {
   0% {
     opacity: 1;
   }
-
   50% {
     opacity: 0;
   }
-
   100% {
     opacity: 1;
   }
 }
 
+/* Home Page - features Section */
 .features {
   position: relative;
-  /* Ensures pseudo-element is positioned correctly */
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
@@ -237,7 +107,6 @@ h4 {
   align-items: center;
   padding: 20px 10px;
   z-index: 1;
-  /* Ensures content appears above the background */
 }
 
 .feature {
@@ -262,7 +131,7 @@ h4 {
   font-size: 14px;
   text-align: center;
 }
-
+/* Home Page - Tech Section */
 .tech {
   position: relative;
   padding: 60px 10px;
@@ -307,152 +176,194 @@ h4 {
   height: 100%;
 }
 
-
-.logo {
-  padding: 20px 0px;
-}
-
-.logo .logo-brand {
-  color: #275ca0;
-  text-decoration: none;
-}
-
-.logo .logo-brand .logo-line {
-  border: 1px solid #ff8000;
-}
-
-.logo .logo-brand .main {
-  color: #275ca0;
-  font-weight: 300;
-  text-transform: uppercase;
-}
-
-.logo .logo-brand .secondary {
-  width: fit-content;
-  color: #275ca0;
-  font-size: 9px;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* Services Page */
+/* Service Page */
 
 .services .card {
-  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
-.services .card-header:first-child {
-  border-radius: calc(5px - 1px) calc(5px - 1px) 0 0;
+.services .card-body {
+  flex-grow: 1;
 }
 
-.services .card a {
-  color: #000;
+.services .card-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #ddd;
+}
+
+.services .card-footer .service-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.services .card-footer .service-link:hover {
+  text-decoration: underline;
+  color: black;
+}
+
+/*Blog Page */
+
+.blog .card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.blog .stretched-link {
   text-decoration: none;
 }
 
-.services .card a:hover {
+.blog .stretched-link:hover {
   text-decoration: underline;
+  color: black;
 }
 
-/* contact us */
-/* Custom styles for card design */
-.container.contact{
-  margin: 0;
-  width: 100%;
+.blog .scrollable-list {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.blog .card-img-top {
+  object-fit: cover;
+  height: 100%;
+}
+
+.blog .card-body {
+  padding: 15px;
+}
+
+/* Contact Page */
+.contact.container{
   max-width: none;
+  margin: 0;
+  padding: 0;
 }
 
 .contact .header{
   display: flex;
-  position: relative;
-  align-items: center;
   justify-content: space-between;
-  padding: 40px;
+  padding: 20px 40px;
   background-color: #275ca0;
 }
 
-.contact .header .contact-image{
-  max-width: 500px;
+.contact .main.row{
+  text-transform: none;
+  color: #000;
+  font-size: unset;
+  letter-spacing: normal;
+  padding: 0px 20px;
+  margin-bottom: 6rem;
 }
 
-.contact .main{
-  display: flex;
-  position: relative;
-  padding: 30px;
-}
-
-.contact .card {
+.contact .main .card{
   border-radius: 5px;
+  border: none;
   overflow: hidden;
 }
 
-.contact .card-body p i {
-  font-size: 1.25rem;
-  vertical-align: middle;
+.contact .row{
+  margin: 0;
+}
+/* Admin - Login Page */
+
+.admin-login{
+  max-height:100vw;
+  /* background: linear-gradient(to right, #1e3c72, #2a5298); */
 }
 
-
-.blogs .card h3.card-title {
-  font-size: 1.5rem;
-  font-weight: bold;
+.admin-login .logo{
+  position: absolute;
+  top: 0;
+  padding: 10px 30px;
+  margin: 0;
+  width: 100%;
 }
 
-.card .card-img-top{
-  object-fit:cover;
-  max-height: 400px;
+.admin-login .card{
+  width: 400px;
+  border: none;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.blogs .card .card-body p.card-text {
-  font-size: 1rem;
-  color: #6c757d;
+.admin-login .card .m-3{
+  border: none;
 }
 
-.blogs .card img {
-  height: 100%;
-  object-fit: cover;
-}
-
-.blogs .card .stretched-link {
+.admin-login .card a{
+  color: #275ca0;
   text-decoration: none;
-  color: #007bff;
 }
 
-.blogs .card .stretched-link:hover {
+.admin-login .card a:hover{
   text-decoration: underline;
-  color: #0056b3;
 }
 
-.blogs .card .card-title {
-  font-size: 1rem;
-  font-weight: 600;
+.admin-login .card .btn{
+  width: calc(100% - 2rem);
 }
 
-.blogs .scrollable-list {
-  max-height: 500px; /* Set the max height */
-  overflow-y: auto; /* Enable vertical scrolling */
-  padding-right: 5px; /* Add padding for better UX */
+.admin-login .login-footer{
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  padding: 20px;
+  width: 100%;
+  font-size: 14px;
 }
 
-.blogs .scrollable-list::-webkit-scrollbar {
-  width: 8px;
+.admin-login .login-footer span{
+  margin: 0px 5px;
 }
 
-.blogs .scrollable-list::-webkit-scrollbar-thumb {
-  background-color: #007bff; /* Scrollbar color */
-  border-radius: 4px;
+/* Admin - Layout */
+.admin-layout .sidebar {
+  width: 250px;
+  color: #f8f9fa;
+  z-index: 1000;
 }
 
-.blogs .scrollable-list::-webkit-scrollbar-thumb:hover {
-  background-color: #0056b3;
+.sidebar .logo{
+  width: 100%;
 }
 
-.blogs .scrollable-list .card {
-  transition: transform 0.2s ease-in-out;
+.sidebar .nav-link:hover{
+  color: #fff;
+  background-color: #275ca0;
 }
 
-.blogs .scrollable-list .card:hover {
-  transform: translateX(5px);
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+.sidebar .nav-link.active{
+  color: #fff;
+  background-color: #275ca0;
+}
+
+.admin-layout .admin-main{
+  width: 100%;
+  padding: 10px;
+  z-index: 500;
+}
+
+.admin-sidebar-button{
+  display: none;
+  text-align: end;
+}
+
+@media (max-width: 768px) {
+  .admin-sidebar {
+    position: absolute;
+    height: 100vh;
+  }
+  .admin-sidebar-button {
+      display: block; /* Show toggle button */
+  }
+}
+
+@media (max-width: 500px) {
+  .admin-login .card{
+    width: 80%;
+    box-shadow: none
+  }
 }

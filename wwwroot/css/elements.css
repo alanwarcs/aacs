@@ -1,0 +1,199 @@
+html {
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.lb-sm {
+    font-size: 12px;
+}
+
+.lb-md {
+    font-size: 14px;
+}
+
+.lb-lg {
+    font-size: 18px;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #ff8000;
+}
+
+.form-control:focus {
+    border-color: #ff8000;
+}
+
+.form-control:hover {
+    border-color: #ff8000;
+}
+
+.form-control:active {
+    border-color: #ff8000;
+}
+
+.btn-custom {
+    color: #fff;
+    background-color: #ff8000;
+}
+
+.btn:hover {
+    color: #fff;
+    background-color: #ff8000;
+}
+
+.bg-custom-blue {
+    background-color: #275ca0;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+header {
+    z-index: 1000;
+}
+
+.navbar-toggler:focus {
+    border: none;
+    box-shadow: none;
+}
+
+.navbar-nav .nav-item a.nav-link {
+    color: #275ca0 !important;
+}
+
+.navbar-nav .nav-item a.nav-link:hover {
+    color: #ff8000 !important;
+}
+
+.navbar-nav .nav-item a.nav-link.active {
+    color: #ff8000 !important;
+}
+
+footer {
+    position: relative;
+    z-index: 2;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    bottom: 62px;
+    left: 0;
+    width: 100%;
+    height: 39px;
+    margin-top: 10px;
+    background-image: url('/images/back2.png');
+    background-repeat: repeat;
+    background-size: 40px;
+    opacity: 5;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@media (max-width: 570px) {
+    footer::before {
+        opacity: 0;
+    }
+}
+
+.footer .container {
+    max-width: fit-content;
+    color: #000000;
+    margin: 0;
+}
+
+.social-media a {
+    margin: 0 10px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.social-media a:hover {
+    color: #ff8000;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+}
+
+/* Logo Design */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-brand {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    /* Ensure there's no underline */
+    color: #000000;
+}
+
+.main {
+    font-family: 'Roboto', sans-serif;
+    color: #275ca0;
+    font-weight: 200;
+    font-size: 2rem;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.secondary {
+    font-family: 'Arial', sans-serif;
+    color: #275ca0;
+    /* Accent color for the subtitle */
+    font-weight: 400;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.logo-line {
+    width: 100%;
+    border: 1px solid #ff8000;
+    margin: 0;
+    opacity: 0.7;
+}
+
+/* Responsiveness for different screen sizes */
+@media (max-width: 768px) {
+    .main {
+        font-size: 1.5rem;
+        /* Adjust for smaller screens */
+    }
+
+    .secondary {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .main {
+        font-size: 1.2rem;
+        /* Further adjust for very small screens */
+    }
+
+    .secondary {
+        font-size: 0.6rem;
+    }
+}

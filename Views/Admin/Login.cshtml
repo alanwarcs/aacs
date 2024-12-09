@@ -1,0 +1,55 @@
+@{
+    Layout = null; // Disable the default layout for this page
+    ViewBag.Title = "Admin Login - AACS";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <!-- Add your CSS here -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/elements.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/aacs.styles.css" asp-append-version="true" />
+</head>
+
+<body class="admin-login m-0">
+    <div class="d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <div class="d-flex logo m-3">
+            <a class="logo-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                <div class="d-flex flex-column ms-1">
+                    <h1 class="main m-0 fs-2">AL ANWAR</h1>
+                    <hr class="m-0 logo-line">
+                    <p class="secondary m-0">Creativity Studio</p>
+                </div>
+            </a>
+        </div>
+        <div class="card">
+            <p class="fs-3 font-weight-bold mx-3 mb-0 text-start">Admin Login</p>
+            <form method="post" action="/Admin/Login">
+                <div class="m-3">
+                    <label for="userid" class="form-label">UserId</label>
+                    <input type="text" class="form-control" id="userid" name="userid" placeholder="Admin" required>
+                </div>
+                <div class="m-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="••••••••"
+                        required>
+                </div>
+                <div class="text-end">
+                    <a href="#" class="m-3 text-end">Forgot password?</a>
+                    <button type="submit" class="btn m-3 btn-custom">Login</button>
+                </div>
+            </form>
+        </div>
+        <div class="login-footer w-100 mt-4">
+            &copy; <span id="currentYear">2024</span> Al Anwar Creativity Studio. All rights reserved.
+        </div>
+    </div>
+</body>
+
+</html>

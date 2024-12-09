@@ -20,3 +20,25 @@ function typeText(elementId, text, speed) {
 window.onload = function () {
     typeText("typing-effect-heading", "Welcome to Al Anwar Creativity Studio,", 70); // Adjust typing speed here (in milliseconds)
 };
+
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebar = document.getElementById('admin-sidebar');
+    const toggleButton = document.getElementById('admin-sidebar-toggle');
+
+    // Add click event listener to the toggle button
+    toggleButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        sidebar.classList.toggle('d-none');
+    });
+
+    // Function to check screen width and adjust sidebar visibility
+    function handleResize() {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('d-none'); // Ensure sidebar is visible on larger screens
+        }
+    }
+
+    // Call handleResize on load and when the window resizes
+    handleResize();
+    window.addEventListener('resize', handleResize);
+});
