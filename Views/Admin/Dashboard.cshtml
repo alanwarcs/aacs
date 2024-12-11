@@ -1,4 +1,141 @@
 @{
-    ViewBag.Title = "Admin Login - AACS";
+    ViewData["Title"] = "Dashboard";
 }
-<h1>Hii</h1>
+
+<div class="container-fluid p-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+    <div class="row">
+        <!-- Total Users Card -->
+        <div class="col-md-3">
+            <div class="card text-white bg-custom-blue mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Total Visitors</h5>
+                    <p class="card-text fs-1">1,230</p>
+                </div>
+            </div>
+        </div>
+        <!-- Total Blogs Card -->
+        <div class="col-md-3">
+            <div class="card text-white bg-custom-blue mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Total Blogs</h5>
+                    <p class="card-text fs-1">567</p>
+                </div>
+            </div>
+        </div>
+        <!-- Total Services Card -->
+        <div class="col-md-3">
+            <div class="card text-white bg-custom-blue mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Total Services</h5>
+                    <p class="card-text fs-1">45</p>
+                </div>
+            </div>
+        </div>
+        <!-- Total Contacts Card -->
+        <div class="col-md-3">
+            <div class="card text-white bg-custom-blue mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">New Contacts</h5>
+                    <p class="card-text fs-1">78</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Total Projects Card -->
+        <div class="col-md-3">
+            <div class="card text-white bg-custom-blue mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Total Projects</h5>
+                    <p class="card-text fs-1">100</p>
+                </div>
+            </div>
+        </div>
+        <!-- Projects OnGoing Card -->
+        <div class="col-md-3">
+            <div class="card text-white bg-custom-blue mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Projects OnGoing</h5>
+                    <p class="card-text fs-1">45</p>
+                </div>
+            </div>
+        </div>
+        <!-- Projects Completed Card -->
+        <div class="col-md-3">
+            <div class="card text-white bg-custom-blue mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Projects Completed</h5>
+                    <p class="card-text fs-1">55</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity and Stats -->
+    <div class="row">
+        <!-- Recent Activity -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5>Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li>
+                            <strong>New User Registered:</strong> John Doe <br>
+                            <small>1 hour ago</small>
+                        </li>
+                        <li>
+                            <strong>New Blog Post:</strong> "The Future of Creativity" <br>
+                            <small>2 hours ago</small>
+                        </li>
+                        <li>
+                            <strong>Service Updated:</strong> Web Design <br>
+                            <small>3 hours ago</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Chart -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5>Website Traffic (Last 7 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="trafficChart" width="fit" height="250px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script for Traffic Chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('trafficChart').getContext('2d');
+    var trafficChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Visitors',
+                data: [50, 100, 75, 150, 200, 250, 300],
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>

@@ -17,4 +17,25 @@ public class AdminController : Controller
         return View();
     }
 
+    public IActionResult BlogsManagement()
+    {
+        return View();
+    }
+
+
+    public IActionResult ServicesManagement()
+    {
+        return View();
+    }
+
+    public IActionResult UsersManagement()
+    {
+        return View();
+    }
+
+    public IActionResult ContactsManagement()
+    {
+        return View();
+    }
+
 }

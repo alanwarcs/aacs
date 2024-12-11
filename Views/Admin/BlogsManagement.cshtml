@@ -1,0 +1,109 @@
+@{
+    ViewData["Title"] = "Bolgs Managements";
+}
+<div class="container-fluid blogs-management p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Blogs Management</h2>
+        <button class="btn btn-custom" id="addBlogButton">Add New Blog</button>
+    </div>
+
+    <!-- Blogs Table -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="m-0">Manage Blogs</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Date Published</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>How to Boost Creativity</td>
+                        <td>John Doe</td>
+                        <td>2024-12-01</td>
+                        <td><span class="badge bg-success">Published</span></td>
+                        <td>
+                            <button class="btn btn-sm">Edit</button>
+                            <button class="btn btn-sm">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Top Marketing Strategies</td>
+                        <td>Jane Smith</td>
+                        <td>2024-11-25</td>
+                        <td><span class="badge bg-secondary">Draft</span></td>
+                        <td>
+                            <button class="btn btn-sm">Edit</button>
+                            <button class="btn btn-sm">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Custom Add Blog Modal -->
+<div id="blog-modal" class="aacs-modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content custom-modal">
+            <div class="modal-header custom-modal-header">
+                <h5 class="modal-title" id="addBlogModalLabel">Add New Blog</h5>
+                <a href="#" class="link-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="blogTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="blogTitle" placeholder="Enter blog title">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="blogHeaderImage" class="form-label">Header Image</label>
+                            <input type="file" class="form-control" id="blogHeaderImage">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="blogAuthor" class="form-label">Author</label>
+                        <input type="text" class="form-control" id="blogAuthor" placeholder="Enter author name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="blogContent" class="form-label">Content</label>
+                        <div id="blogContentEditor" class="form-control quill-editor" style="height: 150px;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="blogTags" class="form-label">Tags</label>
+                            <input id="blogTags" class="form-control" placeholder="Add tags">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="blogStatus" class="form-label">Status</label>
+                            <select class="form-control" id="blogStatus">
+                                <option value="Published">Published</option>
+                                <option value="Draft" selected>Draft</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-custom w-100">Save Blog</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="aacs-modal-fade"></div>
+</div>

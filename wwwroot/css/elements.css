@@ -85,6 +85,10 @@ header {
     color: #ff8000 !important;
 }
 
+.quill-editor{
+    font-size: 16px;
+}
+
 footer {
     position: relative;
     z-index: 2;

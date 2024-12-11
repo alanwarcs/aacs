@@ -89,9 +89,11 @@ h4 {
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -131,6 +133,7 @@ h4 {
   font-size: 14px;
   text-align: center;
 }
+
 /* Home Page - Tech Section */
 .tech {
   position: relative;
@@ -235,20 +238,20 @@ h4 {
 }
 
 /* Contact Page */
-.contact.container{
+.contact.container {
   max-width: none;
   margin: 0;
   padding: 0;
 }
 
-.contact .header{
+.contact .header {
   display: flex;
   justify-content: space-between;
   padding: 20px 40px;
   background-color: #275ca0;
 }
 
-.contact .main.row{
+.contact .main.row {
   text-transform: none;
   color: #000;
   font-size: unset;
@@ -257,23 +260,24 @@ h4 {
   margin-bottom: 6rem;
 }
 
-.contact .main .card{
+.contact .main .card {
   border-radius: 5px;
   border: none;
   overflow: hidden;
 }
 
-.contact .row{
+.contact .row {
   margin: 0;
 }
+
 /* Admin - Login Page */
 
-.admin-login{
-  max-height:100vw;
+.admin-login {
+  max-height: 100vw;
   /* background: linear-gradient(to right, #1e3c72, #2a5298); */
 }
 
-.admin-login .logo{
+.admin-login .logo {
   position: absolute;
   top: 0;
   padding: 10px 30px;
@@ -281,31 +285,31 @@ h4 {
   width: 100%;
 }
 
-.admin-login .card{
+.admin-login .card {
   width: 400px;
   border: none;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.admin-login .card .m-3{
+.admin-login .card .m-3 {
   border: none;
 }
 
-.admin-login .card a{
+.admin-login .card a {
   color: #275ca0;
   text-decoration: none;
 }
 
-.admin-login .card a:hover{
+.admin-login .card a:hover {
   text-decoration: underline;
 }
 
-.admin-login .card .btn{
+.admin-login .card .btn {
   width: calc(100% - 2rem);
 }
 
-.admin-login .login-footer{
+.admin-login .login-footer {
   display: flex;
   justify-content: center;
   position: absolute;
@@ -315,7 +319,7 @@ h4 {
   font-size: 14px;
 }
 
-.admin-login .login-footer span{
+.admin-login .login-footer span {
   margin: 0px 5px;
 }
 
@@ -326,29 +330,68 @@ h4 {
   z-index: 1000;
 }
 
-.sidebar .logo{
+.sidebar .logo {
   width: 100%;
 }
 
-.sidebar .nav-link:hover{
+.sidebar .nav-link:hover {
   color: #fff;
   background-color: #275ca0;
 }
 
-.sidebar .nav-link.active{
+.sidebar .nav-link.active {
   color: #fff;
   background-color: #275ca0;
 }
 
-.admin-layout .admin-main{
+.admin-layout .admin-main {
+  position: relative;
   width: 100%;
+  max-height: 100vh;
   padding: 10px;
   z-index: 500;
+  overflow-y: scroll;
 }
 
-.admin-sidebar-button{
+.admin-sidebar-button {
   display: none;
   text-align: end;
+}
+
+/* Admin - Blogs */
+.blogs-management .card-body{
+  overflow: scroll;
+}
+
+.aacs-modal {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1050;
+  background: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
+.aacs-modal.show {
+  display: flex;
+}
+.aacs-modal .modal-body{
+  max-height: 90vh;
+  overflow-y: scroll;
+}
+.aacs-modal .aacs-modal-fade {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: -1;
 }
 
 @media (max-width: 768px) {
@@ -356,13 +399,15 @@ h4 {
     position: absolute;
     height: 100vh;
   }
+
   .admin-sidebar-button {
-      display: block; /* Show toggle button */
+    display: block;
+    /* Show toggle button */
   }
 }
 
 @media (max-width: 500px) {
-  .admin-login .card{
+  .admin-login .card {
     width: 80%;
     box-shadow: none
   }
