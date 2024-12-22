@@ -169,7 +169,7 @@ h4 {
   position: absolute;
   top: 0;
   left: 0;
-  max-width: 440px;
+  max-width: 408px;
   max-height: 100%;
   z-index: 1;
 }
@@ -363,37 +363,20 @@ h4 {
   overflow: scroll;
 }
 
-.aacs-modal {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1050;
-  background: rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  justify-content: center;
-  align-items: center;
+/* Admin - Services */
+.services-management .card-body{
+  overflow: scroll;
 }
 
-.aacs-modal.show {
-  display: flex;
-}
-.aacs-modal .modal-body{
-  max-height: 90vh;
-  overflow-y: scroll;
-}
-.aacs-modal .aacs-modal-fade {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: -1;
+/* Admin - User */
+.users-management .card-body{
+  overflow: scroll;
 }
 
+/* Admin - Contact */
+.contact-management .card-body{
+  overflow: scroll;
+}
 @media (max-width: 768px) {
   .admin-sidebar {
     position: absolute;

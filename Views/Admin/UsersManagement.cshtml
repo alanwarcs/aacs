@@ -1,4 +1,148 @@
+@model IEnumerable<Admin>
 @{
-        ViewData["Title"] = "Users Managements";
+        ViewData["Title"] = "Services Managements";
 }
-<h1>Users</h1>
+
+<div class="container-fluid users-management p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold">Admin Management</h2>
+                <button class="btn btn-custom" id="addAdminButton">Add New Admin</button>
+        </div>
+        <!-- Success and Error Messages -->
+        @if (TempData["SuccessMessage"] != null)
+        {
+                <div class="alert alert-success" role="alert">
+                        @TempData["SuccessMessage"]
+                </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+                <div class="alert alert-danger" role="alert">
+                        @TempData["ErrorMessage"]
+                </div>
+        }
+        @if (TempData["ValidationErrors"] != null)
+        {
+                var validationErrors = TempData["ValidationErrors"] as List<string>;
+                if (validationErrors != null && validationErrors.Any())
+                {
+                        <div class="alert alert-danger" role="alert">
+                        <ul>
+                                @foreach (var error in validationErrors)
+                                {
+                                <li>@error</li>
+                                }
+                        </ul>
+                        </div>
+                }
+        }
+
+        <!-- Users Table -->
+        <div class="card">
+                <div class="card-header bg-light">
+                        <h5 class="m-0">Manage Admins</h5>
+                </div>
+                <div class="card-body">
+                        <table class="table table-striped table-bordered">
+                                <thead class="table-light">
+                                        <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                        </tr>
+                                </thead>
+                                        <tbody>
+                                                        @if (Model != null && Model.Any())
+                                                        {
+                                                                int count = 1;
+                                                                foreach (var admin in Model)
+                                                                {
+                                                                <tr>
+                                                                        <td>@count</td>
+                                                                        <td>@admin.Username</td>
+                                                                        <td>@admin.Email</td>
+                                                                        <td>@admin.Phone</td>
+                                                                        <td>@admin.Status</td>
+                                                                        <td>
+                                                                        <button class="btn btn-sm btn-warning">Edit</button>
+                                                                        <form asp-action="DeleteAdmin" method="post" class="d-inline">
+                                                                                <input type="hidden" name="id" value="@admin.AdminId" />
+                                                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this admin?');">
+                                                                                        Delete
+                                                                                </button>
+                                                                        </form>
+                                                                        </td>
+                                                                </tr>
+                                                                count++;
+                                                                }
+                                                        }
+                                                        else
+                                                        {
+                                                                <tr>
+                                                                <td colspan="6" class="text-center">No admins found.</td>
+                                                                </tr>
+                                                        }
+                                        </tbody>
+                        </table>
+                </div>
+        </div>
+</div>
+
+<div id="addModal" class="aacs-modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content custom-modal">
+                        <div class="modal-header custom-modal-header">
+                                <h5 class="modal-title" id="addModalTitle">Add New Service</h5>
+                                <a href="#" id="addModalClose" class="link-dark">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                                <path d="M18 6 6 18" />
+                                                <path d="m6 6 12 12" />
+                                        </svg>
+                                </a>
+                        </div>
+                        <div class="modal-body">
+                                <form asp-action="AddAdmin" method="post" class="mb-4">
+                                        <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                        <label for="adminName" class="form-label">Name</label>
+                                                        <input type="text" class="form-control" id="adminName" name="Username" placeholder="Enter Name" />
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                        <label for="adminEmail" class="form-label">Email</label>
+                                                        <input type="email" class="form-control" id="adminEmail" name="Email" placeholder="Enter Email" />
+                                                </div>
+                                        </div>
+                                        <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                        <label for="adminPassword" class="form-label">Password</label>
+                                                        <input type="password" class="form-control" id="adminPassword" name="PasswordHash" placeholder="*****" />
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                        <label for="adminPhone" class="form-label">Phone</label>
+                                                        <input type="text" class="form-control" id="adminPhone" name="Phone" placeholder="Enter Phone Number" />
+                                                </div>
+                                        </div>
+                                        <div class="mb-3">
+                                                <label for="adminAddress" class="form-label">Address</label>
+                                                <textarea class="form-control" id="adminAddress" name="Address"></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                                <label for="adminStatus" class="form-label">Status</label>
+                                                <select class="form-control" id="adminStatus" name="Status">
+                                                <option value="Active">Active</option>
+                                                <option value="Inactive">Inactive</option>
+                                                </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-custom w-100">Save Admin</button>
+                                </form>
+                        </div>
+                </div>
+        </div>
+        <div id="modalFade" class="aacs-modal-fade"></div>
+</div>

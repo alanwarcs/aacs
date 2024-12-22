@@ -1,4 +1,91 @@
 @{
         ViewData["Title"] = "Services Managements";
 }
-<h1>Services</h1>
+<div class="container-fluid services-management p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold">Services Management</h2>
+                <button class="btn btn-custom" id="addBlogButton">Add New Service</button>
+        </div>
+
+        <!-- Services Table -->
+        <div class="card">
+                <div class="card-header bg-light">
+                        <h5 class="m-0">Manage Services</h5>
+                </div>
+                <div class="card-body">
+                        <table class="table table-striped table-bordered">
+                                <thead class="table-light">
+                                        <tr>
+                                                <th>#</th>
+                                                <th>Title</th>
+                                                <th>Date Added</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                                <td>1</td>
+                                                <td>Web Development</td>
+                                                <td>2024-12-01</td>
+                                                <td><span class="badge bg-success">Published</span></td>
+                                                <td>
+                                                        <button class="btn btn-sm">Edit</button>
+                                                        <button class="btn btn-sm">Delete</button>
+                                                </td>
+                                        </tr>
+                                        <tr>
+                                                <td>2</td>
+                                                <td>Saas Development</td>
+                                                <td>2024-11-25</td>
+                                                <td><span class="badge bg-secondary">Draft</span></td>
+                                                <td>
+                                                        <button class="btn btn-sm">Edit</button>
+                                                        <button class="btn btn-sm">Delete</button>
+                                                </td>
+                                        </tr>
+                                </tbody>
+                        </table>
+                </div>
+        </div>
+</div>
+
+<div id="blog-modal" class="aacs-modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content custom-modal">
+                        <div class="modal-header custom-modal-header">
+                                <h5 class="modal-title" id="addBlogModalLabel">Add New Service</h5>
+                                <a href="#" class="link-dark">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                                                <path d="M18 6 6 18" />
+                                                <path d="m6 6 12 12" />
+                                        </svg>
+                                </a>
+                        </div>
+                        <div class="modal-body">
+                                <form>
+                                        <div class="mb-3">
+                                                <label for="servicesTitle" class="form-label">Title</label>
+                                                <input type="text" class="form-control" id="servicesTitle"
+                                                        placeholder="Enter Service title">
+                                        </div>
+                                        <div class="mb-3">
+                                                <label for="serviceDetails" class="form-label">Details</label>
+                                                <textarea class="form-control" id="serviceDetails"></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                                <label for="serviceStatus" class="form-label">Status</label>
+                                                <select class="form-control" id="ServiceStatus">
+                                                        <option value="Published">Published</option>
+                                                        <option value="Draft" selected>Draft</option>
+                                                </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-custom w-100">Save</button>
+                                </form>
+                        </div>
+                </div>
+        </div>
+        <div class="aacs-modal-fade"></div>
+</div>

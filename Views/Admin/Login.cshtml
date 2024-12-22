@@ -33,7 +33,7 @@
             <form method="post" action="/Admin/Login">
                 <div class="m-3">
                     <label for="userid" class="form-label">UserId</label>
-                    <input type="text" class="form-control" id="userid" name="userid" placeholder="Admin" required>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Admin" required>
                 </div>
                 <div class="m-3">
                     <label for="password" class="form-label">Password</label>
@@ -45,6 +45,12 @@
                     <button type="submit" class="btn m-3 btn-custom">Login</button>
                 </div>
             </form>
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger mx-3" role="alert">
+                    @ViewBag.Error
+                </div>
+            }
         </div>
         <div class="login-footer w-100 mt-4">
             &copy; <span id="currentYear">2024</span> Al Anwar Creativity Studio. All rights reserved.
