@@ -51,8 +51,20 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Default routes for public pages
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{action=Index}",
+    defaults: new { controller = "Home" });
+
+// Admin routes
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "Admin/Login",
+    defaults: new { controller = "Admin", action="Login" });
+
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "Admin/{controller=Dashboard}/{action=Index}/{id?}");
 
 app.Run();

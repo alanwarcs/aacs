@@ -6,4 +6,5 @@ public class ApplicationDbContext : DbContext
 
     // Define DbSet properties for your entities
     public DbSet<Admin>? Admins { get; set; }
+    public DbSet<Service>? Service { get; set; }
 }

@@ -78,35 +78,35 @@ public class AdminController : Controller
         );
 
         // Redirect to Dashboard
-        return RedirectToAction("Dashboard");
-    }
-
-    [Authorize]
-    public IActionResult Dashboard()
-    {
-        return View();
-    }
-
-    [AllowAnonymous]
-    public IActionResult BlogsManagement()
-    {
-        return View();
-    }
-
-    [Authorize]
-    public IActionResult ServicesManagement()
-    {
-        return View();
+        return RedirectToAction("Dashboard", "Dashboard");
     }
 
     [HttpGet]
     [Authorize]
-    public IActionResult UsersManagement()
+    public IActionResult UsersManagement(int page = 1)
     {
-        // Fetching data from the database
-        var admins = _context.Admins?.ToList(); // Replace '_ccontext' with your actual DbContext instance
-        return View(admins);
+        const int pageSize = 2; // 2 rows per page
+
+        // Retrieve admins with pagination
+        var admins = _context.Admins?.OrderBy(a => a.AdminId)
+                                .Skip((page - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList() ?? new List<Admin>(); // Fallback to an empty list if null
+
+        // Calculate total number of admins and pages
+        var totalAdmins = _context.Admins?.Count() ?? 0;
+        var totalPages = (int)Math.Ceiling(totalAdmins / (double)pageSize);
+
+        // Create a paginated list of admins
+        var model = new PaginatedList<Admin>(admins, totalAdmins, page, pageSize);
+
+        // Pass pagination details to the view
+        ViewData["TotalPages"] = totalPages;
+        ViewData["CurrentPage"] = page;
+
+        return View("~/Views/Admin/UsersManagement.cshtml", model);
     }
+
 
     [HttpPost]
     [Authorize]
@@ -173,13 +173,13 @@ public class AdminController : Controller
     }
 
     [HttpPost]
+    [Authorize]
     public IActionResult DeleteAdmin(int id)
     {
         try
         {
             // Assuming the logged-in admin's ID is stored in the session or claims
             var loggedInAdminId = User.FindFirst("AdminId")?.Value;
-            Console.WriteLine($"Logged in AdminId: {loggedInAdminId}, Deleting AdminId: {id}");
 
             if (loggedInAdminId != null && int.Parse(loggedInAdminId) == id)
             {
@@ -207,10 +207,75 @@ public class AdminController : Controller
         return RedirectToAction("UsersManagement");
     }
 
+    [HttpGet]
     [Authorize]
-    public IActionResult ContactsManagement()
+    public IActionResult GetAdminDetails(int id)
     {
-        return View();
+        var admin = _context.Admins?.FirstOrDefault(a => a.AdminId == id);
+        if (admin == null)
+        {
+            return NotFound(new { message = "Admin not found." });
+        }
+
+        return Json(new
+        {
+            username = admin.Username,
+            email = admin.Email,
+            phone = admin.Phone,
+            address = admin.Address,
+            status = admin.Status
+        });
+    }
+
+    [HttpPost]
+    [Authorize] 
+    public IActionResult UpdateAdmin(Admin updatedAdmin)
+    {
+        if(updatedAdmin.Username == null){
+            TempData["ErrorMessage"] = "Username is required.";
+            return RedirectToAction("UsersManagement");
+        }
+
+        if(updatedAdmin.Email == null){
+            TempData["ErrorMessage"] = "Email is required.";
+            return RedirectToAction("UsersManagement");
+        }
+        
+        // Assuming the logged-in admin's ID is stored in the session or claims
+        var loggedInAdminId = User.FindFirst("AdminId")?.Value;
+
+        if (loggedInAdminId != null && int.Parse(loggedInAdminId) == updatedAdmin.AdminId)
+        {
+            TempData["ErrorMessage"] = "You cannot edit your own account!";
+            
+            return RedirectToAction("UsersManagement");
+        }
+
+        // Retrieve the existing admin from the database
+        var admin = _context.Admins?.FirstOrDefault(a => a.AdminId == updatedAdmin.AdminId);
+        if (admin == null)
+        {
+            TempData["ErrorMessage"] = "Admin not found.";
+            return RedirectToAction("UsersManagement");
+        }
+
+        // Update admin fields
+        admin.Username = updatedAdmin.Username;
+        admin.Email = updatedAdmin.Email;
+        admin.Phone = updatedAdmin.Phone;
+        admin.Address = updatedAdmin.Address;
+        admin.Status = updatedAdmin.Status;
+
+        // Update password if provided
+        if (!string.IsNullOrEmpty(updatedAdmin.PasswordHash))
+        {
+            admin.PasswordHash = HashPassword(updatedAdmin.PasswordHash);
+        }
+
+        // Save changes to the database
+        _context.SaveChanges();
+        TempData["SuccessMessage"] = "Admin updated successfully!";
+        return RedirectToAction("UsersManagement");
     }
 
     [HttpPost]

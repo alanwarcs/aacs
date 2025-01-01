@@ -372,11 +372,24 @@ h4 {
 .users-management .card-body{
   overflow: scroll;
 }
-
+.user-view .user-status{
+  width: fit-content;
+  padding: 5px;
+  border-radius: 5px;
+  color: #fff;
+}
+.user-view .view-logo{
+  color: #b0b0b0;
+  margin-right: 15px ;
+}
+.user-view .view-text{
+  max-width: 200px;
+}
 /* Admin - Contact */
 .contact-management .card-body{
   overflow: scroll;
 }
+
 @media (max-width: 768px) {
   .admin-sidebar {
     position: absolute;
