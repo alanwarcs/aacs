@@ -58,57 +58,76 @@ document.addEventListener('DOMContentLoaded', function () {
         modalFade.addEventListener("click", hideAdminModal);
     }
 
-    const blogContentEditor = document.querySelector('#blogContentEditor');
-    if (blogContentEditor) {
-        const quill = new Quill(blogContentEditor, {
-            theme: 'snow',
-            placeholder: 'Enter blog content...',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'strike'], // Text styles
-                    ['link', 'image', 'blockquote', 'code-block'], // Links, Images, and blocks
-                    [{ header: 1 }, { header: 2 }], // Headers
-                    [{ list: 'ordered' }, { list: 'bullet' }], // Lists
-                    [{ indent: '-1' }, { indent: '+1' }], // Indentation
-                    [{ align: [] }], // Alignment
-                    [{ color: [] }], // Colors
-                    ['clean'], // Clear formatting
-                ],
-            },
-        });
+    function initializeQuillEditor(editorSelector, hiddenInputSelector, formSelector) {
+        const editor = document.querySelector(editorSelector);
+        if (editor) {
+            const quill = new Quill(editor, {
+                theme: 'snow',
+                placeholder: 'Enter blog content...',
+                modules: {
+                    toolbar: {
+                        container: [
+                            ['bold', 'italic', 'underline', 'strike'],
+                            ['link', 'image', 'blockquote', 'code-block'],
+                            [{ header: 1 }, { header: 2 }],
+                            [{ list: 'ordered' }, { list: 'bullet' }],
+                            [{ indent: '-1' }, { indent: '+1' }],
+                            [{ align: [] }],
+                            [{ color: [] }],
+                            ['clean'],
+                        ],
+                        handlers: {
+                            image: imageHandler
+                        }
+                    },
+                },
+            });
 
-        // Get the content as HTML when submitting the form
-        document.querySelector('form[asp-action="AddBlog"]').addEventListener('submit', (event) => {
-            const blogContentHTML = quill.root.innerHTML; // Get content as HTML
-            document.getElementById('blogContent').value = blogContentHTML; // Set the hidden input value
-        });
+            function imageHandler() {
+                const input = document.createElement('input');
+                input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.click();
+
+                input.onchange = () => {
+                    const file = input.files[0];
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('image', file);
+
+                        fetch('/api/ImageUpload/upload', {
+                            method: 'POST',
+                            body: formData,
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            const range = quill.getSelection();
+                            quill.insertEmbed(range.index, 'image', result.imageUrl);
+                        })
+                        .catch(error => {
+                            console.error('Error uploading image:', error);
+                        });
+                    }
+                };
+            }
+
+            // Ensure content is updated before form submission
+            const form = document.querySelector(formSelector);
+            if (form) {
+                form.addEventListener('submit', function (event) {
+                    document.querySelector(hiddenInputSelector).value = quill.root.innerHTML.trim();
+                });
+            }
+
+            // Update hidden input field on content change
+            quill.on('text-change', function () {
+                document.querySelector(hiddenInputSelector).value = quill.root.innerHTML.trim();
+            });
+        }
     }
 
-    const editBlogContentEditor = document.querySelector('#editBlogContentEditor');
-    if (editBlogContentEditor) {
-        const quillEdit = new Quill(editBlogContentEditor, {
-            theme: 'snow',
-            placeholder: 'Enter blog content...',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'strike'], // Text styles
-                    ['link', 'image', 'blockquote', 'code-block'], // Links, Images, and blocks
-                    [{ header: 1 }, { header: 2 }], // Headers
-                    [{ list: 'ordered' }, { list: 'bullet' }], // Lists
-                    [{ indent: '-1' }, { indent: '+1' }], // Indentation
-                    [{ align: [] }], // Alignment
-                    [{ color: [] }], // Colors
-                    ['clean'], // Clear formatting
-                ],
-            },
-        });
-
-        // Get the content as HTML when submitting the form
-        document.querySelector('form[asp-action="UpdateBlog"]').addEventListener('submit', (event) => {
-            const blogContentHTML = quillEdit.root.innerHTML; // Get content as HTML
-            document.getElementById('editBlogContent').value = blogContentHTML; // Set the hidden input value
-        });
-    }
+    initializeQuillEditor('#blogContentEditor', '#blogContent', 'form[asp-action="AddBlog"]');
+    initializeQuillEditor('#editBlogContentEditor', '#editBlogContent', 'form[asp-action="UpdateBlog"]');
 
     const viewButtons = document.querySelectorAll("#viewDetailsButton");
     const viewModal = document.getElementById("viewModal");
