@@ -78,11 +78,35 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Get the content as HTML when submitting the form
-        document.querySelector('form').addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevent default form submission
+        document.querySelector('form[asp-action="AddBlog"]').addEventListener('submit', (event) => {
             const blogContentHTML = quill.root.innerHTML; // Get content as HTML
-            console.log(blogContentHTML); // Send this HTML to the server
-            alert('Blog content saved!');
+            document.getElementById('blogContent').value = blogContentHTML; // Set the hidden input value
+        });
+    }
+
+    const editBlogContentEditor = document.querySelector('#editBlogContentEditor');
+    if (editBlogContentEditor) {
+        const quillEdit = new Quill(editBlogContentEditor, {
+            theme: 'snow',
+            placeholder: 'Enter blog content...',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'], // Text styles
+                    ['link', 'image', 'blockquote', 'code-block'], // Links, Images, and blocks
+                    [{ header: 1 }, { header: 2 }], // Headers
+                    [{ list: 'ordered' }, { list: 'bullet' }], // Lists
+                    [{ indent: '-1' }, { indent: '+1' }], // Indentation
+                    [{ align: [] }], // Alignment
+                    [{ color: [] }], // Colors
+                    ['clean'], // Clear formatting
+                ],
+            },
+        });
+
+        // Get the content as HTML when submitting the form
+        document.querySelector('form[asp-action="UpdateBlog"]').addEventListener('submit', (event) => {
+            const blogContentHTML = quillEdit.root.innerHTML; // Get content as HTML
+            document.getElementById('editBlogContent').value = blogContentHTML; // Set the hidden input value
         });
     }
 

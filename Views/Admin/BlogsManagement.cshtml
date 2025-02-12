@@ -1,12 +1,41 @@
+@model PaginatedList<Blog>
 @{
-    ViewData["Title"] = "Bolgs Managements";
+    ViewData["Title"] = "Blogs Management";
 }
 <div class="container-fluid blogs-management p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Blogs Management</h2>
-        <button class="btn btn-custom" id="addBlogButton">Add New Blog</button>
+        <button class="btn btn-custom" id="addButton">Add New Blog</button>
     </div>
+    <!-- Success and Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["ValidationErrors"] != null)
+    {
+        var validationErrors = TempData["ValidationErrors"] as List<string>;
+        if (validationErrors != null && validationErrors.Any())
+        {
+            <div class="alert alert-danger" role="alert">
+                <ul>
+                    @foreach (var error in validationErrors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </div>
+        }
+    }
     <!-- Blogs Table -->
     <div class="card">
         <div class="card-header bg-light">
@@ -25,40 +54,80 @@
                     </tr>
                 </thead>
                 <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int count = 1;
+                    foreach (var blog in Model)
+                    {
                     <tr>
-                        <td>1</td>
-                        <td>How to Boost Creativity</td>
-                        <td>John Doe</td>
-                        <td>2024-12-01</td>
-                        <td><span class="badge bg-success">Published</span></td>
+                        <td>@count</td>
+                        <td>@blog.Title</td>
+                        <td>@blog.Author</td>
+                        <td>@blog.DatePublished?.ToString("yyyy-MM-dd")</td>
                         <td>
-                            <button class="btn btn-sm">Edit</button>
-                            <button class="btn btn-sm">Delete</button>
+                            <span class="badge @(blog.Status == "Published" ? "bg-success" : "bg-secondary")">@blog.Status</span>
+                        </td>
+                        <td>
+                            <button class="editBlogButton btn btn-sm btn-warning" data-blog-id="@blog.BlogId">Edit</button>
+                            <form asp-action="DeleteBlog" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@blog.BlogId" />
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this blog?');">
+                                    Delete
+                                </button>
+                            </form>
                         </td>
                     </tr>
+                    count++;
+                    }
+                }
+                else
+                {
                     <tr>
-                        <td>2</td>
-                        <td>Top Marketing Strategies</td>
-                        <td>Jane Smith</td>
-                        <td>2024-11-25</td>
-                        <td><span class="badge bg-secondary">Draft</span></td>
-                        <td>
-                            <button class="btn btn-sm">Edit</button>
-                            <button class="btn btn-sm">Delete</button>
-                        </td>
+                        <td colspan="6" class="text-center">No Blogs found.</td>
                     </tr>
+                }
                 </tbody>
             </table>
+            <!-- Pagination Controls -->
+            @if (ViewData["TotalPages"] != null && ViewData["CurrentPage"] != null)
+            {
+                int totalPages = ViewData["TotalPages"] as int? ?? 0;
+                int currentPage = ViewData["CurrentPage"] as int? ?? 0;
+
+                <nav>
+                    <ul class="pagination">
+                        @if (currentPage > 1)
+                        {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("BlogsManagement", new { page = currentPage - 1 })">Previous</a>
+                        </li>
+                        }
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("BlogsManagement", new { page = i })">@i</a>
+                        </li>
+                        }
+                        @if (currentPage < totalPages)
+                        {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("BlogsManagement", new { page = currentPage + 1 })">Next</a>
+                        </li>
+                        }
+                    </ul>
+                </nav>
+            }
         </div>
     </div>
 </div>
+
 <!-- Custom Add Blog Modal -->
-<div id="blog-modal" class="aacs-modal">
+<div id="addModal" class="aacs-modal">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content custom-modal">
             <div class="modal-header custom-modal-header">
-                <h5 class="modal-title" id="addBlogModalLabel">Add New Blog</h5>
-                <a href="#" class="link-dark">
+                <h5 class="modal-title" id="addModalLabel">Add New Blog</h5>
+                <a href="#" id="addModalClose" class="link-dark">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-x">
@@ -68,33 +137,38 @@
                 </a>
             </div>
             <div class="modal-body">
-                <form>
+                <form asp-action="AddBlog" method="post" class="mb-4">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="blogTitle" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="blogTitle" placeholder="Enter blog title">
+                            <input type="text" class="form-control" id="blogTitle" name="Title" placeholder="Enter blog title" required>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="blogHeaderImage" class="form-label">Header Image</label>
-                            <input type="file" class="form-control" id="blogHeaderImage">
+                            <input type="file" class="form-control" id="blogHeaderImage" name="HeaderImage" accept=".jpg, .png">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label for="blogAuthor" class="form-label">Author</label>
-                        <input type="text" class="form-control" id="blogAuthor" placeholder="Enter author name">
+                        <input type="text" class="form-control" id="blogAuthor" name="Author" placeholder="Enter author name" required>
                     </div>
                     <div class="mb-3">
                         <label for="blogContent" class="form-label">Content</label>
                         <div id="blogContentEditor" class="form-control quill-editor" style="height: 150px;"></div>
+                        <input type="hidden" name="Content" id="blogContent" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="blogDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="blogDescription" name="Description" placeholder="Enter blog description" required></textarea>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="blogTags" class="form-label">Tags</label>
-                            <input id="blogTags" class="form-control" placeholder="Add tags">
+                            <input id="blogTags" class="form-control" name="Tags" placeholder="Add tags">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="blogStatus" class="form-label">Status</label>
-                            <select class="form-control" id="blogStatus">
+                            <select class="form-control" id="blogStatus" name="Status">
                                 <option value="Published">Published</option>
                                 <option value="Draft" selected>Draft</option>
                             </select>
@@ -105,5 +179,67 @@
             </div>
         </div>
     </div>
-    <div class="aacs-modal-fade"></div>
+    <div id="modalFade" class="aacs-modal-fade"></div>
+</div>
+
+<!-- Custom Edit Blog Modal -->
+<div id="editBlogModal" class="aacs-modal">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content custom-modal">
+            <div class="modal-header custom-modal-header">
+                <h5 class="modal-title" id="editBlogModalLabel">Edit Blog</h5>
+                <a href="#" id="editBlogModalClose" class="link-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form asp-action="UpdateBlog" id="editBlogForm" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="editBlogId" name="BlogId" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editBlogTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="editBlogTitle" name="Title" placeholder="Enter blog title">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editBlogHeaderImage" class="form-label">Header Image</label>
+                            <input type="file" class="form-control" id="editBlogHeaderImage" name="HeaderImage" accept=".jpg, .jpeg, .png">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editBlogAuthor" class="form-label">Author</label>
+                        <input type="text" class="form-control" id="editBlogAuthor" name="Author" placeholder="Enter author name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editBlogContent" class="form-label">Content</label>
+                        <div id="editBlogContentEditor" class="form-control quill-editor" style="height: 150px;"></div>
+                        <input type="hidden" name="Content" id="editBlogContent">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editBlogDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editBlogDescription" name="Description" placeholder="Enter blog description" required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editBlogTags" class="form-label">Tags</label>
+                            <input id="editBlogTags" class="form-control" name="Tags" placeholder="Add tags">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editBlogStatus" class="form-label">Status</label>
+                            <select class="form-control" id="editBlogStatus" name="Status">
+                                <option value="Published">Published</option>
+                                <option value="Draft">Draft</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-custom w-100">Update Blog</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="modalFade" class="aacs-modal-fade"></div>
 </div>
