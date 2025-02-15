@@ -258,6 +258,60 @@ document.addEventListener('DOMContentLoaded', function () {
             editServiceModal.style.display = "none";
         });
     }
+
+    const editBlogButtons = document.querySelectorAll("#editBlogButtons");
+    const editBlogModal = document.getElementById("editBlogModal");
+    const editBlogForm = document.getElementById("editBlogForm");
+
+    if (editBlogButtons && editBlogModal && editBlogForm){
+        editBlogButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const blogId = this.dataset.blogId;
+
+                fetch(`/Admin/Blog/GetBlogDetails?id=${blogId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Failed to fetch blog details.");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data) {
+                            document.getElementById("editBlogId").value = blogId;
+                            document.getElementById("editBlogTitle").value = data.title;
+                            document.getElementById("editBlogAuthor").value = data.author;
+                            document.getElementById("editBlogDescription").value = data.description;
+                            document.getElementById("editBlogTags").value = data.tags;
+                            document.getElementById("editBlogStatus").value = data.status;
+
+                            // Set the content of the Quill editor
+                            const quillEditor = Quill.find(document.getElementById("editBlogContentEditor"));
+                            quillEditor.clipboard.dangerouslyPasteHTML(data.content);
+
+                            // Show modal
+                            editBlogModal.classList.add("show");
+                            editBlogModal.style.display = "block";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching blog details:", error);
+                        alert("Could not load blog details. Please try again.");
+                    });
+            });
+        });
+
+        document.getElementById("editBlogForm").addEventListener("submit", function () {
+            const quillEditor = Quill.find(document.getElementById("editBlogContentEditor"));
+            document.getElementById("editBlogContent").value = quillEditor.root.innerHTML;
+        });
+        
+        document.getElementById("editBlogModalClose").addEventListener("click", function (e) {
+            e.preventDefault();
+            editBlogModal.classList.remove("show");
+            editBlogModal.style.display = "none";
+        });
+        
+    }
 });
 
 function typeText(elementId, text, speed) {

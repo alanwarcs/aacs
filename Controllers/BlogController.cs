@@ -59,6 +59,9 @@ namespace aacs.Controllers
                 content = blog.Content,
                 tags = blog.Tags,
                 status = blog.Status,
+                description = blog.Description,
+                datePublished = blog.DatePublished,
+                headerImageUrl = blog.HeaderImageUrl
             });
         }
 
@@ -88,7 +91,7 @@ namespace aacs.Controllers
                             HeaderImage.CopyTo(fileStream);
                         }
 
-                        blog.HeaderImageUrl = "/images/blogs/" + uniqueFileName;
+                        blog.HeaderImageUrl = "/images/blog/" + uniqueFileName;
                     }
 
                     // Set Published Date if Status is "Published"
@@ -128,6 +131,95 @@ namespace aacs.Controllers
             var model = new PaginatedList<Blog>(blogs, totalBlogs, 1, pageSize);
 
             return View("~/Views/Admin/BlogsManagement.cshtml", model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult DeleteBlog(int id)
+        {
+            try
+            {
+                var blog = _context.Blog?.FirstOrDefault(b => b.BlogId == id);
+                if (blog == null)
+                {
+                    TempData["ErrorMessage"] = "Blog not found!";
+                    return RedirectToAction("BlogsManagement");
+                }
+
+                _context.Blog?.Remove(blog);
+                _context.SaveChanges();
+                TempData["SuccessMessage"] = "Blog deleted successfully!";
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "There was an error deleting the Blog. Please try again.";
+            }
+
+            return RedirectToAction("BlogsManagement");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult UpdateBlog(int blogId, string Title, string Author, string Content, string Tags, string Status, string Description, IFormFile? HeaderImage)
+        {
+            var blog = _context.Blog?.FirstOrDefault(b => b.BlogId == blogId);
+            if (blog == null)
+            {
+                TempData["ErrorMessage"] = "Blog not found.";
+                return RedirectToAction("BlogsManagement");
+            }
+
+            // Update blog details
+            blog.Title = Title;
+            blog.Author = Author;
+            blog.Content = Content;
+            blog.Tags = Tags;
+            blog.Status = Status;
+            blog.Description = Description;
+
+            // Handle image upload
+            if (HeaderImage != null && HeaderImage.Length > 0)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "blog");
+                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(HeaderImage.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                // Ensure the directory exists
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // Save the new image
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    HeaderImage.CopyTo(fileStream);
+                }
+
+                // Update image URL
+                blog.HeaderImageUrl = "/images/blog/" + uniqueFileName;
+            }
+            else if (string.IsNullOrEmpty(blog.HeaderImageUrl))
+            {
+                TempData["ErrorMessage"] = "Header image is required.";
+                return RedirectToAction("BlogsManagement");
+            }
+
+            // Update DatePublished when the status is 'Published'
+            if (Status == "Published" && blog.DatePublished == null)
+            {
+                blog.DatePublished = DateTime.Now;
+            }
+            else if (Status == "Draft")
+            {
+                blog.DatePublished = null; // Reset if reverting to draft
+            }
+
+            // Save changes to database
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Blog updated successfully!";
+            return RedirectToAction("BlogsManagement");
         }
     }
 }

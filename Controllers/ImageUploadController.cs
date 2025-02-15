@@ -23,7 +23,7 @@ namespace aacs.Controllers
             if (image == null || image.Length == 0)
                 return BadRequest("No image uploaded.");
 
-            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "blogs");
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "blog");
             string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
             string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
@@ -37,7 +37,7 @@ namespace aacs.Controllers
                 await image.CopyToAsync(fileStream);
             }
 
-            string imageUrl = $"/images/blogs/{uniqueFileName}";
+            string imageUrl = $"/images/blog/{uniqueFileName}";
             return Ok(new { imageUrl });
         }
     }

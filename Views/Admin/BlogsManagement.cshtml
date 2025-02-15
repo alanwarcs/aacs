@@ -68,8 +68,8 @@
                             <span class="badge @(blog.Status == "Published" ? "bg-success" : "bg-secondary")">@blog.Status</span>
                         </td>
                         <td>
-                            <button class="editBlogButton btn btn-sm btn-warning" data-blog-id="@blog.BlogId">Edit</button>
-                            <form asp-action="DeleteBlog" method="post" class="d-inline">
+                            <button id="editBlogButtons" class="btn btn-sm btn-warning" data-blog-id="@blog.BlogId">Edit</button>
+                            <form asp-controller="Blog" asp-action="DeleteBlog" method="post" class="d-inline">
                                 <input type="hidden" name="id" value="@blog.BlogId" />
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this blog?');">
                                     Delete
