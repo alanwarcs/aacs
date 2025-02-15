@@ -57,25 +57,58 @@
         <div class="col-md-6">
             <h2 class="display-6">Get in Touch</h2>
             <hr style="color: #ff8000;">
-            <form>
+            <form method="post" asp-controller="Contact" asp-action="CreateContact" class="contact-form mb-3">
                 <div class="mb-3">
                     <label for="name" class="form-label">Your Name</label>
-                    <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                    <input type="text" class="form-control" id="name" name="Name" placeholder="Enter your name"
+                        required>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                    <input type="email" class="form-control" id="email" name="Email" placeholder="Enter your email"
+                        required>
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label">Phone Number</label>
-                    <input type="text" class="form-control" id="phone" placeholder="Enter your Phone Number" required>
+                    <input type="text" class="form-control" id="phone" name="Phone"
+                        placeholder="Enter your Phone Number" required>
                 </div>
                 <div class="mb-3">
                     <label for="message" class="form-label">Message</label>
-                    <textarea class="form-control" id="message" rows="4" placeholder="Your message" required></textarea>
+                    <textarea class="form-control" id="message" rows="4" name="Message" placeholder="Your message"
+                        required></textarea>
                 </div>
                 <button type="submit" class="btn btn-custom">Send Message</button>
             </form>
+            <!-- Success and Error Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+            @if (TempData["ValidationErrors"] != null)
+            {
+                var validationErrors = TempData["ValidationErrors"] as List<string>;
+                if (validationErrors != null && validationErrors.Any())
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <ul>
+                            @foreach (var error in validationErrors)
+                            {
+                                <li>@error</li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
         </div>
     </div>
 </div>

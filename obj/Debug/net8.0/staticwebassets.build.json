@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "KuyE3Lh+S76OG/dtxsK5AYEojL870qS3IVSt/J+W+pc=",
+  "Hash": "R6mbmpUXMRc5Ykq/K3XDIXefT3Tt47Nm8EDM2HC3gGM=",
   "Source": "aacs",
   "BasePath": "_content/aacs",
   "Mode": "Default",
@@ -148,6 +148,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/blog.png"
+    },
+    {
+      "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/blog/7c74d715-fdea-412e-b783-53f90355e38a.jpg",
+      "SourceId": "aacs",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/",
+      "BasePath": "_content/aacs",
+      "RelativePath": "images/blog/7c74d715-fdea-412e-b783-53f90355e38a.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/blog/7c74d715-fdea-412e-b783-53f90355e38a.jpg"
     },
     {
       "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/blog/9073f244-abf3-461e-ba56-0cd6fc44550c.jpg",
