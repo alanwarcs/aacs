@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using aacs.Models;
 
 namespace aacs.Controllers;
@@ -7,10 +8,12 @@ namespace aacs.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
     {
         _logger = logger;
+        _context = context;
     }
 
     public IActionResult Index()
@@ -25,7 +28,13 @@ public class HomeController : Controller
 
     public IActionResult Blogs()
     {
-        return View();
+        // Fetch blog data from the database
+        var blogs = _context.Blog?
+            .Where(b => b.Status == "Published")
+            .OrderByDescending(b => b.DatePublished)
+            .ToList() ?? new List<Blog>();
+
+        return View(blogs);
     }
 
     public IActionResult Contact()

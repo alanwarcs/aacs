@@ -1,3 +1,5 @@
+@model IEnumerable<Blog>
+
 @{
     ViewBag.Title = "Blogs";
 }
@@ -16,16 +18,27 @@
         <div class="col-lg-8 mb-5 pb-5">
             <h5 class="mb-4 fw-bold">Most Recent</h5>
 
-            <div class="card border-0 shadow-sm">
-                <img src="https://www.corporatevision-news.com/wp-content/uploads/2023/04/SaaS-Business.jpg" class="card-img-top" alt="Most Recent Blog">
-                <div class="card-body">
-                    <h3 class="card-title">How SaaS is Transforming Businesses</h3>
-                    <p class="card-text text-muted">
-                        SaaS has revolutionized the way businesses operate. Learn how modern SaaS applications are driving efficiency and innovation across industries.
-                    </p>
-                    <a href="/Blogs/how-saas-transforming-businesses" class="btn btn-custom">Read More</a>
-                </div>
-            </div>
+            @if (Model.Any())
+            {
+                var mostRecentBlog = Model.FirstOrDefault();
+                if (mostRecentBlog != null)
+                {
+                    <div class="card border-0 shadow-sm">
+                        <img src="@mostRecentBlog.HeaderImageUrl" style="width: 100%; max-height: 500px; object-fit: cover;" alt="Most Recent Blog">
+                        <div class="card-body">
+                            <h3 class="card-title">@mostRecentBlog.Title</h3>
+                            <p class="card-text text-muted">
+                                @(mostRecentBlog.Description.Length > 250 ? mostRecentBlog.Description.Substring(0, 250) + "..." : mostRecentBlog.Description)
+                            </p>
+                            <a href="/Blogs/@mostRecentBlog.BlogId" class="btn btn-custom">Read More</a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No blogs available at the moment. Please check back later.</p>
+            }
         </div>
 
         <!-- Blog List (Right Section) -->
@@ -34,52 +47,25 @@
 
             <!-- Scrollable Blog List -->
             <div class="scrollable-list" style="max-height: 500px; overflow-y: auto;">
-                <!-- Blog List Item -->
-                <div class="card mb-3 shadow-sm border-0">
-                    <div class="row g-0">
-                        <div class="col-4">
-                            <img src="~/images/blog.png" class="img-fluid rounded-start" alt="Blog 1">
-                        </div>
-                        <div class="col-8">
-                            <div class="card-body">
-                                <h6 class="card-title">5 Tips for Effective Web Development</h6>
-                                <a href="/Blogs/5-tips-effective-web-development" class="stretched-link"></a>
+                @foreach (var blog in Model.Skip(1))
+                {
+                    <div class="card mb-3 shadow-sm border-0">
+                        <div class="row g-0">
+                            <div class="col-4" style="overflow: hidden;">
+                                <img src="@blog.HeaderImageUrl" class="img-fluid rounded-start" style="height:100%; width: 100%; object-fit:cover" alt="Blog @blog.BlogId">
+                            </div>
+                            <div class="col-8">
+                                <div class="card-body">
+                                    <h6 class="card-title">@blog.Title</h6>
+                                    <p class="card-text text-muted">
+                                        @(blog.Description.Length > 50 ? blog.Description.Substring(0, 50) + "..." : blog.Description)
+                                    </p>
+                                    <a href="/Blogs/@blog.BlogId" class="stretched-link"></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Blog List Item -->
-                <div class="card mb-3 shadow-sm border-0">
-                    <div class="row g-0">
-                        <div class="col-4">
-                            <img src="~/images/blog.png" class="img-fluid rounded-start" alt="Blog 2">
-                        </div>
-                        <div class="col-8">
-                            <div class="card-body">
-                                <h6 class="card-title">Best Practices for UI/UX Design</h6>
-                                <a href="/Blogs/best-practices-ui-ux-design" class="stretched-link"></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Blog List Item -->
-                <div class="card mb-3 shadow-sm border-0">
-                    <div class="row g-0">
-                        <div class="col-4">
-                            <img src="~/images/blog.png" class="img-fluid rounded-start" alt="Blog 3">
-                        </div>
-                        <div class="col-8">
-                            <div class="card-body">
-                                <h6 class="card-title">10 Reasons to Adopt Cloud Solutions</h6>
-                                <a href="/Blogs/10-reasons-to-adopt-cloud-solutions" class="stretched-link"></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Add more blog items here -->
+                }
             </div>
         </div>
     </div>
