@@ -23,7 +23,7 @@ public class ServiceController : Controller
     [Authorize]
     public IActionResult ServicesManagement(int page = 1)
     {
-        const int pageSize = 2; // 2 rows per page
+        const int pageSize = 10;
         var services = _context.Service?.OrderBy(s => s.ServiceId) // Sort by ID or another field if needed
                                 .Skip((page - 1) * pageSize)
                                 .Take(pageSize)

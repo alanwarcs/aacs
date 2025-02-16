@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 public class ContactController : Controller
 {
-
     private readonly ApplicationDbContext _context;
 
     // Constructor to inject ApplicationDbContext
@@ -19,10 +18,9 @@ public class ContactController : Controller
     }
 
     [Authorize]
-    public IActionResult ContactsManagement()
+    public IActionResult ContactsManagement(int page = 1)
     {
-        const int pageSize = 2;
-        int page = 1; // Define the page variable
+        const int pageSize = 10;
         var contacts = _context.Contact?.OrderBy(b => b.ContactId) // Sort by ID or another field if needed
                                 .Skip((page - 1) * pageSize)
                                 .Take(pageSize)
@@ -36,8 +34,7 @@ public class ContactController : Controller
         ViewData["TotalPages"] = totalPages; // Pass total pages to the view
         ViewData["CurrentPage"] = page; // Pass current page to the view
 
-
-        return View("~/Views/Admin/ContactsManagement.cshtml");
+        return View("~/Views/Admin/ContactsManagement.cshtml", model);
     }
 
     [HttpPost]
@@ -49,7 +46,7 @@ public class ContactController : Controller
             {
                 _context?.Contact?.Add(contact);
                 _context?.SaveChanges();
-                TempData["SuccessMessage"] = "Contact created successfully!";
+                TempData["SuccessMessage"] = "Message sent successfully! Thank you for reaching out—we'll be in touch soon.";
 
                 // Redirect to the original location
                 var referer = Request.Headers["Referer"].ToString();
@@ -81,5 +78,31 @@ public class ContactController : Controller
             return View("~/Views/Home/Contact.cshtml", contact);
         }
         return View("~/Views/Home/Index.cshtml", contact);
+    }
+
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult DeleteContact(int id)
+    {
+        try
+        {
+            var contant = _context.Contact?.FirstOrDefault(b => b.ContactId == id);
+            if (contant == null)
+            {
+                TempData["ErrorMessage"] = "Contact not found!";
+                return RedirectToAction("ContactsManagement");
+            }
+
+            _context.Contact?.Remove(contant);
+            _context.SaveChanges();
+            TempData["SuccessMessage"] = "Contact deleted successfully!";
+        }
+        catch (Exception)
+        {
+            TempData["ErrorMessage"] = "There was an error deleting the Contact. Please try again.";
+        }
+
+        return RedirectToAction("ContactsManagement");
     }
 }

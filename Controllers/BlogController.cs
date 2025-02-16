@@ -6,6 +6,7 @@ using aacs.Models;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace aacs.Controllers
 {
@@ -24,7 +25,7 @@ namespace aacs.Controllers
         [Authorize]
         public IActionResult BlogsManagement(int page = 1)
         {
-            const int pageSize = 2;
+            const int pageSize = 10;
             var blogs = _context.Blog?.OrderBy(b => b.BlogId) // Sort by ID or another field if needed
                                     .Skip((page - 1) * pageSize)
                                     .Take(pageSize)

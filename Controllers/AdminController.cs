@@ -85,7 +85,7 @@ public class AdminController : Controller
     [Authorize]
     public IActionResult UsersManagement(int page = 1)
     {
-        const int pageSize = 2; // 2 rows per page
+        const int pageSize = 10;
 
         // Retrieve admins with pagination
         var admins = _context.Admins?.OrderBy(a => a.AdminId)

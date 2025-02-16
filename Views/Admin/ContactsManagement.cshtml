@@ -1,11 +1,40 @@
+@model PaginatedList<Contact>
 @{
-    ViewData["Title"] = "Contacts Managements";
+    ViewData["Title"] = "Contacts Management";
 }
 <div class="container-fluid contact-management p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Contact Management</h2>
     </div>
+    <!-- Success and Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    @if (TempData["ValidationErrors"] != null)
+    {
+        var validationErrors = TempData["ValidationErrors"] as List<string>;
+        if (validationErrors != null && validationErrors.Any())
+        {
+            <div class="alert alert-danger" role="alert">
+                <ul>
+                    @foreach (var error in validationErrors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </div>
+        }
+    }
     <!-- Contact Table -->
     <div class="card">
         <div class="card-header bg-light">
@@ -19,35 +48,102 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>Message</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Murtaza Patel</td>
-                        <td>imurtaza97@gmail.com</td>
-                        <td>+91 7984348018</td>
-                        <td>hi wants Total Design website</td>
-                        <td>
-                            <button class="btn btn-sm">View</button>
-                            <button class="btn btn-sm">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>John Doe</td>
-                        <td>doe.john@gmail.com</td>
-                        <td>+1 1001929200</td>
-                        <td> wants help for website maintenance</td>
-                        <td>
-                            <button class="btn btn-sm">View</button>
-                            <button class="btn btn-sm">Delete</button>
-                        </td>
-                    </tr>
+                    @if (Model != null && Model.Any())
+                    {
+                        int count = 1;
+                        foreach (var contact in Model)
+                        {
+                            <tr>
+                                <td>@count</td>
+                                <td>@contact.Name</td>
+                                <td>@contact.Email</td>
+                                <td>@contact.Phone</td>
+                                <td>
+                                    <button class="btn btn-sm btn-success"
+                                        onclick="viewMessage('@(contact.Message)', '@(contact.Name)', '@(contact.Email)', '@(contact.Phone)')">View</button>
+                                    <form asp-controller="Contact" asp-action="DeleteContact" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@contact.ContactId" />
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this contact?');">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            count++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center">No Contacts found.</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
+            <!-- Pagination Controls -->
+            @if (ViewData["TotalPages"] != null && ViewData["CurrentPage"] != null)
+            {
+                int totalPages = ViewData["TotalPages"] as int? ?? 0;
+                int currentPage = ViewData["CurrentPage"] as int? ?? 0;
+
+                <nav>
+                    <ul class="pagination">
+                        @if (currentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="@Url.Action("ContactsManagement", new { page = currentPage - 1 })">Previous</a>
+                            </li>
+                        }
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("ContactsManagement", new { page = i })">@i</a>
+                            </li>
+                        }
+                        @if (currentPage < totalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="@Url.Action("ContactsManagement", new { page = currentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="viewModal" class="view-modal">
+    <div class="view-bar user-view shadow p-3">
+        <div class="d-flex justify-content-end w-100">
+            <a href="#" id="viewModalClose" class="link-dark">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-x">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                </svg>
+            </a>
+        </div>
+        <div class="d-flex flex-column w-100">
+            <span class="bg-success w-fit mx-4 user-status"></span>
+            <p class="pt-4 px-4 h3" id="contactName"></p>
+            <p class="email px-4 mb-0" id="contactEmail"></p>
+            <p class="phone px-4 mb-0" id="contactPhone"></p>
+            <hr class="bg-secondary" />
+            <div class="w-100 p-4">
+                <div class="d-flex">
+                    <p class="view-text address" id="contactMessage"></p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

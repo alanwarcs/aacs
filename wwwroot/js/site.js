@@ -342,3 +342,15 @@ function toggleCustomDropdown(event) {
         }
     });
 }
+
+function viewMessage(message, name, email, phone) {
+    document.getElementById('contactName').innerText = name;
+    document.getElementById('contactEmail').innerText = email;
+    document.getElementById('contactPhone').innerText = phone;
+    document.getElementById('contactMessage').innerText = message;
+    document.getElementById('viewModal').style.display = 'flex';
+}
+
+document.getElementById('viewModalClose').addEventListener('click', function () {
+    document.getElementById('viewModal').style.display = 'none';
+});
