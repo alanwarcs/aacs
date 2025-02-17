@@ -26,15 +26,28 @@ public class HomeController : Controller
         return View();
     }
 
+    [Route("Blogs")]
     public IActionResult Blogs()
     {
-        // Fetch blog data from the database
         var blogs = _context.Blog?
             .Where(b => b.Status == "Published")
             .OrderByDescending(b => b.DatePublished)
             .ToList() ?? new List<Blog>();
 
         return View(blogs);
+    }
+
+    [Route("Blogs/{id}")]
+    public IActionResult BlogDetails(int id)
+    {
+        var blog = _context.Blog?.FirstOrDefault(b => b.BlogId == id && b.Status == "Published");
+
+        if (blog == null)
+        {
+            return NotFound();
+        }
+
+        return View(blog);
     }
 
     public IActionResult Contact()

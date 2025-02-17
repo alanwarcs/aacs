@@ -211,7 +211,9 @@ h4 {
 .blog .card {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: fit-content;
+  overflow: hidden;
+  border-radius: 0 !important;
 }
 
 .blog .stretched-link {
@@ -231,10 +233,38 @@ h4 {
 .blog .card-img-top {
   object-fit: cover;
   max-height: 500px;
+  border-radius: 20px;
 }
 
 .blog .card-body {
   padding: 15px;
+}
+.blog .blog-card{
+  height: 140px;
+  border-radius: 0 !important;
+}
+.blog .blog-card .row{
+  height: 100%;
+}
+.blog .blog-image-container{
+  height: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.blog .blog-image{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 0 !important;
+}
+/* Blog Details Page */
+.blog-content img {
+  max-width: 100% !important;  /* Ensures image never exceeds container width */
+  height: auto !important;     /* Maintains aspect ratio */
+  display: block;              /* Prevents inline spacing issues */
+  margin: 20px auto;           /* Centers images with spacing */
+  border-radius: 8px;          /* Slight rounding for a modern look */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for contrast */
 }
 
 /* Contact Page */

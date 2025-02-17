@@ -4,7 +4,7 @@
     ViewBag.Title = "Blogs";
 }
 
-<div class="container my-5">
+<div class="blog container my-5">
     <!-- Blogs Header -->
     <div class="row text-center mb-5">
         <div class="col-12">
@@ -16,15 +16,15 @@
     <div class="row mb-5">
         <!-- Most Recent Blog (Left Section) -->
         <div class="col-lg-8 mb-5 pb-5">
-            <h5 class="mb-4 fw-bold">Most Recent</h5>
+            <h5 class="mb-4 display-5">Most Recent</h5>
 
             @if (Model.Any())
             {
                 var mostRecentBlog = Model.FirstOrDefault();
                 if (mostRecentBlog != null)
                 {
-                    <div class="card border-0 shadow-sm">
-                        <img src="@mostRecentBlog.HeaderImageUrl" style="width: 100%; max-height: 500px; object-fit: cover;" alt="Most Recent Blog">
+                    <div class="card border-0">
+                        <img src="@mostRecentBlog.HeaderImageUrl" class="img-fluid card-img-top" alt="Most Recent Blog">
                         <div class="card-body">
                             <h3 class="card-title">@mostRecentBlog.Title</h3>
                             <p class="card-text text-muted">
@@ -43,16 +43,16 @@
 
         <!-- Blog List (Right Section) -->
         <div class="col-lg-4">
-            <h5 class="mb-4 fw-bold">Other Blogs</h5>
+            <h5 class="mb-4 display-6">Other Blogs</h5>
 
             <!-- Scrollable Blog List -->
-            <div class="scrollable-list" style="max-height: 500px; overflow-y: auto;">
+            <div class="scrollable-list">
                 @foreach (var blog in Model.Skip(1))
                 {
-                    <div class="card mb-3 shadow-sm border-0">
+                    <div class="card mb-3 border-0 blog-card">
                         <div class="row g-0">
-                            <div class="col-4" style="overflow: hidden;">
-                                <img src="@blog.HeaderImageUrl" class="img-fluid rounded-start" style="height:100%; width: 100%; object-fit:cover" alt="Blog @blog.BlogId">
+                            <div class="col-4 blog-image-container">
+                                <img src="@blog.HeaderImageUrl" class="img-fluid blog-image rounded-start" alt="Blog @blog.BlogId">
                             </div>
                             <div class="col-8">
                                 <div class="card-body">

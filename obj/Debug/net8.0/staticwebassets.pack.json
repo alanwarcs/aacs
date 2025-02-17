@@ -25,12 +25,20 @@
       "PackagePath": "staticwebassets/images/blog.png"
     },
     {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/blog/3513784f-ebbc-47b4-ac18-e026bdedde66.png",
+      "PackagePath": "staticwebassets/images/blog/3513784f-ebbc-47b4-ac18-e026bdedde66.png"
+    },
+    {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/blog/7c74d715-fdea-412e-b783-53f90355e38a.jpg",
       "PackagePath": "staticwebassets/images/blog/7c74d715-fdea-412e-b783-53f90355e38a.jpg"
     },
     {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/blog/9073f244-abf3-461e-ba56-0cd6fc44550c.jpg",
       "PackagePath": "staticwebassets/images/blog/9073f244-abf3-461e-ba56-0cd6fc44550c.jpg"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/blog/ac1c2c42-ae7f-4761-9538-684f8b1189cf.png",
+      "PackagePath": "staticwebassets/images/blog/ac1c2c42-ae7f-4761-9538-684f8b1189cf.png"
     },
     {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/half_logo_left.png",
