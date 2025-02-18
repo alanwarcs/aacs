@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Driver;
 
 namespace aacs.Models
 {
@@ -20,12 +21,16 @@ namespace aacs.Models
         public bool HasPreviousPage => PageIndex > 1;
         public bool HasNextPage => PageIndex < TotalPages;
 
-        // Static method to create a PaginatedList from an IEnumerable source
-        public static PaginatedList<T> Create(IEnumerable<T> source, int pageIndex, int pageSize)
+        // Static method to create a PaginatedList from a MongoDB collection
+        public static PaginatedList<T> Create(IMongoCollection<T> collection, int pageIndex, int pageSize)
         {
-            var count = source.Count();
-            var items = source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+            var count = collection.CountDocuments(FilterDefinition<T>.Empty);  // Total count of documents
+            var items = collection.Find(FilterDefinition<T>.Empty)
+                                   .Skip((pageIndex - 1) * pageSize)  // Skip for pagination
+                                   .Limit(pageSize)  // Limit the number of items per page
+                                   .ToList();  // Fetch the paginated items
+
+            return new PaginatedList<T>(items, (int)count, pageIndex, pageSize);
         }
     }
 }

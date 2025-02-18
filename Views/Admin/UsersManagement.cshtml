@@ -67,10 +67,10 @@
                                                                         <td>@admin.Phone</td>
                                                                         <td><span class="badge @(admin.Status == "Active" ? "bg-success" : "bg-secondary")">@admin.Status</span></td>
                                                                         <td>
-                                                                        <button id="viewDetailsButton" class="btn btn-sm btn-primary" data-admin-id="@admin.AdminId">View</button>
-                                                                        <button id="editDetailsButton"  class="btn btn-sm btn-warning" data-admin-id="@admin.AdminId">Edit</button>
+                                                                        <button id="viewDetailsButton" class="btn btn-sm btn-primary" data-admin-id="@admin.Id">View</button>
+                                                                        <button id="editDetailsButton"  class="btn btn-sm btn-warning" data-admin-id="@admin.Id">Edit</button>
                                                                         <form asp-action="DeleteAdmin" method="post" class="d-inline">
-                                                                                <input type="hidden" name="id" value="@admin.AdminId" />
+                                                                                <input type="hidden" name="id" value="@admin.Id" />
                                                                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this admin?');">
                                                                                         Delete
                                                                                 </button>
@@ -247,7 +247,7 @@
                         </div>
                         <div class="modal-body">
                                 <form asp-action="UpdateAdmin" id="editAdminForm" method="post" class="mb-4">
-                                        <input type="hidden" id="editAdminId" name="AdminId" />
+                                        <input type="hidden" id="editId" name="Id" />
                                         <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                         <label for="editAdminName" class="form-label">Name</label>

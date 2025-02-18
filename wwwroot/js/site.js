@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(data => {
                         if (data) {
                             // Populate form fields with fetched data
-                            document.getElementById("editAdminId").value = adminId;
+                            document.getElementById("editId").value = adminId;
                             document.getElementById("editAdminName").value = data.username;
                             document.getElementById("editAdminEmail").value = data.email;
                             document.getElementById("editAdminPhone").value = data.phone;
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .then(data => {
                         if (data) {
     
-                            document.getElementById("editServiceId").value = serviceId;
+                            document.getElementById("editId").value = serviceId;
                             document.getElementById("editServiceTitle").value = data.title;
                             document.getElementById("editServiceDescription").value = data.description;
                             document.getElementById("editServiceStatus").value = data.status;
@@ -262,12 +262,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const editBlogButtons = document.querySelectorAll("#editBlogButtons");
     const editBlogModal = document.getElementById("editBlogModal");
     const editBlogForm = document.getElementById("editBlogForm");
-
-    if (editBlogButtons && editBlogModal && editBlogForm){
+    
+    if (editBlogButtons && editBlogModal && editBlogForm) {
         editBlogButtons.forEach(button => {
             button.addEventListener("click", function () {
-                const blogId = this.dataset.blogId;
-
+                const blogId = this.dataset.blogId;  // Corrected here to match data-blog-id
+    
                 fetch(`/Admin/Blog/GetBlogDetails?id=${blogId}`)
                     .then(response => {
                         if (!response.ok) {
@@ -276,18 +276,24 @@ document.addEventListener('DOMContentLoaded', function () {
                         return response.json();
                     })
                     .then(data => {
+                        console.log(data);
                         if (data) {
-                            document.getElementById("editBlogId").value = blogId;
+                            // Populate form with fetched data
+                            document.getElementById("editId").value = data.blogId; // Make sure you have the correct field in your form
                             document.getElementById("editBlogTitle").value = data.title;
                             document.getElementById("editBlogAuthor").value = data.author;
                             document.getElementById("editBlogDescription").value = data.description;
                             document.getElementById("editBlogTags").value = data.tags;
                             document.getElementById("editBlogStatus").value = data.status;
-
+    
                             // Set the content of the Quill editor
                             const quillEditor = Quill.find(document.getElementById("editBlogContentEditor"));
-                            quillEditor.clipboard.dangerouslyPasteHTML(data.content);
-
+                            if (quillEditor) {
+                                quillEditor.clipboard.dangerouslyPasteHTML(data.content);
+                            } else {
+                                console.error("Quill editor not found.");
+                            }
+    
                             // Show modal
                             editBlogModal.classList.add("show");
                             editBlogModal.style.display = "block";
@@ -299,19 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
             });
         });
-
-        document.getElementById("editBlogForm").addEventListener("submit", function () {
-            const quillEditor = Quill.find(document.getElementById("editBlogContentEditor"));
-            document.getElementById("editBlogContent").value = quillEditor.root.innerHTML;
-        });
-        
-        document.getElementById("editBlogModalClose").addEventListener("click", function (e) {
-            e.preventDefault();
-            editBlogModal.classList.remove("show");
-            editBlogModal.style.display = "none";
-        });
-        
-    }
+    }    
 });
 
 function typeText(elementId, text, speed) {

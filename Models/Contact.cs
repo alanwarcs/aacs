@@ -1,9 +1,12 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
+
 public class Contact
 {
-    [Key]
-    public int ContactId { get; set; }
+    [BsonId]  // MongoDB primary key
+    public ObjectId Id { get; set; }  // Use ObjectId instead of int for MongoDB
 
     [Required]
     [StringLength(100)]

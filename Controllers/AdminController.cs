@@ -7,14 +7,15 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using aacs.Models;
+using MongoDB.Driver;
 
 namespace aacs.Controllers;
 
 public class AdminController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly MongoDbContext _context;
 
-    public AdminController(ApplicationDbContext context)
+    public AdminController(MongoDbContext context)
     {
         _context = context;
     }
@@ -47,7 +48,7 @@ public class AdminController : Controller
         string hashedPassword = HashPassword(password);
 
         // Check the database for the admin user
-        var admin = _context.Admins?.FirstOrDefault(a => a.Email == email && a.PasswordHash == hashedPassword);
+        var admin = _context.Admins.Find(a => a.Email == email && a.PasswordHash == hashedPassword).FirstOrDefault();
 
         if (admin == null)
         {
@@ -55,29 +56,25 @@ public class AdminController : Controller
             return View();
         }
 
-        // Ensure admin is not null before accessing properties
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, admin.Username ?? "Unknown"),
-            new Claim(ClaimTypes.Email, admin.Email ?? string.Empty), // Provide a fallback value if email is null
-            new Claim("AdminId", admin.AdminId.ToString()) // Custom claim for admin ID
+            new Claim(ClaimTypes.Email, admin.Email ?? string.Empty),
+            new Claim("AdminId", admin.Id.ToString())
         };
 
-        // Create the claims identity
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-        // Sign in the user using cookie authentication
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             new ClaimsPrincipal(claimsIdentity),
             new AuthenticationProperties
             {
-                IsPersistent = true, // Cookie persists across browser sessions
-                ExpiresUtc = DateTime.UtcNow.AddHours(24) // Cookie expires in 24 hours
+                IsPersistent = true,
+                ExpiresUtc = DateTime.UtcNow.AddHours(24)
             }
         );
 
-        // Redirect to Dashboard
         return RedirectToAction("Dashboard", "Dashboard");
     }
 
@@ -87,26 +84,22 @@ public class AdminController : Controller
     {
         const int pageSize = 10;
 
-        // Retrieve admins with pagination
-        var admins = _context.Admins?.OrderBy(a => a.AdminId)
-                                .Skip((page - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList() ?? new List<Admin>(); // Fallback to an empty list if null
+        var admins = _context.Admins.Find(_ => true)
+                                    .SortBy(a => a.Id)
+                                    .Skip((page - 1) * pageSize)
+                                    .Limit(pageSize)
+                                    .ToList();
 
-        // Calculate total number of admins and pages
-        var totalAdmins = _context.Admins?.Count() ?? 0;
+        var totalAdmins = _context.Admins.CountDocuments(_ => true);
         var totalPages = (int)Math.Ceiling(totalAdmins / (double)pageSize);
 
-        // Create a paginated list of admins
-        var model = new PaginatedList<Admin>(admins, totalAdmins, page, pageSize);
+        var model = new PaginatedList<Admin>(admins, (int)totalAdmins, page, pageSize);
 
-        // Pass pagination details to the view
         ViewData["TotalPages"] = totalPages;
         ViewData["CurrentPage"] = page;
 
         return View("~/Views/Admin/UsersManagement.cshtml", model);
     }
-
 
     [HttpPost]
     [Authorize]
@@ -114,24 +107,20 @@ public class AdminController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Check if the email already exists in the database
-            var existingAdmin = _context.Admins?.FirstOrDefault(a => a.Email == admin.Email);
+            var existingAdmin = _context.Admins.Find(a => a.Email == admin.Email).FirstOrDefault();
             if (existingAdmin != null)
             {
-                // If the email is already in use, add error
                 TempData["ErrorMessage"] = "This email is already in use. Please choose a different one.";
                 ModelState.AddModelError("Email", "This email is already in use. Please choose a different one.");
             }
 
-            // If there are validation errors, return to the form with error messages
             if (!ModelState.IsValid)
             {
-                return View("UsersManagement", _context.Admins?.ToList());
+                return View("UsersManagement", _context.Admins.Find(_ => true).ToList());
             }
 
             try
             {
-                // Hash the password before saving
                 if (!string.IsNullOrEmpty(admin.PasswordHash))
                 {
                     admin.PasswordHash = HashPassword(admin.PasswordHash);
@@ -139,65 +128,55 @@ public class AdminController : Controller
                 else
                 {
                     TempData["ErrorMessage"] = "Password cannot be empty.";
-                    return View("UsersManagement", _context.Admins?.ToList());
+                    return View("UsersManagement", _context.Admins.Find(_ => true).ToList());
                 }
 
-                _context.Admins?.Add(admin);
-                _context.SaveChanges();
+                _context.Admins.InsertOne(admin);
 
-                // Add success message to TempData
                 TempData["SuccessMessage"] = "Admin added successfully!";
                 return RedirectToAction("UsersManagement");
             }
             catch
             {
-                // Add error message to TempData
                 TempData["ErrorMessage"] = "There was an error adding the admin. Please try again.";
             }
         }
         else
         {
-            // If model validation fails, add error message to TempData
             var errorMessages = ModelState.Values
                                     .SelectMany(v => v.Errors)
                                     .Select(e => e.ErrorMessage)
                                     .ToList();
 
-            // Save these errors to TempData for displaying them in the view
             TempData["ValidationErrors"] = errorMessages;
-
         }
 
-        // Return the view with the current list of admins and any error message
-        return View("UsersManagement", _context.Admins?.ToList());
+        return View("UsersManagement", _context.Admins.Find(_ => true).ToList());
     }
 
     [HttpPost]
     [Authorize]
-    public IActionResult DeleteAdmin(int id)
+    public IActionResult DeleteAdmin(string id)
     {
         try
         {
-            // Assuming the logged-in admin's ID is stored in the session or claims
             var loggedInAdminId = User.FindFirst("AdminId")?.Value;
 
-            if (loggedInAdminId != null && int.Parse(loggedInAdminId) == id)
+            if (loggedInAdminId != null && loggedInAdminId == id)
             {
                 TempData["ErrorMessage"] = "You cannot delete your own account!";
                 return RedirectToAction("UsersManagement");
-            } else {
-                 // Replace this with your actual logic for deleting an admin by ID
-                var admin = _context.Admins?.FirstOrDefault(a => a.AdminId == id);
-                if (admin == null)
-                {
-                    TempData["ErrorMessage"] = "Admin not found!";
-                    return RedirectToAction("UsersManagement");
-                }
+            }
 
-                _context.Admins?.Remove(admin);
-                _context.SaveChanges();
-                TempData["SuccessMessage"] = "Admin deleted successfully!";
-                }
+            var admin = _context.Admins.Find(a => a.Id == new MongoDB.Bson.ObjectId(id)).FirstOrDefault();
+            if (admin == null)
+            {
+                TempData["ErrorMessage"] = "Admin not found!";
+                return RedirectToAction("UsersManagement");
+            }
+
+            _context.Admins.DeleteOne(a => a.Id == new MongoDB.Bson.ObjectId(id));
+            TempData["SuccessMessage"] = "Admin deleted successfully!";
         }
         catch (Exception ex)
         {
@@ -209,9 +188,9 @@ public class AdminController : Controller
 
     [HttpGet]
     [Authorize]
-    public IActionResult GetAdminDetails(int id)
+    public IActionResult GetAdminDetails(string id)
     {
-        var admin = _context.Admins?.FirstOrDefault(a => a.AdminId == id);
+        var admin = _context.Admins.Find(a => a.Id == new MongoDB.Bson.ObjectId(id)).FirstOrDefault();
         if (admin == null)
         {
             return NotFound(new { message = "Admin not found." });
@@ -228,52 +207,49 @@ public class AdminController : Controller
     }
 
     [HttpPost]
-    [Authorize] 
+    [Authorize]
     public IActionResult UpdateAdmin(Admin updatedAdmin)
     {
-        if(updatedAdmin.Username == null){
+        if (updatedAdmin.Username == null)
+        {
             TempData["ErrorMessage"] = "Username is required.";
             return RedirectToAction("UsersManagement");
         }
 
-        if(updatedAdmin.Email == null){
+        if (updatedAdmin.Email == null)
+        {
             TempData["ErrorMessage"] = "Email is required.";
             return RedirectToAction("UsersManagement");
         }
-        
-        // Assuming the logged-in admin's ID is stored in the session or claims
+
         var loggedInAdminId = User.FindFirst("AdminId")?.Value;
 
-        if (loggedInAdminId != null && int.Parse(loggedInAdminId) == updatedAdmin.AdminId)
+        if (loggedInAdminId != null && loggedInAdminId == updatedAdmin.Id.ToString())
         {
             TempData["ErrorMessage"] = "You cannot edit your own account!";
-            
             return RedirectToAction("UsersManagement");
         }
 
-        // Retrieve the existing admin from the database
-        var admin = _context.Admins?.FirstOrDefault(a => a.AdminId == updatedAdmin.AdminId);
+        var admin = _context.Admins.Find(a => a.Id == updatedAdmin.Id).FirstOrDefault();
         if (admin == null)
         {
             TempData["ErrorMessage"] = "Admin not found.";
             return RedirectToAction("UsersManagement");
         }
 
-        // Update admin fields
-        admin.Username = updatedAdmin.Username;
-        admin.Email = updatedAdmin.Email;
-        admin.Phone = updatedAdmin.Phone;
-        admin.Address = updatedAdmin.Address;
-        admin.Status = updatedAdmin.Status;
+        var update = Builders<Admin>.Update
+            .Set(a => a.Username, updatedAdmin.Username)
+            .Set(a => a.Email, updatedAdmin.Email)
+            .Set(a => a.Phone, updatedAdmin.Phone)
+            .Set(a => a.Address, updatedAdmin.Address)
+            .Set(a => a.Status, updatedAdmin.Status);
 
-        // Update password if provided
         if (!string.IsNullOrEmpty(updatedAdmin.PasswordHash))
         {
-            admin.PasswordHash = HashPassword(updatedAdmin.PasswordHash);
+            update = update.Set(a => a.PasswordHash, HashPassword(updatedAdmin.PasswordHash));
         }
 
-        // Save changes to the database
-        _context.SaveChanges();
+        _context.Admins.UpdateOne(a => a.Id == updatedAdmin.Id, update);
         TempData["SuccessMessage"] = "Admin updated successfully!";
         return RedirectToAction("UsersManagement");
     }
@@ -281,10 +257,8 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> Logout()
     {
-        // Sign out the user and remove their authentication cookie
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         TempData["ErrorMessage"] = "You have been logged out.";
-        // Redirect to Login page
         return RedirectToAction("Login");
     }
 

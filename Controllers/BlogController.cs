@@ -7,46 +7,56 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using MongoDB.Driver;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 
 namespace aacs.Controllers
 {
     public class BlogController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly MongoDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly Cloudinary _cloudinary;
 
-        // Constructor to inject ApplicationDbContext
-        public BlogController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public BlogController(MongoDbContext context, IWebHostEnvironment webHostEnvironment, Cloudinary cloudinary)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _cloudinary = cloudinary;
         }
-
         [Authorize]
         public IActionResult BlogsManagement(int page = 1)
         {
             const int pageSize = 10;
-            var blogs = _context.Blog?.OrderBy(b => b.BlogId) // Sort by ID or another field if needed
-                                    .Skip((page - 1) * pageSize)
-                                    .Take(pageSize)
-                                    .ToList() ?? new List<Blog>(); // Fallback to an empty list if null
+            var blogs = _context.Blog.Find(_ => true)
+                                     .SortBy(b => b.Id)
+                                     .Skip((page - 1) * pageSize)
+                                     .Limit(pageSize)
+                                     .ToList();
 
-            var totalBlogs = _context.Blog?.Count() ?? 0;
+            var totalBlogs = _context.Blog.CountDocuments(_ => true);
             var totalPages = (int)Math.Ceiling(totalBlogs / (double)pageSize);
 
-            var model = new PaginatedList<Blog>(blogs, totalBlogs, page, pageSize);
+            var model = new PaginatedList<Blog>(blogs, (int)totalBlogs, page, pageSize);
 
-            ViewData["TotalPages"] = totalPages; // Pass total pages to the view
-            ViewData["CurrentPage"] = page; // Pass current page to the view
+            ViewData["TotalPages"] = totalPages;
+            ViewData["CurrentPage"] = page;
 
-            return View("~/Views/Admin/BlogsManagement.cshtml", model); // Use the correct view path
+            return View("~/Views/Admin/BlogsManagement.cshtml", model);
         }
 
         [HttpGet]
         [Authorize]
-        public IActionResult GetBlogDetails(int id)
+        public IActionResult GetBlogDetails(string id)
         {
-            var blog = _context.Blog?.FirstOrDefault(b => b.BlogId == id);
+            if (!MongoDB.Bson.ObjectId.TryParse(id, out var objectId))
+            {
+                return BadRequest(new { message = "Invalid blog ID format." });
+            }
+
+            var blog = _context.Blog.Find(b => b.Id == objectId).FirstOrDefault();
+
             if (blog == null)
             {
                 return NotFound(new { message = "Blog not found." });
@@ -54,7 +64,7 @@ namespace aacs.Controllers
 
             return Json(new
             {
-                blogId = blog.BlogId,
+                blogId = blog.Id.ToString(),  // Convert ObjectId back to string
                 title = blog.Title,
                 author = blog.Author,
                 content = blog.Content,
@@ -68,87 +78,86 @@ namespace aacs.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult AddBlog(Blog blog, IFormFile HeaderImage)
+        public async Task<IActionResult> AddBlog(Blog blog, IFormFile HeaderImage)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // Handle Image Upload
+                    // Upload to Cloudinary
                     if (HeaderImage != null && HeaderImage.Length > 0)
                     {
-                        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "blog");
-                        string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(HeaderImage.FileName);
-                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                        // Ensure the directory exists
-                        if (!Directory.Exists(uploadsFolder))
+                        using var stream = HeaderImage.OpenReadStream();
+                        var uploadParams = new ImageUploadParams
                         {
-                            Directory.CreateDirectory(uploadsFolder);
-                        }
+                            File = new FileDescription(HeaderImage.FileName, stream),
+                            Folder = "blog_images"  // Cloudinary folder
+                        };
 
-                        using (var fileStream = new FileStream(filePath, FileMode.Create))
-                        {
-                            HeaderImage.CopyTo(fileStream);
-                        }
-
-                        blog.HeaderImageUrl = "/images/blog/" + uniqueFileName;
+                        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                        blog.HeaderImageUrl = uploadResult.SecureUrl.ToString();
                     }
 
-                    // Set Published Date if Status is "Published"
                     if (blog.Status == "Published")
                     {
                         blog.DatePublished = DateTime.Now;
                     }
 
-                    _context?.Blog?.Add(blog);
-                    _context?.SaveChanges();
+                    _context.Blog.InsertOne(blog);
 
                     TempData["SuccessMessage"] = "New blog added successfully!";
                     return RedirectToAction("BlogsManagement");
                 }
                 catch (Exception ex)
                 {
-                    TempData["ErrorMessage"] = "An error occurred while adding the blog. Error: " + ex.Message;
+                    TempData["ErrorMessage"] = "Error while adding blog: " + ex.Message;
                     return RedirectToAction("BlogsManagement");
                 }
             }
-            else
-            {
-                var errorMessages = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
 
-                TempData["ValidationErrors"] = errorMessages;
-            }
-
-            // Return the view with the correct model type
-            const int pageSize = 2;
-            var blogs = _context.Blog?.OrderBy(b => b.BlogId)
-                                    .Take(pageSize)
-                                    .ToList() ?? new List<Blog>();
-            var totalBlogs = _context.Blog?.Count() ?? 0;
-            var model = new PaginatedList<Blog>(blogs, totalBlogs, 1, pageSize);
-
-            return View("~/Views/Admin/BlogsManagement.cshtml", model);
+            TempData["ValidationErrors"] = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return View("~/Views/Admin/BlogsManagement.cshtml");
         }
 
         [HttpPost]
         [Authorize]
-        public IActionResult DeleteBlog(int id)
+        public async Task<IActionResult> DeleteBlog(string id)
         {
             try
             {
-                var blog = _context.Blog?.FirstOrDefault(b => b.BlogId == id);
+                if (string.IsNullOrEmpty(id))
+                {
+                    TempData["ErrorMessage"] = "Blog ID is required.";
+                    return RedirectToAction("BlogsManagement");
+                }
+
+                var blog = _context.Blog.Find(b => b.Id == new MongoDB.Bson.ObjectId(id)).FirstOrDefault();
                 if (blog == null)
                 {
                     TempData["ErrorMessage"] = "Blog not found!";
                     return RedirectToAction("BlogsManagement");
                 }
 
-                _context.Blog?.Remove(blog);
-                _context.SaveChanges();
+                // Extract public_id from Cloudinary URL if it exists
+                var imageUrl = blog.HeaderImageUrl;
+                if (!string.IsNullOrEmpty(imageUrl))
+                {
+                    try
+                    {
+                        var publicId = Path.GetFileNameWithoutExtension(new Uri(imageUrl).AbsolutePath);
+
+                        // Delete image from Cloudinary
+                        var deletionParams = new DeletionParams(publicId);
+                        await _cloudinary.DestroyAsync(deletionParams);
+                    }
+                    catch (UriFormatException)
+                    {
+                        TempData["ErrorMessage"] = "Invalid image URL format.";
+                        return RedirectToAction("BlogsManagement");
+                    }
+                }
+
+                _context.Blog.DeleteOne(b => b.Id == new MongoDB.Bson.ObjectId(id));
                 TempData["SuccessMessage"] = "Blog deleted successfully!";
             }
             catch (Exception)
@@ -161,16 +170,17 @@ namespace aacs.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult UpdateBlog(int blogId, string Title, string Author, string Content, string Tags, string Status, string Description, IFormFile? HeaderImage)
+        public async Task<IActionResult> UpdateBlog(string Id, string Title, string Author, string Content, string Tags, string Status, string Description, IFormFile? HeaderImage)
         {
-            var blog = _context.Blog?.FirstOrDefault(b => b.BlogId == blogId);
+
+            var blog = _context.Blog.Find(b => b.Id == new MongoDB.Bson.ObjectId(Id)).FirstOrDefault();
+            
             if (blog == null)
             {
                 TempData["ErrorMessage"] = "Blog not found.";
                 return RedirectToAction("BlogsManagement");
             }
 
-            // Update blog details
             blog.Title = Title;
             blog.Author = Author;
             blog.Content = Content;
@@ -178,46 +188,41 @@ namespace aacs.Controllers
             blog.Status = Status;
             blog.Description = Description;
 
-            // Handle image upload
+            // Upload new image if provided
             if (HeaderImage != null && HeaderImage.Length > 0)
             {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "blog");
-                string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(HeaderImage.FileName);
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                // Ensure the directory exists
-                if (!Directory.Exists(uploadsFolder))
+                using var stream = HeaderImage.OpenReadStream();
+                Console.WriteLine(HeaderImage.FileName);
+                var uploadParams = new ImageUploadParams
                 {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
-                // Save the new image
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    HeaderImage.CopyTo(fileStream);
-                }
-
-                // Update image URL
-                blog.HeaderImageUrl = "/images/blog/" + uniqueFileName;
+                    File = new FileDescription(HeaderImage.FileName, stream),
+                    Folder = "blog_images"
+                };
+                Console.WriteLine(uploadParams);
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                Console.WriteLine(uploadResult);
+                blog.HeaderImageUrl = uploadResult.SecureUrl.ToString();
             }
-            else if (string.IsNullOrEmpty(blog.HeaderImageUrl))
-            {
-                TempData["ErrorMessage"] = "Header image is required.";
-                return RedirectToAction("BlogsManagement");
-            }
-
-            // Update DatePublished when the status is 'Published'
             if (Status == "Published" && blog.DatePublished == null)
             {
                 blog.DatePublished = DateTime.Now;
             }
             else if (Status == "Draft")
             {
-                blog.DatePublished = null; // Reset if reverting to draft
+                blog.DatePublished = null;
             }
 
-            // Save changes to database
-            _context.SaveChanges();
+            var update = Builders<Blog>.Update
+                .Set(b => b.Title, blog.Title)
+                .Set(b => b.Author, blog.Author)
+                .Set(b => b.Content, blog.Content)
+                .Set(b => b.Tags, blog.Tags)
+                .Set(b => b.Status, blog.Status)
+                .Set(b => b.Description, blog.Description)
+                .Set(b => b.HeaderImageUrl, blog.HeaderImageUrl)
+                .Set(b => b.DatePublished, blog.DatePublished);
+
+            _context.Blog.UpdateOne(b => b.Id == blog.Id, update);
 
             TempData["SuccessMessage"] = "Blog updated successfully!";
             return RedirectToAction("BlogsManagement");

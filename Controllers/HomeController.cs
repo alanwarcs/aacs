@@ -2,15 +2,16 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using aacs.Models;
+using MongoDB.Driver;
 
 namespace aacs.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly ApplicationDbContext _context;
+    private readonly MongoDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+    public HomeController(ILogger<HomeController> logger, MongoDbContext context)
     {
         _logger = logger;
         _context = context;
@@ -30,21 +31,24 @@ public class HomeController : Controller
     public IActionResult Blogs()
     {
         var blogs = _context.Blog?
-            .Where(b => b.Status == "Published")
-            .OrderByDescending(b => b.DatePublished)
+            .Find(b => b.Status == "Published")
+            .SortByDescending(b => b.DatePublished)
             .ToList() ?? new List<Blog>();
 
         return View(blogs);
     }
 
+
     [Route("Blogs/{id}")]
-    public IActionResult BlogDetails(int id)
+    public IActionResult BlogDetails(string id)
     {
-        var blog = _context.Blog?.FirstOrDefault(b => b.BlogId == id && b.Status == "Published");
+        var blog = _context.Blog?
+            .Find(b => b.Id == new MongoDB.Bson.ObjectId(id) && b.Status == "Published")
+            .FirstOrDefault();
 
         if (blog == null)
         {
-            return NotFound();
+            return NotFound(); // Returns 404 if the blog is not found
         }
 
         return View(blog);

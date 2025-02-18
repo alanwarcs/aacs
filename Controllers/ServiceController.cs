@@ -1,21 +1,17 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
-using System.Text;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using aacs.Models;
+using MongoDB.Driver;
 
 namespace aacs.Controllers;
 
 public class ServiceController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly MongoDbContext _context;
 
-    // Constructor to inject ApplicationDbContext
-    public ServiceController(ApplicationDbContext context)
+    // Constructor to inject MongoDbContext
+    public ServiceController(MongoDbContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
@@ -24,18 +20,19 @@ public class ServiceController : Controller
     public IActionResult ServicesManagement(int page = 1)
     {
         const int pageSize = 10;
-        var services = _context.Service?.OrderBy(s => s.ServiceId) // Sort by ID or another field if needed
+        var services = _context.Service?.Find(_ => true)
+                                .SortBy(s => s.Id)
                                 .Skip((page - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList() ?? new List<Service>(); // Fallback to an empty list if null
+                                .Limit(pageSize)
+                                .ToList() ?? new List<Service>();
 
-        var totalServices = _context.Service?.Count() ?? 0;
+        var totalServices = _context.Service?.CountDocuments(_ => true) ?? 0;
         var totalPages = (int)Math.Ceiling(totalServices / (double)pageSize);
 
-        var model = new PaginatedList<Service>(services, totalServices, page, pageSize);
+        var model = new PaginatedList<Service>(services, (int)totalServices, page, pageSize);
 
-        ViewData["TotalPages"] = totalPages; // Pass total pages to the view
-        ViewData["CurrentPage"] = page; // Pass current page to the view
+        ViewData["TotalPages"] = totalPages;
+        ViewData["CurrentPage"] = page;
 
         return View("~/Views/Admin/ServicesManagement.cshtml", model);
     }
@@ -53,8 +50,7 @@ public class ServiceController : Controller
                     service.DatePublished = DateTime.Now;
                 }
 
-                _context.Service?.Add(service);
-                _context.SaveChanges();
+                _context.Service?.InsertOne(service);
 
                 TempData["SuccessMessage"] = "New service added successfully!";
                 return RedirectToAction("ServicesManagement");
@@ -78,31 +74,29 @@ public class ServiceController : Controller
             TempData["ValidationErrors"] = errorMessages;
         }
 
-
         // Return the view directly instead of redirecting
-        return View("~/Views/Admin/ServicesManagement.cshtml", _context.Service?.ToList());
+        return View("~/Views/Admin/ServicesManagement.cshtml", _context.Service?.Find(_ => true).ToList());
     }
 
     [HttpPost]
     [Authorize]
-    public IActionResult DeleteService(int id)
+    public IActionResult DeleteService(string id)
     {
         try
         {
-            var service = _context.Service?.FirstOrDefault(s => s.ServiceId == id);
+            var service = _context.Service?.Find(s => s.Id == new MongoDB.Bson.ObjectId(id)).FirstOrDefault();
             if (service == null)
             {
                 TempData["ErrorMessage"] = "Service not found!";
                 return RedirectToAction("ServicesManagement");
             }
 
-            _context.Service?.Remove(service);
-            _context.SaveChanges();
+            _context.Service?.DeleteOne(s => s.Id == new MongoDB.Bson.ObjectId(id));
             TempData["SuccessMessage"] = "Service deleted successfully!";
         }
         catch (Exception ex)
         {
-            TempData["ErrorMessage"] = $"Error deleting admin: {ex.Message}";
+            TempData["ErrorMessage"] = $"Error deleting service: {ex.Message}";
         }
 
         return RedirectToAction("ServicesManagement");
@@ -110,8 +104,9 @@ public class ServiceController : Controller
 
     [HttpGet]
     [Authorize]
-    public IActionResult GetServiceDetails(int id){
-        var service = _context.Service?.FirstOrDefault(s => s.ServiceId == id);
+    public IActionResult GetServiceDetails(string id)
+    {
+        var service = _context.Service?.Find(s => s.Id == new MongoDB.Bson.ObjectId(id)).FirstOrDefault();
         if (service == null)
         {
             return NotFound(new { message = "Service not found." });
@@ -127,29 +122,31 @@ public class ServiceController : Controller
 
     [HttpPost]
     [Authorize]
-    public IActionResult UpdateService(Service updateService){
-        
+    public IActionResult UpdateService(Service updateService)
+    {
         if (ModelState.IsValid)
         {
-            var service = _context.Service?.FirstOrDefault(s => s.ServiceId == updateService.ServiceId);
+            var service = _context.Service?.Find(s => s.Id == updateService.Id).FirstOrDefault();
             if (service == null)
             {
                 TempData["ErrorMessage"] = "Service not found.";
                 return RedirectToAction("ServicesManagement");
             }
-            // Update service fields
-            service.Title = updateService.Title;
-            service.Description = updateService.Description;
-            service.Status = updateService.Status;
 
-            if (service.Status == "Published")
+            // Update service fields
+            var update = Builders<Service>.Update
+                .Set(s => s.Title, updateService.Title)
+                .Set(s => s.Description, updateService.Description)
+                .Set(s => s.Status, updateService.Status);
+
+            if (updateService.Status == "Published")
             {
-                service.DatePublished = DateTime.Now;
+                update = update.Set(s => s.DatePublished, DateTime.Now);
             }
 
-            _context.SaveChanges();
+            _context.Service?.UpdateOne(s => s.Id == updateService.Id, update);
 
-            TempData["SuccessMessage"] = "service updated successfully!";
+            TempData["SuccessMessage"] = "Service updated successfully!";
             return RedirectToAction("ServicesManagement");
         }
         else
@@ -165,6 +162,6 @@ public class ServiceController : Controller
         }
 
         // Return the view directly instead of redirecting
-        return View("~/Views/Admin/ServicesManagement.cshtml", _context.Service?.ToList());
+        return View("~/Views/Admin/ServicesManagement.cshtml", _context.Service?.Find(_ => true).ToList());
     }
 }

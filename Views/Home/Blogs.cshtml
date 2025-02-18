@@ -30,7 +30,7 @@
                             <p class="card-text text-muted">
                                 @(mostRecentBlog.Description.Length > 250 ? mostRecentBlog.Description.Substring(0, 250) + "..." : mostRecentBlog.Description)
                             </p>
-                            <a href="/Blogs/@mostRecentBlog.BlogId" class="btn btn-custom">Read More</a>
+                            <a href="/Blogs/@mostRecentBlog.Id" class="btn btn-custom">Read More</a>
                         </div>
                     </div>
                 }
@@ -52,7 +52,7 @@
                     <div class="card mb-3 border-0 blog-card">
                         <div class="row g-0">
                             <div class="col-4 blog-image-container">
-                                <img src="@blog.HeaderImageUrl" class="img-fluid blog-image rounded-start" alt="Blog @blog.BlogId">
+                                <img src="@blog.HeaderImageUrl" class="img-fluid blog-image rounded-start" alt="Blog @blog.Id">
                             </div>
                             <div class="col-8">
                                 <div class="card-body">
@@ -60,7 +60,7 @@
                                     <p class="card-text text-muted">
                                         @(blog.Description.Length > 50 ? blog.Description.Substring(0, 50) + "..." : blog.Description)
                                     </p>
-                                    <a href="/Blogs/@blog.BlogId" class="stretched-link"></a>
+                                    <a href="/Blogs/@blog.Id" class="stretched-link"></a>
                                 </div>
                             </div>
                         </div>

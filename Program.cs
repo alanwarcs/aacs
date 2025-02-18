@@ -1,14 +1,28 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.EntityFrameworkCore;
-using aacs.Models;
+using CloudinaryDotNet;
+using DotNetEnv;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Load environment variables from .env file
+Env.Load();
+
+// Read Cloudinary credentials from environment variables
+var cloudinaryAccount = new Account(
+    Environment.GetEnvironmentVariable("CLOUDINARY_CLOUD_NAME"),
+    Environment.GetEnvironmentVariable("CLOUDINARY_API_KEY"),
+    Environment.GetEnvironmentVariable("CLOUDINARY_API_SECRET")
+);
+
+var cloudinary = new Cloudinary(cloudinaryAccount);
+builder.Services.AddSingleton(cloudinary);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Register MongoDB context
+builder.Services.AddSingleton<MongoDbContext>();
 
 builder.Services.AddSession(options =>
 {
@@ -36,7 +50,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -50,6 +63,8 @@ app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
 
 // Default routes for public pages
 app.MapControllerRoute(

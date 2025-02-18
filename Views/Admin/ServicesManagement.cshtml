@@ -66,9 +66,9 @@
                                                 <span class="badge @(service.Status == "Published" ? "bg-success" : "bg-secondary")">@service.Status</span>
                                                 </td>
                                                 <td>
-                                                <button id="editServiceButton" class="btn btn-sm btn-warning" data-service-id="@service.ServiceId">Edit</button>
+                                                <button id="editServiceButton" class="btn btn-sm btn-warning" data-service-id="@service.Id">Edit</button>
                                                 <form asp-action="DeleteService" method="post" class="d-inline">
-                                                        <input type="hidden" name="id" value="@service.ServiceId" />
+                                                        <input type="hidden" name="id" value="@service.Id" />
                                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this service?');">
                                                         Delete
                                                         </button>
@@ -174,7 +174,7 @@
                         </div>
                         <div class="modal-body">
                                 <form asp-action="UpdateService" id="editServiceForm" method="post" class="mb-4">
-                                        <input type="hidden" id="editServiceId" name="ServiceId" />
+                                        <input type="hidden" id="editId" name="Id" />
                                         <div class="mb-3">
                                                 <label for="editServiceTitle" class="form-label">Title</label>
                                                 <input type="text" class="form-control" id="editServiceTitle" name="Title" placeholder="Enter Service title" />

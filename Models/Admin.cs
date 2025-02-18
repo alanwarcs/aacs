@@ -1,9 +1,12 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 public class Admin
 {
-    public int AdminId { get; set; }
+    [BsonId]  // MongoDB primary key
+    public ObjectId Id { get; set; }  // Use ObjectId instead of int for MongoDB
 
     [Required(ErrorMessage = "Username is required.")]
     [MaxLength(100)]
@@ -26,7 +29,6 @@ public class Admin
     public string PasswordHash { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; } = DateTime.Now;
-
 
     [Required(ErrorMessage = "Status is required.")]
     [MaxLength(50)] // Example: Active, Inactive

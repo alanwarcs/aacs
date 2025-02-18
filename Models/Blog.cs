@@ -1,9 +1,12 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 public class Blog
 {
-    public int BlogId { get; set; }
+    [BsonId]  // MongoDB primary key
+    public ObjectId Id { get; set; }  // Use ObjectId instead of int for MongoDB
 
     [Required(ErrorMessage = "Title is required.")]
     [MaxLength(200, ErrorMessage = "Title cannot exceed 200 characters.")]

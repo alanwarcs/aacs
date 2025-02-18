@@ -3,16 +3,14 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using aacs.Models;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using System.Threading.Tasks;
+using MongoDB.Driver;
 
 public class ContactController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly MongoDbContext _context;
 
-    // Constructor to inject ApplicationDbContext
-    public ContactController(ApplicationDbContext context)
+    // Constructor to inject MongoDbContext
+    public ContactController(MongoDbContext context)
     {
         _context = context;
     }
@@ -21,18 +19,19 @@ public class ContactController : Controller
     public IActionResult ContactsManagement(int page = 1)
     {
         const int pageSize = 10;
-        var contacts = _context.Contact?.OrderBy(b => b.ContactId) // Sort by ID or another field if needed
-                                .Skip((page - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList() ?? new List<Contact>(); // Fallback to an empty list if null
+        var contacts = _context.Contact.Find(_ => true)
+                                       .SortBy(c => c.Id)
+                                       .Skip((page - 1) * pageSize)
+                                       .Limit(pageSize)
+                                       .ToList();
 
-        var totalContacts = _context.Contact?.Count() ?? 0;
+        var totalContacts = _context.Contact.CountDocuments(_ => true);
         var totalPages = (int)Math.Ceiling(totalContacts / (double)pageSize);
 
-        var model = new PaginatedList<Contact>(contacts, totalContacts, page, pageSize);
+        var model = new PaginatedList<Contact>(contacts, (int)totalContacts, page, pageSize);
 
-        ViewData["TotalPages"] = totalPages; // Pass total pages to the view
-        ViewData["CurrentPage"] = page; // Pass current page to the view
+        ViewData["TotalPages"] = totalPages;
+        ViewData["CurrentPage"] = page;
 
         return View("~/Views/Admin/ContactsManagement.cshtml", model);
     }
@@ -44,8 +43,7 @@ public class ContactController : Controller
         {
             try
             {
-                _context?.Contact?.Add(contact);
-                _context?.SaveChanges();
+                _context.Contact.InsertOne(contact);
                 TempData["SuccessMessage"] = "Message sent successfully! Thank you for reaching out—we'll be in touch soon.";
 
                 // Redirect to the original location
@@ -80,22 +78,20 @@ public class ContactController : Controller
         return View("~/Views/Home/Index.cshtml", contact);
     }
 
-
     [HttpPost]
     [Authorize]
-    public IActionResult DeleteContact(int id)
+    public IActionResult DeleteContact(string id)
     {
         try
         {
-            var contant = _context.Contact?.FirstOrDefault(b => b.ContactId == id);
-            if (contant == null)
+            var contact = _context.Contact.Find(c => c.Id == new MongoDB.Bson.ObjectId(id)).FirstOrDefault();
+            if (contact == null)
             {
                 TempData["ErrorMessage"] = "Contact not found!";
                 return RedirectToAction("ContactsManagement");
             }
 
-            _context.Contact?.Remove(contant);
-            _context.SaveChanges();
+            _context.Contact.DeleteOne(c => c.Id == new MongoDB.Bson.ObjectId(id));
             TempData["SuccessMessage"] = "Contact deleted successfully!";
         }
         catch (Exception)
