@@ -13,8 +13,32 @@
       "PackagePath": "staticwebassets/css/site.css"
     },
     {
-      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon.ico",
-      "PackagePath": "staticwebassets/favicon.ico"
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/android-chrome-192x192.png",
+      "PackagePath": "staticwebassets/favicon_io/android-chrome-192x192.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/android-chrome-512x512.png",
+      "PackagePath": "staticwebassets/favicon_io/android-chrome-512x512.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/apple-touch-icon.png",
+      "PackagePath": "staticwebassets/favicon_io/apple-touch-icon.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/favicon-16x16.png",
+      "PackagePath": "staticwebassets/favicon_io/favicon-16x16.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/favicon-32x32.png",
+      "PackagePath": "staticwebassets/favicon_io/favicon-32x32.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/favicon.ico",
+      "PackagePath": "staticwebassets/favicon_io/favicon.ico"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/site.webmanifest",
+      "PackagePath": "staticwebassets/favicon_io/site.webmanifest"
     },
     {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/back2.png",
