@@ -24,8 +24,13 @@ public class HomeController : Controller
 
     public IActionResult Services()
     {
-        return View();
+        var services = _context.Service?
+            .Find(s => s.Status == "Published") // Fetch all services
+            .ToList() ?? new List<Service>();
+
+        return View(services);
     }
+
 
     [Route("Blogs")]
     public IActionResult Blogs()

@@ -23,6 +23,11 @@ public class AdminController : Controller
     [HttpGet]
     public IActionResult Login(string error)
     {
+        if (User.Identity?.IsAuthenticated ?? false)
+        {
+            return RedirectToAction("Dashboard", "Dashboard");
+        }
+
         if (!string.IsNullOrEmpty(error))
         {
             ViewBag.Error = error;

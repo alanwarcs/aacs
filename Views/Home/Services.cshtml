@@ -1,3 +1,5 @@
+@model List<Service>
+
 @{
     ViewData["Title"] = "Our Services";
 }
@@ -5,102 +7,23 @@
 <div class="container services mt-5 pb-5">
     <h1 class="text-center display-4">Our Services</h1>
     <p class="text-center mb-5">At Al Anwar Creativity Studio, we craft custom software solutions for all industries—tailored to your unique needs and designed to drive success.</p>
-    <div class="row">
-        <!-- Custom Software Development -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-header text-white bg-custom-blue">
-                    <h4>Custom Software Development</h4>
-                </div>
-                <div class="card-body">
-                    <p>We specialize in both online and offline custom software solutions. Whether you need desktop software, offline tools, or web applications, we create solutions that enhance your business processes.</p>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="#" class="service-link">Learn More</a>
-                </div>
-            </div>
-        </div>
 
-        <!-- SaaS Development -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-header text-white bg-custom-blue">
-                    <h4>SaaS Development</h4>
-                </div>
-                <div class="card-body">
-                    <p>We build scalable and robust Software-as-a-Service (SaaS) platforms to help you reach a global audience. From MVP development to full-fledged SaaS solutions, we ensure your success in the cloud.</p>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="#" class="service-link">Learn More</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Web Development -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-header text-white bg-custom-blue">
-                    <h4>Web Development</h4>
-                </div>
-                <div class="card-body">
-                    <p>From designing modern, responsive websites to developing complex web applications, we ensure your online presence stands out with a user-friendly and scalable website.</p>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="#" class="service-link">Learn More</a>
+    <div class="row mb-5">
+        @foreach (var service in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-header text-white bg-custom-blue">
+                        <h4>@service.Title</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>@service.Description</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="#" class="service-link">Learn More</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
-
-    <div class="row">
-        <!-- Graphics Designing -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-header text-white bg-custom-blue">
-                    <h4>Graphics Designing</h4>
-                </div>
-                <div class="card-body">
-                    <p>Our creative graphic design services include logo creation, branding, UI/UX design, and promotional materials to give your brand a unique and professional identity.</p>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="#" class="service-link">Learn More</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Maintenance and Support -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-header text-white bg-custom-blue">
-                    <h4>Maintenance and Support</h4>
-                </div>
-                <div class="card-body">
-                    <p>We provide ongoing maintenance and support to ensure your software runs smoothly, including bug fixes, updates, and troubleshooting whenever necessary.</p>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="#" class="service-link">Learn More</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Technical Consulting -->
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-header text-white bg-custom-blue">
-                    <h4>Technical Consulting</h4>
-                </div>
-                <div class="card-body">
-                    <p>Leverage our expertise to guide your software decisions. We provide consulting for technology stack selection, project planning, and optimization of existing systems.</p>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="#" class="service-link">Learn More</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Final Call to Action -->
-    @* <div class="text-center mt-5 mb-5">
-        <a href="#contact" class="btn btn-custom text-white">Contact Us to Discuss Your Project</a>
-    </div> *@
 </div>
