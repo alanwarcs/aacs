@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "vQ2svIVZkuykj+WUIVSpI6ZXLgGGap0yJDdBV3VDXFo=",
+  "Hash": "8LZtK79//af12OzD5lZfVi8slLEBylDEeGQyYAe1pnI=",
   "Source": "aacs",
   "BasePath": "_content/aacs",
   "Mode": "Default",
@@ -205,25 +205,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/favicon_io/favicon.ico"
-    },
-    {
-      "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/site.webmanifest",
-      "SourceId": "aacs",
-      "SourceType": "Discovered",
-      "ContentRoot": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/",
-      "BasePath": "_content/aacs",
-      "RelativePath": "favicon_io/site.webmanifest",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/favicon_io/site.webmanifest"
     },
     {
       "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/back2.png",

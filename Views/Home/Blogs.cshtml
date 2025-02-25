@@ -24,7 +24,7 @@
                 if (mostRecentBlog != null)
                 {
                     <div class="card border-0">
-                        <img src="@mostRecentBlog.HeaderImageUrl" class="img-fluid card-img-top" alt="Most Recent Blog">
+                        <img src="@mostRecentBlog.HeaderImageUrl" class="img-fluid card-img-top" alt="Most Recent Blog" loading="lazy">
                         <div class="card-body">
                             <h3 class="card-title">@mostRecentBlog.Title</h3>
                             <p class="card-text text-muted">
@@ -52,7 +52,7 @@
                     <div class="card mb-3 border-0 blog-card">
                         <div class="row g-0">
                             <div class="col-4 blog-image-container">
-                                <img src="@blog.HeaderImageUrl" class="img-fluid blog-image rounded-start" alt="Blog @blog.Id">
+                                <img src="@blog.HeaderImageUrl" class="img-fluid blog-image rounded-start" alt="Blog @blog.Id" loading="lazy">
                             </div>
                             <div class="col-8">
                                 <div class="card-body">

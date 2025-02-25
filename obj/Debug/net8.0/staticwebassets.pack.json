@@ -37,10 +37,6 @@
       "PackagePath": "staticwebassets/favicon_io/favicon.ico"
     },
     {
-      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/site.webmanifest",
-      "PackagePath": "staticwebassets/favicon_io/site.webmanifest"
-    },
-    {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/back2.png",
       "PackagePath": "staticwebassets/images/back2.png"
     },
