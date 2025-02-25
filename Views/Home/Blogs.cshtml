@@ -13,6 +13,19 @@
         </div>
     </div>
 
+    <!-- Ad Before Blogs List -->
+    <div class="my-4 text-center">
+        <script async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3497395369836145"
+            crossorigin="anonymous"></script>
+        <!-- aacs blogs -->
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3497395369836145"
+            data-ad-slot="1457398382" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
     <div class="row mb-5">
         <!-- Most Recent Blog (Left Section) -->
         <div class="col-lg-8 mb-5 pb-5">
@@ -24,16 +37,18 @@
                 if (mostRecentBlog != null)
                 {
                     <div class="card border-0">
-                        <img src="@mostRecentBlog.HeaderImageUrl" class="img-fluid card-img-top" alt="Most Recent Blog" loading="lazy">
+                        <img src="@mostRecentBlog.HeaderImageUrl" class="img-fluid card-img-top" alt="Most Recent Blog"
+                            loading="lazy">
                         <div class="card-body">
                             <h3 class="card-title">@mostRecentBlog.Title</h3>
                             <p class="card-text text-muted">
-                                @(mostRecentBlog.Description.Length > 250 ? mostRecentBlog.Description.Substring(0, 250) + "..." : mostRecentBlog.Description)
-                            </p>
-                            <a href="/Blogs/@mostRecentBlog.Id" class="btn btn-custom">Read More</a>
-                        </div>
-                    </div>
-                }
+                                @(mostRecentBlog.Description.Length > 250 ? mostRecentBlog.Description.Substring(0, 250) + "..."
+                                                        : mostRecentBlog.Description)
+                    </p>
+                    <a href="/Blogs/@mostRecentBlog.Id" class="btn btn-custom">Read More</a>
+                </div>
+            </div>
+                        }
             }
             else
             {
@@ -52,20 +67,35 @@
                     <div class="card mb-3 border-0 blog-card">
                         <div class="row g-0">
                             <div class="col-4 blog-image-container">
-                                <img src="@blog.HeaderImageUrl" class="img-fluid blog-image rounded-start" alt="Blog @blog.Id" loading="lazy">
+                                <img src="@blog.HeaderImageUrl" class="img-fluid blog-image rounded-start"
+                                    alt="Blog @blog.Id" loading="lazy">
                             </div>
                             <div class="col-8">
                                 <div class="card-body">
                                     <h6 class="card-title">@blog.Title</h6>
                                     <p class="card-text text-muted">
-                                        @(blog.Description.Length > 50 ? blog.Description.Substring(0, 50) + "..." : blog.Description)
-                                    </p>
-                                    <a href="/Blogs/@blog.Id" class="stretched-link"></a>
-                                </div>
+                                        @(blog.Description.Length > 50 ? blog.Description.Substring(0, 50) + "..." :
+                                                                            blog.Description)
+                                </p>
+                                <a href="/Blogs/@blog.Id" class="stretched-link"></a>
                             </div>
                         </div>
                     </div>
-                }
+                </div>
+                                }
+            </div>
+
+            <!-- Ad in Sidebar -->
+            <div class="my-4 text-center">
+                <script async
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3497395369836145"
+                    crossorigin="anonymous"></script>
+                <!-- aacs blogs -->
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3497395369836145"
+                    data-ad-slot="1457398382" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </div>
     </div>
