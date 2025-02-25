@@ -39,6 +39,25 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/elements.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/aacs.styles.css" asp-append-version="true" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "SoftwareCompany",
+      "name": "Al Anwar Creativity Studio",
+      "url": "https://alanwar.studio",
+      "logo": "https://alanwar.studio/images/logo.png",
+      "description": "Custom software development, modern web solutions, and scalable SaaS applications for businesses.",
+      "contactPoint": {
+        "@@type": "ContactPoint",
+        "telephone": "+123456789",
+        "contactType": "customer service",
+        "areaServed": "Worldwide",
+        "availableLanguage": "English"
+      }
+    }
+</script>
 </head>
 
 <body>
@@ -142,7 +161,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.6.0.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.19.3/jquery.validate.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
