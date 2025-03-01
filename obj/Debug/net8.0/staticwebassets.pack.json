@@ -41,6 +41,10 @@
       "PackagePath": "staticwebassets/images/back2.png"
     },
     {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/back2.webp",
+      "PackagePath": "staticwebassets/images/back2.webp"
+    },
+    {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/blog.png",
       "PackagePath": "staticwebassets/images/blog.png"
     },
@@ -49,8 +53,16 @@
       "PackagePath": "staticwebassets/images/half_logo_left.png"
     },
     {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/half_logo_left.webp",
+      "PackagePath": "staticwebassets/images/half_logo_left.webp"
+    },
+    {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/half_logo_right.png",
       "PackagePath": "staticwebassets/images/half_logo_right.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/half_logo_right.webp",
+      "PackagePath": "staticwebassets/images/half_logo_right.webp"
     },
     {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/logo.png",

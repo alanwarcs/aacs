@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "8LZtK79//af12OzD5lZfVi8slLEBylDEeGQyYAe1pnI=",
+  "Hash": "JPbyK5/5qw4iNUhyIJRYErc4SDANglvnKYAyTUQflDQ=",
   "Source": "aacs",
   "BasePath": "_content/aacs",
   "Mode": "Default",
@@ -226,6 +226,25 @@
       "OriginalItemSpec": "wwwroot/images/back2.png"
     },
     {
+      "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/back2.webp",
+      "SourceId": "aacs",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/",
+      "BasePath": "_content/aacs",
+      "RelativePath": "images/back2.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/back2.webp"
+    },
+    {
       "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/blog.png",
       "SourceId": "aacs",
       "SourceType": "Discovered",
@@ -264,6 +283,25 @@
       "OriginalItemSpec": "wwwroot/images/half_logo_left.png"
     },
     {
+      "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/half_logo_left.webp",
+      "SourceId": "aacs",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/",
+      "BasePath": "_content/aacs",
+      "RelativePath": "images/half_logo_left.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/half_logo_left.webp"
+    },
+    {
       "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/half_logo_right.png",
       "SourceId": "aacs",
       "SourceType": "Discovered",
@@ -281,6 +319,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/half_logo_right.png"
+    },
+    {
+      "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/half_logo_right.webp",
+      "SourceId": "aacs",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/",
+      "BasePath": "_content/aacs",
+      "RelativePath": "images/half_logo_right.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/half_logo_right.webp"
     },
     {
       "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/logo_1.png",
