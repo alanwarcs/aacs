@@ -315,6 +315,16 @@ h4 {
   width: 100%;
 }
 
+.admin-login .logo .main {
+  font-family: 'Roboto', sans-serif;
+  color: #275ca0;
+  font-weight: 400;
+  font-size: 2rem;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+}
+
 .admin-login .card {
   width: 400px;
   border: none;

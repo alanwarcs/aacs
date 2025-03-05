@@ -305,6 +305,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
             });
         });
+        document.getElementById("editBlogModalClose").addEventListener("click", function (e) {
+            e.preventDefault();
+            editBlogModal.classList.remove("show");
+            editBlogModal.style.display = "none";
+        });
     }    
 });
 
