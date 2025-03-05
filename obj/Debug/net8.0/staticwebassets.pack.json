@@ -13,28 +13,8 @@
       "PackagePath": "staticwebassets/css/site.css"
     },
     {
-      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/android-chrome-192x192.png",
-      "PackagePath": "staticwebassets/favicon_io/android-chrome-192x192.png"
-    },
-    {
-      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/android-chrome-512x512.png",
-      "PackagePath": "staticwebassets/favicon_io/android-chrome-512x512.png"
-    },
-    {
-      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/apple-touch-icon.png",
-      "PackagePath": "staticwebassets/favicon_io/apple-touch-icon.png"
-    },
-    {
-      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/favicon-16x16.png",
-      "PackagePath": "staticwebassets/favicon_io/favicon-16x16.png"
-    },
-    {
-      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/favicon-32x32.png",
-      "PackagePath": "staticwebassets/favicon_io/favicon-32x32.png"
-    },
-    {
-      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon_io/favicon.ico",
-      "PackagePath": "staticwebassets/favicon_io/favicon.ico"
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/favicon/favicon.ico",
+      "PackagePath": "staticwebassets/favicon/favicon.ico"
     },
     {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/back2.png",
@@ -303,6 +283,46 @@
     {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/lib/jquery/dist/jquery.min.map",
       "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.map"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/alt.png",
+      "PackagePath": "staticwebassets/logo/alt.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/alt.svg",
+      "PackagePath": "staticwebassets/logo/alt.svg"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/alt1000.png",
+      "PackagePath": "staticwebassets/logo/alt1000.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/alt144.png",
+      "PackagePath": "staticwebassets/logo/alt144.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/alt32.png",
+      "PackagePath": "staticwebassets/logo/alt32.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/alt512.png",
+      "PackagePath": "staticwebassets/logo/alt512.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/full.png",
+      "PackagePath": "staticwebassets/logo/full.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/full1000.png",
+      "PackagePath": "staticwebassets/logo/full1000.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/full512.png",
+      "PackagePath": "staticwebassets/logo/full512.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/logo/logo.svg",
+      "PackagePath": "staticwebassets/logo/logo.svg"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.aacs.Microsoft.AspNetCore.StaticWebAssets.props",
