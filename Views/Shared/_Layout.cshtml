@@ -1,13 +1,29 @@
 ﻿@{
-    string ActiveClass(string controller, string action)
-    {
-        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-        return (currentController == controller && currentAction == action) ? "active" : "";
-    }
-
     var request = Context.Request;
     var currentUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
+}
+
+@functions {
+    public string ActiveClass(string controller, string action)
+    {
+        // Get the current request path in lowercase for consistency.
+        var currentPath = Context.Request.Path.ToString().ToLower();
+
+        // If the current path starts with "/blogs" AND this nav item is the Blogs link, return "active".
+        if (currentPath.StartsWith("/blogs") &&
+            controller.Equals("Home", StringComparison.OrdinalIgnoreCase) &&
+            action.Equals("Blogs", StringComparison.OrdinalIgnoreCase))
+        {
+            return "active";
+        }
+
+        // For all other links, check the controller and action values.
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        return (currentController?.Equals(controller, StringComparison.OrdinalIgnoreCase) == true &&
+                currentAction?.Equals(action, StringComparison.OrdinalIgnoreCase) == true)
+                ? "active" : "";
+    }
 }
 
 <!DOCTYPE html>
@@ -18,21 +34,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- General Meta Tags -->
-    <meta name="description" content="Al Anwar Creativity Studio specializes in custom software, web development, and SaaS solutions for businesses. Explore our services, our story, and our innovative projects." />
-    <meta name="keywords" content="software development, web development, SaaS, business solutions, creative studio, services, about us" />
+    <meta name="description"
+        content="Al Anwar Creativity Studio specializes in custom software, web development, and SaaS solutions for businesses. Explore our services, our story, and our innovative projects." />
+    <meta name="keywords"
+        content="software development, web development, SaaS, business solutions, creative studio, services, about us" />
     <meta name="author" content="Al Anwar Creativity Studio" />
     <meta name="robots" content="index, follow" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:title" content='@ViewData["Title"] - Al Anwar Creativity Studio' />
-    <meta property="og:description" content="Discover Al Anwar Creativity Studio – from custom software to modern web solutions and SaaS. Learn about our services, our projects, and our story." />
+    <meta property="og:description"
+        content="Discover Al Anwar Creativity Studio – from custom software to modern web solutions and SaaS. Learn about our services, our projects, and our story." />
     <meta property="og:image" content="https://alanwar.studio/logo/full512.png" />
     <meta property="og:url" content="@currentUrl" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content='@ViewData["Title"] - Al Anwar Creativity Studio' />
-    <meta name="twitter:description" content="Custom software, web development, and SaaS solutions to boost your business. Learn more about our services and our story." />
+    <meta name="twitter:description"
+        content="Custom software, web development, and SaaS solutions to boost your business. Learn more about our services and our story." />
     <meta name="twitter:image" content="https://alanwar.studio/logo/full512.png" />
     <meta name="twitter:url" content='@currentUrl' />
 
@@ -46,13 +66,15 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/elements.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/aacs.styles.css" asp-append-version="true" />
 
     <!-- Google Ads -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2992921433109921" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2992921433109921"
+        crossorigin="anonymous"></script>
 
     <!-- JSON-LD Structured Data for Software Company -->
     <script type="application/ld+json">
@@ -116,7 +138,7 @@
                                 asp-action="Services">Services</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @ActiveClass("Home", "Blogs")" asp-area="" asp-controller="Home"
+                            <a class="nav-link @(ActiveClass("Home", "Blogs"))" asp-area="" asp-controller="Home"
                                 asp-action="Blogs">Blogs</a>
                         </li>
                         <li class="nav-item">
