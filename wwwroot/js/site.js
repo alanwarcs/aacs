@@ -276,7 +276,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         return response.json();
                     })
                     .then(data => {
-                        console.log(data);
                         if (data) {
                             // Populate form with fetched data
                             document.getElementById("editId").value = data.blogId; // Make sure you have the correct field in your form
@@ -300,7 +299,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     })
                     .catch(error => {
-                        console.error("Error fetching blog details:", error);
                         alert("Could not load blog details. Please try again.");
                     });
             });
@@ -310,7 +308,45 @@ document.addEventListener('DOMContentLoaded', function () {
             editBlogModal.classList.remove("show");
             editBlogModal.style.display = "none";
         });
-    }    
+    }   
+    
+    // Blog Page Specific Code
+    if (document.querySelector(".blog-page")) {
+        setupCopyToClipboard();
+        setupScrollToTop();
+    }
+
+    // Define setup functions INSIDE the DOMContentLoaded listener
+    function setupCopyToClipboard() {
+        const copyButton = document.querySelector("[data-copy-link]");
+        if (!copyButton) {
+            return;
+        }
+
+        copyButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => alert("Link copied to clipboard!"))
+                .catch(err => console.error("Failed to copy:", err));
+        });
+    }
+
+    function setupScrollToTop() {
+        const scrollToTopBtn = document.getElementById("scrollToTopBtn");
+        if (!scrollToTopBtn) {
+            return;
+        }
+
+        // Show/hide button on scroll
+        window.addEventListener("scroll", () => {
+            scrollToTopBtn.style.display = window.scrollY > 300 ? "block" : "none";
+        });
+
+        // Smooth scroll to top
+        scrollToTopBtn.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 });
 
 function typeText(elementId, text, speed) {

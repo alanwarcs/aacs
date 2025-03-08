@@ -36,4 +36,7 @@ public class Blog
 
     [Required(ErrorMessage = "Description is required.")]
     public string Description { get; set; } = string.Empty;
+
+    public string Slug { get; set; } = string.Empty;
+
 }

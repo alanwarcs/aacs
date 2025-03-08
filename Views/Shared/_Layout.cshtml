@@ -5,6 +5,9 @@
         var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
         return (currentController == controller && currentAction == action) ? "active" : "";
     }
+
+    var request = Context.Request;
+    var currentUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
 }
 
 <!DOCTYPE html>
@@ -13,37 +16,45 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-    <meta name="description"
-        content="Al Anwar Creativity Studio specializes in custom software, web development, and SaaS solutions, helping businesses achieve digital success.">
-    <meta name="keywords" content="software development, web development, SaaS, business solutions, creative studio">
-    <meta name="author" content="Al Anwar Creativity Studio">
-    <meta name="robots" content="index, follow">
-    <meta property="og:title" content='@ViewData["Title"] - Al Anwar Creativity Studio'>
-    <meta property="og:description" content="Al Anwar Creativity Studio specializes in custom software, web development, and SaaS solutions, helping businesses achieve digital success.">
-    <meta property="og:image" content="https://alanwar.studio/logo/full512.png">
-    <meta property="og:url" content="https://alanwar.studio">
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Al Anwar Creativity Studio">
-    <meta name="twitter:description" content="Custom software, web development, and SaaS solutions to boost your business.">
-    <meta name="twitter:image" content="https://alanwar.studio/logo/full512.png">
-    <meta name="twitter:url" content="https://alanwar.studio">
-    
+    <!-- General Meta Tags -->
+    <meta name="description" content="Al Anwar Creativity Studio specializes in custom software, web development, and SaaS solutions for businesses. Explore our services, our story, and our innovative projects." />
+    <meta name="keywords" content="software development, web development, SaaS, business solutions, creative studio, services, about us" />
+    <meta name="author" content="Al Anwar Creativity Studio" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content='@ViewData["Title"] - Al Anwar Creativity Studio' />
+    <meta property="og:description" content="Discover Al Anwar Creativity Studio – from custom software to modern web solutions and SaaS. Learn about our services, our projects, and our story." />
+    <meta property="og:image" content="https://alanwar.studio/logo/full512.png" />
+    <meta property="og:url" content="@currentUrl" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content='@ViewData["Title"] - Al Anwar Creativity Studio' />
+    <meta name="twitter:description" content="Custom software, web development, and SaaS solutions to boost your business. Learn more about our services and our story." />
+    <meta name="twitter:image" content="https://alanwar.studio/logo/full512.png" />
+    <meta name="twitter:url" content='@currentUrl' />
+
+    <!-- Page Title -->
     <title>@ViewData["Title"] - Al Anwar Creativity Studio</title>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href='@currentUrl' />
+
+    <!-- Stylesheets & Fonts -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
-        rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/elements.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/aacs.styles.css" asp-append-version="true" />
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2992921433109921"
-     crossorigin="anonymous"></script>
-     
-    <!-- JSON-LD Structured Data -->
+    <!-- Google Ads -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2992921433109921" crossorigin="anonymous"></script>
+
+    <!-- JSON-LD Structured Data for Software Company -->
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
@@ -60,8 +71,9 @@
         "availableLanguage": "English"
       }
     }
-</script>
+    </script>
 </head>
+
 
 <body>
     <header class="position-sticky top-0 bg-white">
@@ -69,7 +81,8 @@
             <div class="container-fluid" style="z-index: 2;">
                 <!-- Left: Brand -->
                 <div class="d-flex flex-row align-items-center">
-                    <a class="d-flex flex-row align-items-center navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <a class="d-flex flex-row align-items-center navbar-brand" asp-area="" asp-controller="Home"
+                        asp-action="Index">
                         <img src="~/logo/alt512.png" alt="Al Anwar Creativity Studio" class="logo-img">
                         <div class="d-flex flex-column ms-2">
                             <h1 class="main m-0 fs-2">AL ANWAR</h1>
@@ -144,11 +157,10 @@
                 </svg>
             </a>
             <a href="https://x.com/alanwar_studio" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-twitter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-twitter-x" viewBox="0 0 16 16">
                     <path
-                        d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                        d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
                 </svg>
             </a>
             <a href="https://www.linkedin.com/in/murtaza-patel-289065352/" target="_blank">
@@ -169,4 +181,5 @@
     <script src="https://ajax.aspnetcdn.com/ajax/mvc/5.2.3/jquery.validate.unobtrusive.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

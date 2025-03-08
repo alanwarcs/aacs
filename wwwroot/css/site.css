@@ -257,6 +257,7 @@ h4 {
   object-fit: cover;
   border-radius: 0 !important;
 }
+
 /* Blog Details Page */
 .blog-content img {
   max-width: 100% !important;  /* Ensures image never exceeds container width */
@@ -265,6 +266,22 @@ h4 {
   margin: 20px auto;           /* Centers images with spacing */
   border-radius: 8px;          /* Slight rounding for a modern look */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for contrast */
+}
+
+.share-blog a{
+  color: #275ca0;
+}
+
+.share-blog a:hover{
+  color: #ff8000;
+}
+
+.tags p{
+  padding: 8px;
+  border-radius: 10px;
+  background: rgba(208, 208, 208, 0.336);
+  color: #275ca0;
+  text-decoration: none;
 }
 
 /* Contact Page */

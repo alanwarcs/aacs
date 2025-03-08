@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using MongoDB.Driver;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using System.Text.RegularExpressions;
+
 
 namespace aacs.Controllers
 {
@@ -18,6 +20,36 @@ namespace aacs.Controllers
         private readonly MongoDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly Cloudinary _cloudinary;
+        public static class SlugHelper
+        {
+            public static string GenerateSlug(string title)
+            {
+                // Convert to lowercase
+                string slug = title.ToLowerInvariant();
+                // Remove invalid characters
+                slug = Regex.Replace(slug, @"[^a-z0-9\s-]", "");
+                // Replace multiple spaces with a single space
+                slug = Regex.Replace(slug, @"\s+", " ").Trim();
+                // Replace spaces with hyphens
+                slug = slug.Replace(" ", "-");
+                return slug;
+            }
+        }
+
+        public IActionResult UpdateExistingSlugs()
+        {
+            var blogs = _context.Blog.Find(_ => true).ToList();
+            foreach (var blog in blogs)
+            {
+                if (string.IsNullOrEmpty(blog.Slug))
+                {
+                    blog.Slug = SlugHelper.GenerateSlug(blog.Title);
+                    var update = Builders<Blog>.Update.Set(b => b.Slug, blog.Slug);
+                    _context.Blog.UpdateOne(b => b.Id == blog.Id, update);
+                }
+            }
+            return Content("Slugs updated successfully.");
+        }
 
         public BlogController(MongoDbContext context, IWebHostEnvironment webHostEnvironment, Cloudinary cloudinary)
         {
@@ -84,19 +116,22 @@ namespace aacs.Controllers
             {
                 try
                 {
-                    // Upload to Cloudinary
+                    // Upload header image to Cloudinary (if provided)
                     if (HeaderImage != null && HeaderImage.Length > 0)
                     {
                         using var stream = HeaderImage.OpenReadStream();
                         var uploadParams = new ImageUploadParams
                         {
                             File = new FileDescription(HeaderImage.FileName, stream),
-                            Folder = "blog_images"  // Cloudinary folder
+                            Folder = "blog_images"
                         };
 
                         var uploadResult = await _cloudinary.UploadAsync(uploadParams);
                         blog.HeaderImageUrl = uploadResult.SecureUrl.ToString();
                     }
+
+                    // Generate and assign slug
+                    blog.Slug = SlugHelper.GenerateSlug(blog.Title);
 
                     if (blog.Status == "Published")
                     {
@@ -115,7 +150,9 @@ namespace aacs.Controllers
                 }
             }
 
-            TempData["ValidationErrors"] = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            TempData["ValidationErrors"] = ModelState.Values.SelectMany(v => v.Errors)
+                                                              .Select(e => e.ErrorMessage)
+                                                              .ToList();
             return View("~/Views/Admin/BlogsManagement.cshtml");
         }
 
@@ -172,15 +209,15 @@ namespace aacs.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateBlog(string Id, string Title, string Author, string Content, string Tags, string Status, string Description, IFormFile? HeaderImage)
         {
-
             var blog = _context.Blog.Find(b => b.Id == new MongoDB.Bson.ObjectId(Id)).FirstOrDefault();
-            
+
             if (blog == null)
             {
                 TempData["ErrorMessage"] = "Blog not found.";
                 return RedirectToAction("BlogsManagement");
             }
 
+            // Update properties
             blog.Title = Title;
             blog.Author = Author;
             blog.Content = Content;
@@ -188,19 +225,20 @@ namespace aacs.Controllers
             blog.Status = Status;
             blog.Description = Description;
 
-            // Upload new image if provided
+            // Regenerate slug if title has changed
+            blog.Slug = SlugHelper.GenerateSlug(Title);
+
+            // Upload new header image if provided
             if (HeaderImage != null && HeaderImage.Length > 0)
             {
                 using var stream = HeaderImage.OpenReadStream();
-                Console.WriteLine(HeaderImage.FileName);
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription(HeaderImage.FileName, stream),
                     Folder = "blog_images"
                 };
-                Console.WriteLine(uploadParams);
+
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                Console.WriteLine(uploadResult);
                 blog.HeaderImageUrl = uploadResult.SecureUrl.ToString();
             }
             if (Status == "Published" && blog.DatePublished == null)
@@ -213,14 +251,15 @@ namespace aacs.Controllers
             }
 
             var update = Builders<Blog>.Update
-                .Set(b => b.Title, blog.Title)
-                .Set(b => b.Author, blog.Author)
-                .Set(b => b.Content, blog.Content)
-                .Set(b => b.Tags, blog.Tags)
-                .Set(b => b.Status, blog.Status)
-                .Set(b => b.Description, blog.Description)
-                .Set(b => b.HeaderImageUrl, blog.HeaderImageUrl)
-                .Set(b => b.DatePublished, blog.DatePublished);
+                        .Set(b => b.Title, blog.Title)
+                        .Set(b => b.Author, blog.Author)
+                        .Set(b => b.Content, blog.Content)
+                        .Set(b => b.Tags, blog.Tags)
+                        .Set(b => b.Status, blog.Status)
+                        .Set(b => b.Description, blog.Description)
+                        .Set(b => b.HeaderImageUrl, blog.HeaderImageUrl)
+                        .Set(b => b.DatePublished, blog.DatePublished)
+                        .Set(b => b.Slug, blog.Slug); // Update slug
 
             _context.Blog.UpdateOne(b => b.Id == blog.Id, update);
 

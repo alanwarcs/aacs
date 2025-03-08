@@ -31,24 +31,30 @@ public class HomeController : Controller
         return View(services);
     }
 
-
     [Route("Blogs")]
     public IActionResult Blogs()
     {
         var blogs = _context.Blog?
             .Find(b => b.Status == "Published")
+            .Project<Blog>(Builders<Blog>.Projection
+                .Include(b => b.Title)
+                .Include(b => b.Author)
+                .Include(b => b.Description)
+                .Include(b => b.HeaderImageUrl)
+                .Include(b => b.Slug)         // Needed for generating SEO-friendly links
+                .Include(b => b.DatePublished) // For sorting and display
+            )
             .SortByDescending(b => b.DatePublished)
             .ToList() ?? new List<Blog>();
 
         return View(blogs);
     }
 
-
-    [Route("Blogs/{id}")]
-    public IActionResult BlogDetails(string id)
+    [Route("Blogs/{slug}")]
+    public IActionResult BlogDetails(string slug)
     {
         var blog = _context.Blog?
-            .Find(b => b.Id == new MongoDB.Bson.ObjectId(id) && b.Status == "Published")
+            .Find(b => b.Slug == slug && b.Status == "Published")
             .FirstOrDefault();
 
         if (blog == null)
@@ -58,6 +64,7 @@ public class HomeController : Controller
 
         return View(blog);
     }
+
 
     public IActionResult Contact()
     {

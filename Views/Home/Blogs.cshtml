@@ -30,7 +30,8 @@
                                 @(mostRecentBlog.Description.Length > 250 ? mostRecentBlog.Description.Substring(0, 250) + "..."
                                                         : mostRecentBlog.Description)
                     </p>
-                    <a href="/Blogs/@mostRecentBlog.Id" class="btn btn-custom">Read More</a>
+                    <a href="@Url.Action("BlogDetails", "Home", new { slug = mostRecentBlog.Slug })" class="btn btn-custom">Read
+                        More</a>
                 </div>
             </div>
                         }
@@ -60,7 +61,8 @@
                                         @(blog.Description.Length > 50 ? blog.Description.Substring(0, 50) + "..." :
                                                                             blog.Description)
                                 </p>
-                                <a href="/Blogs/@blog.Id" class="stretched-link"></a>
+                                <a href="@Url.Action("BlogDetails", "Home", new { slug = blog.Slug })"
+                                    class="stretched-link"></a>
                             </div>
                         </div>
                     </div>

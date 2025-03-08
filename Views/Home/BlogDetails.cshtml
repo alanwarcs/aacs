@@ -2,14 +2,99 @@
 
 @{
     ViewBag.Title = Model.Title;
+    var currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    var encodedUrl = Uri.EscapeDataString(currentUrl);
 }
 
+<!-- Add an ID to the top for smooth scrolling -->
+<div id="top"></div>
+
 <div class="container my-5">
-    <div class="row justify-content-center">
+    <div class="row blog-page justify-content-center">
         <div class="col-lg-8">
+            <div class="d-flex justify-content-between mb-4">
+                <!-- Back to Blogs Button -->
+                <div>
+                    <a href="@Url.Action("Blogs", "Home")"
+                        class="d-flex align-items-center text-decoration-none text-muted">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-arrow-left">
+                            <path d="m12 19-7-7 7-7" />
+                            <path d="M19 12H5" />
+                        </svg>
+                        <p class="m-0 ms-2">Back to Blogs</p>
+                    </a>
+                </div>
+
+                <!-- Share Social Media -->
+                <div class="share-blog">
+                    <!-- Facebook Share -->
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=@encodedUrl" target="_blank"
+                        class="text-decoration-none me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-facebook">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                        </svg>
+                    </a>
+
+                    <!-- Instagram Share -->
+                    <a href="https://www.instagram.com/?url=@encodedUrl" target="_blank"
+                        class="text-decoration-none me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-instagram">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8"></path>
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+                        </svg>
+                    </a>
+
+                    <!-- Twitter/X Share -->
+                    <a href="https://twitter.com/intent/tweet?url=@encodedUrl&text=@Uri.EscapeDataString(Model.Title)"
+                        target="_blank" class="text-decoration-none me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-twitter-x" viewBox="0 0 16 16">
+                            <path
+                                d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
+                        </svg>
+                    </a>
+
+                    <!-- LinkedIn Share -->
+                    <a href="https://www.linkedin.com/shareArticle?url=@encodedUrl&title=@Uri.EscapeDataString(Model.Title)"
+                        target="_blank" class="text-decoration-none me-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-linkedin">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                            <rect width="4" height="12" x="2" y="9" />
+                            <circle cx="4" cy="4" r="2" />
+                        </svg>
+                    </a>
+
+                    <!-- Copy Link -->
+                    <a href="#" data-copy-link class="text-decoration-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-copy">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
             <!-- Blog Header -->
             <h1 class="fw-bold text-dark mb-3">@Model.Title</h1>
-            <p class="text-muted">Published on @(Model.DatePublished?.ToString("MMMM dd, yyyy") ?? "Not Published")</p>
+            <div class="d-flex align-items-center">
+                <p class="text-muted me-3">
+                    By <span style="color: #275ca0;">@Model.Author</span>
+                </p>
+                <p class="text-muted me-3">|</p>
+                <p class="text-muted">Published on @(Model.DatePublished?.ToString("MMMM dd, yyyy") ?? "Not Published")
+                </p>
+            </div>
 
             <!-- Blog Featured Image -->
             @if (!string.IsNullOrEmpty(Model.HeaderImageUrl))
@@ -25,11 +110,39 @@
                 @Html.Raw(Model.Content) <!-- If content contains HTML -->
             </div>
 
-            <!-- Back to Blogs Button -->
-            <div class="my-4">
-                <a href="@Url.Action("Blogs", "Home")" class="btn btn-custom px-4 py-2">
-                    <i class="bi bi-arrow-left"></i> Back to Blogs
-                </a>
+            @if (!string.IsNullOrEmpty(Model.Tags))
+            {
+                // Assuming Model.Tags is a comma-separated string
+                var tagsArray = Model.Tags
+                .Split(',')
+                .Select(t => t.Trim())
+                .Where(t => !string.IsNullOrEmpty(t))
+                .ToList();
+
+                if (tagsArray.Any())
+                {
+                    <div class="tags my-3">
+                        <div class="d-flex flex-wrap">
+                            @foreach (var tag in tagsArray)
+                            {
+                                <p class="m-1 text-decoration-none">
+                                    #@tag
+                                </p>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+
+            <!-- Back to Top -->
+            <div class="fixed-bottom p-3 d-flex justify-content-end" style="z-index: 1000;">
+                <button id="scrollToTopBtn" class="btn btn-custom rounded-pill px-2 py-2" style="display:none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-chevron-up">
+                        <path d="m18 15-6-6-6 6" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>

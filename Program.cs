@@ -71,7 +71,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{action=Index}",
     defaults: new { controller = "Home" });
-
 // Admin routes
 app.MapControllerRoute(
     name: "admin",
