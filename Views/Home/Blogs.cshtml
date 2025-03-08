@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="row mb-5">
-        <!-- Most Recent Blog (Left Section) -->
+        <!-- Most Recent Blog (Left) -->
         <div class="col-lg-8 mb-5 pb-5">
             <h5 class="mb-4 display-5">Most Recent</h5>
             @if (Model.Any())
@@ -29,12 +29,14 @@
                             <p class="card-text text-muted">
                                 @(mostRecentBlog.Description.Length > 250 ? mostRecentBlog.Description.Substring(0, 250) + "..."
                                                         : mostRecentBlog.Description)
-                    </p>
-                    <a href="@Url.Action("BlogDetails", "Home", new { slug = mostRecentBlog.Slug })" class="btn btn-custom">Read
-                        More</a>
-                </div>
-            </div>
-                        }
+                            </p>
+                            <p class="text-muted small">Published on @mostRecentBlog.DatePublished?.ToString("MMMM dd, yyyy")</p>
+
+                             <a href="@Url.Action("BlogDetails", "Home", new { slug = @mostRecentBlog.Slug })"
+                                       class="stretched-link"></a>
+                        </div>
+                    </div>
+                }
             }
             else
             {
@@ -52,22 +54,24 @@
                         <div class="row g-0">
                             <div class="col-4 blog-image-container">
                                 <img src="@blog.HeaderImageUrl" class="img-fluid blog-image rounded-start"
-                                    alt="Blog @blog.Id" loading="lazy">
+                                     alt="Blog @blog.Id" loading="lazy">
                             </div>
                             <div class="col-8">
                                 <div class="card-body">
-                                    <h6 class="card-title">@blog.Title</h6>
+                                    <h5 class="card-title">@blog.Title</h5>
                                     <p class="card-text text-muted">
                                         @(blog.Description.Length > 50 ? blog.Description.Substring(0, 50) + "..." :
                                                                             blog.Description)
-                                </p>
-                                <a href="@Url.Action("BlogDetails", "Home", new { slug = blog.Slug })"
-                                    class="stretched-link"></a>
+                                    </p>
+                                    <p class="text-muted small">Published on @blog.DatePublished?.ToString("MMMM dd, yyyy")</p>
+
+                                    <a href="@Url.Action("BlogDetails", "Home", new { slug = blog.Slug })"
+                                       class="stretched-link"></a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                                }
+                }
             </div>
         </div>
     </div>
