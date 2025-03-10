@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,31 +10,51 @@ using System.Xml.Linq;
 [ApiController]
 public class SitemapController : ControllerBase
 {
+    private readonly ILogger<SitemapController> _logger;
+
+    // ✅ Keep only this constructor (remove parameterless constructor)
+    public SitemapController(ILogger<SitemapController> logger)
+    {
+        _logger = logger;
+    }
+
     [HttpGet]
     public IActionResult GenerateSitemap()
     {
-        var urls = new List<string>
+        try
         {
-            "https://alanwar.studio/",
-            "https://alanwar.studio/Services",
-            "https://alanwar.studio/Blogs",
-            "https://alanwar.studio/Contact",
-            "https://alanwar.studio/About",   
-        };
+            _logger.LogInformation("Generating Sitemap...");
 
-        var sitemap = new XDocument(
-            new XDeclaration("1.0", "utf-8", "yes"),
-            new XElement("urlset",
-                new XAttribute("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9"),
-                urls.Select(url => new XElement("url",
-                    new XElement("loc", url),
-                    new XElement("lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd")),
-                    new XElement("changefreq", "daily"),
-                    new XElement("priority", "0.8")
-                ))
-            )
-        );
+            var urls = new List<string>
+            {
+                "https://alanwar.studio/",
+                "https://alanwar.studio/Services",
+                "https://alanwar.studio/Blogs",
+                "https://alanwar.studio/Contact",
+                "https://alanwar.studio/About",   
+            };
 
-        return Content(sitemap.ToString(), "application/xml", Encoding.UTF8);
+            XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9"; // Define namespace
+
+            var sitemap = new XDocument(
+                new XDeclaration("1.0", "utf-8", "yes"),
+                new XElement(ns + "urlset",  // Apply namespace here
+                    urls.Select(url => new XElement(ns + "url",
+                        new XElement(ns + "loc", url),
+                        new XElement(ns + "lastmod", DateTime.UtcNow.ToString("yyyy-MM-dd")),
+                        new XElement(ns + "changefreq", "daily"),
+                        new XElement(ns + "priority", "0.8")
+                    ))
+                )
+            );
+
+            _logger.LogInformation("Sitemap generated successfully.");
+            return Content(sitemap.ToString(), "application/xml", Encoding.UTF8);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error generating sitemap: {Message}", ex.Message);
+            return StatusCode(500, "Internal Server Error");
+        }
     }
 }
