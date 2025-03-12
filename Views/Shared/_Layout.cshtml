@@ -6,6 +6,17 @@
     var title = ViewData["Title"]?.ToString() ?? "Al Anwar Creativity Studio";
     var description = ViewData["Description"]?.ToString() ?? "Al Anwar Creativity Studio specializes in custom software, web development, and SaaS solutions for businesses. Explore our services, our story, and our innovative projects.";
     var imageUrl = ViewData["Image"]?.ToString() ?? "https://alanwar.studio/logo/full512.png";
+
+    // Check if it's a blog post
+    bool isBlogPost = Context.Request.Path.ToString().ToLower().StartsWith("/blogs");
+
+    if (isBlogPost)
+    {
+        //Blog post specific logic
+        title = ViewData["Title"]?.ToString() ?? "Default Blog Title";
+        description = ViewData["Description"]?.ToString() ?? "Default Blog Description";
+        imageUrl = ViewData["Image"]?.ToString() ?? "URL to default blog image";
+    }
 }
 
 @functions {
