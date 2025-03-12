@@ -63,8 +63,13 @@
                                 <td>@contact.Email</td>
                                 <td>@contact.Phone</td>
                                 <td>
-                                    <button class="btn btn-sm btn-success"
-                                        onclick="viewMessage('@(contact.Message)', '@(contact.Name)', '@(contact.Email)', '@(contact.Phone)')">View</button>
+                                    <button class="btn btn-sm btn-success" onclick="viewMessage(`@Html.Raw(contact.Message?.Replace("`", "\\`").Replace("\n", " ").Replace("\r", " "))`, 
+                                 `@Html.Raw(contact.Name)`, 
+                                 `@Html.Raw(contact.Email)`, 
+                                 `@Html.Raw(contact.Phone)`)">
+                                        View
+                                    </button>
+
                                     <form asp-controller="Contact" asp-action="DeleteContact" method="post" class="d-inline">
                                         <input type="hidden" name="id" value="@contact.Id" />
                                         <button type="submit" class="btn btn-sm btn-danger"
@@ -141,7 +146,7 @@
             <hr class="bg-secondary" />
             <div class="w-100 p-4">
                 <div class="d-flex">
-                    <p class="view-text address" id="contactMessage"></p>
+                    <p class="view-text" id="contactMessage"></p>
                 </div>
             </div>
         </div>

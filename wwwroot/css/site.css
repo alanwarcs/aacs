@@ -440,7 +440,7 @@ h4 {
   margin-right: 15px ;
 }
 .user-view .view-text{
-  max-width: 200px;
+  max-width: fit-content;
 }
 /* Admin - Contact */
 .contact-management .card-body{

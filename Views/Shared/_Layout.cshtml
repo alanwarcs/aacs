@@ -1,6 +1,11 @@
 ﻿@{
     var request = Context.Request;
     var currentUrl = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
+
+    // Default values, fallback if not provided by the view
+    var title = ViewData["Title"]?.ToString() ?? "Al Anwar Creativity Studio";
+    var description = ViewData["Description"]?.ToString() ?? "Al Anwar Creativity Studio specializes in custom software, web development, and SaaS solutions for businesses. Explore our services, our story, and our innovative projects.";
+    var imageUrl = ViewData["Image"]?.ToString() ?? "https://alanwar.studio/logo/full512.png";
 }
 
 @functions {
@@ -34,34 +39,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- General Meta Tags -->
-    <meta name="description"
-        content="Al Anwar Creativity Studio specializes in custom software, web development, and SaaS solutions for businesses. Explore our services, our story, and our innovative projects." />
+    <meta name="description" content="@description" />
     <meta name="keywords"
         content="software development, web development, SaaS, business solutions, creative studio, services, about us" />
     <meta name="author" content="Al Anwar Creativity Studio" />
     <meta name="robots" content="index, follow" />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:title" content='@ViewData["Title"] - Al Anwar Creativity Studio' />
-    <meta property="og:description"
-        content="Discover Al Anwar Creativity Studio – from custom software to modern web solutions and SaaS. Learn about our services, our projects, and our story." />
-    <meta property="og:image" content="https://alanwar.studio/logo/full512.png" />
+    <meta property="og:title" content='@title - Al Anwar Creativity Studio' />
+    <meta property="og:description" content="@description" />
+    <meta property="og:image" content="@imageUrl" />
     <meta property="og:url" content="@currentUrl" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content='@ViewData["Title"] - Al Anwar Creativity Studio' />
-    <meta name="twitter:description"
-        content="Custom software, web development, and SaaS solutions to boost your business. Learn more about our services and our story." />
-    <meta name="twitter:image" content="https://alanwar.studio/logo/full512.png" />
+    <meta name="twitter:title" content='@title - Al Anwar Creativity Studio' />
+    <meta name="twitter:description" content="@description" />
+    <meta name="twitter:image" content="@imageUrl" />
     <meta name="twitter:url" content='@currentUrl' />
 
     <!-- Page Title -->
-    <title>@ViewData["Title"] - Al Anwar Creativity Studio</title>
+    <title>@title - Al Anwar Creativity Studio</title>
 
     <!-- Canonical URL -->
     <link rel="canonical" href='@currentUrl' />
-
+    <link rel="alternate" hreflang="en" href='@currentUrl' />
+    <link rel="alternate" hreflang="x-default" href='@currentUrl' />
+    <link rel="alternate" hreflang="en-us" href='@currentUrl' />
+    
     <!-- Stylesheets & Fonts -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico" />

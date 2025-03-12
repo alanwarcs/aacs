@@ -2,6 +2,9 @@
 
 @{
     ViewBag.Title = Model.Title;
+    ViewData["Title"] = Model.Title;
+    ViewData["Description"] = Model.Content?.Length > 150 ? Model.Content.Substring(0, 150) : Model.Content; // Short description for social media
+    ViewData["Image"] = Model.HeaderImageUrl ?? "https://alanwar.studio/logo/full512.png"; // Blog header image or default
     var currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
     var encodedUrl = Uri.EscapeDataString(currentUrl);
 }
