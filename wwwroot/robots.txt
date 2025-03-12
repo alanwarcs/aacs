@@ -1,2 +1,17 @@
 User-agent: *
-Allow: /
+Disallow: /Admin/
+Disallow: /Admin/Login
+Disallow: /Admin/Dashboard
+Disallow: /Temp/  # Example: Disallow a temporary directory
+Disallow: /old-page.html # Example: Disallow a specific old page
+
+Allow: /images/ # Example: Allow access to the images directory
+Allow: / # Allow all other content
+
+Crawl-delay: 10 # Add a crawl delay
+
+Sitemap: https://alanwar.studio/sitemap.xml
+
+# Specific rules for Googlebot
+User-agent: Googlebot
+Disallow: /nogoogle/ # Example: Disallow a specific directory for Googlebot
