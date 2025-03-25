@@ -4,6 +4,7 @@ using DotNetEnv;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver; // Add this using statement
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -87,6 +88,8 @@ app.UseSession();
 
 // Add visitor tracking middleware
 app.UseMiddleware<VisitorTrackingMiddleware>();
+
+app.UseMiddleware<BotDetectionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

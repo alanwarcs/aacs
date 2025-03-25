@@ -5,6 +5,33 @@
 // Typing effect for the heading (h6)
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Human verification logic
+    const verifyHuman = async () => {
+        try {
+            const response = await fetch('/api/verify-human', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ token: 'human-verification-token' }),
+            });
+
+            if (response.ok) {
+                console.log('Human verification successful.');
+                sessionStorage.setItem('isHuman', 'true');
+            } else {
+                console.error('Human verification failed.');
+            }
+        } catch (error) {
+            console.error('Error during human verification:', error);
+        }
+    };
+
+    // Trigger human verification on page load
+    if (!sessionStorage.getItem('isHuman')) {
+        verifyHuman();
+    }
+
     // text typing effect
     const elementId = "typing-effect-heading";
     const element = document.getElementById(elementId);

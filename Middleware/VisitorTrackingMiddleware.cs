@@ -57,7 +57,7 @@ public class VisitorTrackingMiddleware
                 browser = "Bot (Python Scraper)";
 
             // Get the page visited
-            string pageVisited = context.Request.Path.HasValue ? context.Request.Path.ToString() : "Unknown";
+            string pageVisited = context.Request.Path;
 
             // Retrieve the real IP Address (considering proxy headers)
             string ipAddress = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()?.Split(',').FirstOrDefault()?.Trim()
@@ -65,7 +65,7 @@ public class VisitorTrackingMiddleware
                                ?? "Unknown";
 
             // Fetch geolocation data using IP
-            var (country, city, region) = await GetGeolocationFromIP(ipAddress ?? "Unknown");
+            var (country, city, region) = await GetGeolocationFromIP(ipAddress);
 
             // Find existing log by session ID
             var filter = Builders<VisitorsLog>.Filter.Eq(x => x.SessionId, sessionId);
@@ -91,7 +91,7 @@ public class VisitorTrackingMiddleware
                     City = city,
                     Region = region,
                     PagesVisited = new List<string> { pageVisited },
-                    IpAddress = ipAddress ?? "Unknown"
+                    IpAddress = ipAddress
                 };
 
                 await _visitorCollection.InsertOneAsync(visitorLog);
