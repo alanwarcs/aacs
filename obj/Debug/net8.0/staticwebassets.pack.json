@@ -325,6 +325,10 @@
       "PackagePath": "staticwebassets/logo/logo.svg"
     },
     {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/robots.txt",
+      "PackagePath": "staticwebassets/robots.txt"
+    },
+    {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.aacs.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

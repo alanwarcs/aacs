@@ -18,8 +18,11 @@ public class MongoDbContext
         _database = client.GetDatabase("aacs");
     }
 
+    public IMongoDatabase Database => _database; // Add this line
+
     public IMongoCollection<Admin> Admins => _database.GetCollection<Admin>("Admins");
     public IMongoCollection<Service> Service => _database.GetCollection<Service>("Service");
     public IMongoCollection<Blog> Blog => _database.GetCollection<Blog>("Blog");
     public IMongoCollection<Contact> Contact => _database.GetCollection<Contact>("Contact");
+    public IMongoCollection<VisitorsLog> VisitorsLog => _database.GetCollection<VisitorsLog>("VisitorsLog");
 }

@@ -179,3 +179,4 @@
 /Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.pdb
 /Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.genruntimeconfig.cache
 /Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/ref/aacs.dll
+/Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/UAParser.dll

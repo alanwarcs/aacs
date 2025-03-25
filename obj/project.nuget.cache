@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "w7K97/dEwlE=",
+  "dgSpecHash": "Ro+4zPpPTqU=",
   "success": true,
   "projectFilePath": "/Users/murtaza/Desktop/dotnet/aacs/aacs.csproj",
   "expectedPackageFiles": [
@@ -161,6 +161,7 @@
     "/Users/murtaza/.nuget/packages/system.windows.extensions/6.0.0/system.windows.extensions.6.0.0.nupkg.sha512",
     "/Users/murtaza/.nuget/packages/system.xml.readerwriter/4.3.0/system.xml.readerwriter.4.3.0.nupkg.sha512",
     "/Users/murtaza/.nuget/packages/system.xml.xdocument/4.3.0/system.xml.xdocument.4.3.0.nupkg.sha512",
+    "/Users/murtaza/.nuget/packages/uaparser/3.1.47/uaparser.3.1.47.nupkg.sha512",
     "/Users/murtaza/.nuget/packages/zstdsharp.port/0.7.3/zstdsharp.port.0.7.3.nupkg.sha512"
   ],
   "logs": []

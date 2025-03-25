@@ -4,13 +4,21 @@
 
 <div class="container-fluid p-4">
     <h2 class="mb-4">Admin Dashboard</h2>
+
+    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
     <div class="row">
-        <!-- Total Users Card -->
+        <!-- Total Visitors Card -->
         <div class="col-md-3">
             <div class="card text-white bg-custom-blue mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Total Visitors</h5>
-                    <p class="card-text fs-1">1,230</p>
+                    <p class="card-text fs-1">@ViewBag.TotalVisitors</p>
                 </div>
             </div>
         </div>

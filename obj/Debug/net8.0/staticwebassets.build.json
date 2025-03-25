@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "XjAUPbUYyLHLccBWVScJ//Vdp9cvYhytFTEfQCv8qus=",
+  "Hash": "BjdGaeIRC6/pjp67fMTY9wf/TU8WMnDBnLpfj58X8OI=",
   "Source": "aacs",
   "BasePath": "_content/aacs",
   "Mode": "Default",
@@ -1573,6 +1573,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/logo/logo.svg"
+    },
+    {
+      "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/robots.txt",
+      "SourceId": "aacs",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/",
+      "BasePath": "_content/aacs",
+      "RelativePath": "robots.txt",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/robots.txt"
     }
   ]
 }
