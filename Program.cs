@@ -37,7 +37,7 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 builder.Services.AddSingleton<IMongoCollection<VisitorsLog>>(sp =>
 {
     var database = sp.GetRequiredService<IMongoDatabase>();
-    return database.GetCollection<VisitorsLog>("VisitorLog");
+    return database.GetCollection<VisitorsLog>("VisitorsLog");
 });
 
 // Add HttpClientFactory
