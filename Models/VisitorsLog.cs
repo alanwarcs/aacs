@@ -16,6 +16,12 @@ public class VisitorsLog
     
     [BsonElement("country")]
     public string Country { get; set; } = string.Empty;
+
+    [BsonElement("city")]
+    public string City { get; set; } = string.Empty;
+
+    [BsonElement("region")]
+    public string Region { get; set; } = string.Empty;
     
     [BsonElement("device")]
     public string Device { get; set; } = string.Empty;

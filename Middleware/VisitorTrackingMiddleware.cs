@@ -46,21 +46,26 @@ public class VisitorTrackingMiddleware
             string browser = clientInfo?.UA?.Family ?? "Unknown";
             string device = clientInfo?.Device?.Family ?? "Unknown";
 
-            // Improved browser detection (for Brave, Edge, and Opera)
-            if (userAgent.Contains("Brave", StringComparison.OrdinalIgnoreCase)) browser = "Brave";
-            else if (userAgent.Contains("Edg/", StringComparison.OrdinalIgnoreCase)) browser = "Edge";
+            // Improved detection for Chromium-based browsers
+            if (userAgent.Contains("Edg/", StringComparison.OrdinalIgnoreCase)) browser = "Edge";
             else if (userAgent.Contains("OPR", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Opera")) browser = "Opera";
+            else if (context.Request.Headers.TryGetValue("Sec-Ch-Ua-Brands", out var uaBrands) && uaBrands.ToString().Contains("Brave", StringComparison.OrdinalIgnoreCase))
+                browser = "Brave";
+
+            // Detect Python-based or bot traffic
+            if (userAgent.Contains("python", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("aiohttp", StringComparison.OrdinalIgnoreCase))
+                browser = "Bot (Python Scraper)";
 
             // Get the page visited
-            string pageVisited = context.Request.Path;
+            string pageVisited = context.Request.Path.HasValue ? context.Request.Path.ToString() : "Unknown";
 
             // Retrieve the real IP Address (considering proxy headers)
-            string ipAddress = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()
+            string ipAddress = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()?.Split(',').FirstOrDefault()?.Trim()
                                ?? context.Connection.RemoteIpAddress?.ToString()
                                ?? "Unknown";
 
-            // Fetch country using IP geolocation
-            string country = await GetCountryFromIP(ipAddress);
+            // Fetch geolocation data using IP
+            var (country, city, region) = await GetGeolocationFromIP(ipAddress ?? "Unknown");
 
             // Find existing log by session ID
             var filter = Builders<VisitorsLog>.Filter.Eq(x => x.SessionId, sessionId);
@@ -83,8 +88,10 @@ public class VisitorTrackingMiddleware
                     Browser = browser,
                     Device = device,
                     Country = country,
+                    City = city,
+                    Region = region,
                     PagesVisited = new List<string> { pageVisited },
-                    IpAddress = ipAddress
+                    IpAddress = ipAddress ?? "Unknown"
                 };
 
                 await _visitorCollection.InsertOneAsync(visitorLog);
@@ -99,28 +106,29 @@ public class VisitorTrackingMiddleware
         }
     }
 
-    private async Task<string> GetCountryFromIP(string ipAddress)
+    private async Task<(string Country, string City, string Region)> GetGeolocationFromIP(string ipAddress)
     {
-        if (_cache.TryGetValue(ipAddress, out string? cachedCountry) && !string.IsNullOrEmpty(cachedCountry))
-            return cachedCountry;
+        if (_cache.TryGetValue(ipAddress, out (string Country, string City, string Region) cachedData))
+            return cachedData;
 
         try
         {
-            var response = await _httpClient.GetAsync($"http://ip-api.com/json/{ipAddress}");
+            var response = await _httpClient.GetAsync($"https://ipwhois.app/json/{ipAddress}");
             if (response != null && response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
                 using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.TryGetProperty("country", out var countryElement))
-                {
-                    string country = countryElement.GetString() ?? "Unknown";
-                    _cache.Set(ipAddress, country, TimeSpan.FromHours(24)); // Cache the result
-                    return country;
-                }
+                string country = doc.RootElement.GetProperty("country").GetString() ?? "Unknown";
+                string city = doc.RootElement.GetProperty("city").GetString() ?? "Unknown";
+                string region = doc.RootElement.GetProperty("region").GetString() ?? "Unknown";
+
+                var result = (country, city, region);
+                _cache.Set(ipAddress, result, TimeSpan.FromHours(24)); // Cache the result
+                return result;
             }
             else
             {
-                _logger.LogWarning($"IP-API request failed for IP {ipAddress}. Status code: {response?.StatusCode}");
+                _logger.LogWarning($"IPWhois request failed for IP {ipAddress}. Status code: {response?.StatusCode}");
             }
         }
         catch (Exception ex)
@@ -128,6 +136,6 @@ public class VisitorTrackingMiddleware
             _logger.LogError($"Error fetching geolocation for IP {ipAddress}: {ex.Message}");
         }
 
-        return "Unknown";
+        return ("Unknown", "Unknown", "Unknown");
     }
 }

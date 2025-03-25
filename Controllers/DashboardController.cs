@@ -15,15 +15,13 @@ namespace aacs.Controllers
         private readonly IMongoCollection<Contact> _contactCollection;
         private readonly IMongoCollection<Service> _servicesCollection;
         private readonly IMongoCollection<VisitorsLog> _visitorCollection;
-        private readonly ILogger<DashboardController> _logger;
 
-        public DashboardController(IMongoDatabase database, ILogger<DashboardController> logger)
+        public DashboardController(IMongoDatabase database)
         {
             _blogCollection = database.GetCollection<Blog>("Blog");
             _contactCollection = database.GetCollection<Contact>("Contact");
             _servicesCollection = database.GetCollection<Service>("Service");
             _visitorCollection = database.GetCollection<VisitorsLog>("VisitorLog");
-            _logger = logger;
         }
 
         public async Task<IActionResult> Dashboard()
@@ -36,22 +34,6 @@ namespace aacs.Controllers
                 var services = await _servicesCollection.Find(FilterDefinition<Service>.Empty).ToListAsync();
                 var totalVisitors = await _visitorCollection.CountDocumentsAsync(FilterDefinition<VisitorsLog>.Empty);
 
-                // Log data
-                _logger.LogInformation($"Retrieved Blogs: {blogs.Count}");
-                foreach (var blog in blogs)
-                {
-                    _logger.LogInformation($"Blog Title: {blog.Title}");
-                }
-
-                _logger.LogInformation($"Retrieved Contacts: {contacts.Count}");
-                _logger.LogInformation($"Retrieved Services: {services.Count}");
-                foreach (var service in services)
-                {
-                    _logger.LogInformation($"Service Name: {service.Title}");
-                }
-
-                _logger.LogInformation($"Total Visitors: {totalVisitors}");
-
                 // Store the count in ViewBag
                 ViewBag.TotalBlogs = blogs.Count;
                 ViewBag.NewContacts = contacts.Count;
@@ -60,9 +42,8 @@ namespace aacs.Controllers
 
                 return View("~/Views/Admin/Dashboard.cshtml");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError($"Error fetching dashboard data: {ex.Message}");
                 ViewBag.ErrorMessage = "Error fetching dashboard data. Please check the logs.";
                 return View("~/Views/Admin/Dashboard.cshtml");
             }
