@@ -39,10 +39,12 @@ public class VisitorTrackingMiddleware
 
         bool isAdmin = context.User?.Identity?.IsAuthenticated == true; // Check if user is logged in
 
+        // Get real IP
+        string ipAddress = await GetRealIpAddress(context);
+
         if (visitor == null)
         {
             // Detect user details
-            string ipAddress = GetCleanedIpAddress(context.Connection.RemoteIpAddress?.ToString() ?? "Unknown");
             var userAgent = context.Request.Headers["User-Agent"].ToString();
             var parsedUA = Parser.GetDefault().Parse(userAgent);
 
@@ -85,24 +87,53 @@ public class VisitorTrackingMiddleware
         await _next(context);
     }
 
-    // ✅ Method to clean IP address (removes IPv6-mapped IPv4 addresses like ::ffff:100.64.0.2)
-    private string GetCleanedIpAddress(string ipAddress)
+    // ✅ Fetch the real IP address (handles proxies, CGNAT, etc.)
+    private async Task<string> GetRealIpAddress(HttpContext context)
     {
-        if (string.IsNullOrEmpty(ipAddress)) return "Unknown";
+        string ipAddress = "Unknown";
 
-        // If IPv6-mapped IPv4 (e.g., "::ffff:192.168.1.1"), extract actual IPv4
+        // 1️⃣ Check for forwarded IP (if using a proxy)
+        if (context.Request.Headers.ContainsKey("X-Forwarded-For"))
+        {
+            ipAddress = context.Request.Headers["X-Forwarded-For"].ToString().Split(',')[0].Trim();
+        }
+        else
+        {
+            ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+        }
+
+        // 2️⃣ Clean IPv6-mapped IPv4 addresses (e.g., "::ffff:192.168.1.1" → "192.168.1.1")
         if (ipAddress.StartsWith("::ffff:"))
         {
             ipAddress = ipAddress.Substring(7);
         }
 
-        // If localhost or private IP, set to "Unknown" (prevents API errors)
-        if (ipAddress == "127.0.0.1" || ipAddress == "::1")
+        // 3️⃣ If private/CGNAT IP, fetch public IP from ipify
+        if (IsPrivateIp(ipAddress))
         {
-            return "Unknown";
+            try
+            {
+                var publicIpResponse = await _httpClient.GetStringAsync("https://api64.ipify.org?format=json");
+                var publicIpData = JsonSerializer.Deserialize<PublicIpData>(publicIpResponse);
+                if (publicIpData != null && !string.IsNullOrEmpty(publicIpData.Ip))
+                {
+                    ipAddress = publicIpData.Ip;
+                }
+            }
+            catch
+            {
+                ipAddress = "Unknown";
+            }
         }
 
         return ipAddress;
+    }
+
+    // ✅ Check if IP is private (Localhost, CGNAT, etc.)
+    private bool IsPrivateIp(string ip)
+    {
+        return ip.StartsWith("10.") || ip.StartsWith("192.168.") || ip.StartsWith("172.16.") || ip.StartsWith("100.64.") ||
+               ip == "127.0.0.1" || ip == "::1" || ip == "Unknown";
     }
 
     // ✅ Fetch geolocation data using a free IP API
@@ -139,4 +170,10 @@ public class GeoData
 {
     public string City { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
+}
+
+// ✅ Public IP API response model
+public class PublicIpData
+{
+    public string Ip { get; set; } = string.Empty;
 }
