@@ -27,20 +27,7 @@ public class AdminController : Controller
     [HttpGet]
     public IActionResult Login(string error)
     {
-        if (!User.Identity?.IsAuthenticated ?? true)
-        {
-            var visitorLog = new VisitorsLog
-            {
-                SessionId = HttpContext.Session.Id,
-                VisitDate = DateTime.UtcNow,
-                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
-                Browser = HttpContext.Request.Headers["User-Agent"].ToString(),
-                PagesVisited = new List<string> { "/Admin/Login" },
-                UserType = "Visitor"
-            };
-            _visitorsLogCollection.InsertOne(visitorLog);
-        }
-
+        // Remove redundant visitor logging logic
         if (User.Identity?.IsAuthenticated ?? false)
         {
             return RedirectToAction("Dashboard", "Dashboard");
@@ -106,6 +93,18 @@ public class AdminController : Controller
             PerformedBy = admin.Username ?? "Unknown",
             Timestamp = DateTime.UtcNow
         });
+
+        // ✅ Update visitor log to set UserType to "Admin"
+        var sessionId = HttpContext.Session.GetString("SessionId");
+        if (!string.IsNullOrEmpty(sessionId))
+        {
+            var visitor = await _visitorsLogCollection.Find(v => v.SessionId == sessionId).FirstOrDefaultAsync();
+            if (visitor != null && visitor.UserType != "Admin")
+            {
+                visitor.UserType = "Admin";
+                await _visitorsLogCollection.ReplaceOneAsync(v => v.Id == visitor.Id, visitor);
+            }
+        }
 
         return RedirectToAction("Dashboard", "Dashboard");
     }
@@ -304,7 +303,9 @@ public class AdminController : Controller
             });
         }
 
+        // Do not abandon the session; only sign out the user
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
         TempData["ErrorMessage"] = "You have been logged out.";
         return RedirectToAction("Login");
     }
