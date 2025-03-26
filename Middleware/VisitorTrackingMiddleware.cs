@@ -153,8 +153,8 @@ public class VisitorTrackingMiddleware
 
             if (geoData != null)
             {
-                visitor.Country = geoData.Country ?? "Unknown";
-                visitor.City = geoData.City ?? "Unknown";
+                visitor.Country = geoData.country ?? "Unknown";
+                visitor.City = geoData.city ?? "Unknown";
             }
         }
         catch
@@ -168,8 +168,8 @@ public class VisitorTrackingMiddleware
 // ✅ Geolocation data model
 public class GeoData
 {
-    public string City { get; set; } = string.Empty;
-    public string Country { get; set; } = string.Empty;
+    public string city { get; set; } = string.Empty;
+    public string country { get; set; } = string.Empty;
 }
 
 // ✅ Public IP API response model
