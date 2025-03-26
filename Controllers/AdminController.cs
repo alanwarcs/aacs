@@ -14,15 +14,33 @@ namespace aacs.Controllers;
 public class AdminController : Controller
 {
     private readonly MongoDbContext _context;
+    private readonly IMongoCollection<AdminLog> _adminLogCollection;
+    private readonly IMongoCollection<VisitorsLog> _visitorsLogCollection;
 
-    public AdminController(MongoDbContext context)
+    public AdminController(MongoDbContext context, IMongoCollection<AdminLog> adminLogCollection, IMongoCollection<VisitorsLog> visitorsLogCollection)
     {
         _context = context;
+        _adminLogCollection = adminLogCollection;
+        _visitorsLogCollection = visitorsLogCollection;
     }
 
     [HttpGet]
     public IActionResult Login(string error)
     {
+        if (!User.Identity?.IsAuthenticated ?? true)
+        {
+            var visitorLog = new VisitorsLog
+            {
+                SessionId = HttpContext.Session.Id,
+                VisitDate = DateTime.UtcNow,
+                IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown",
+                Browser = HttpContext.Request.Headers["User-Agent"].ToString(),
+                PagesVisited = new List<string> { "/Admin/Login" },
+                UserType = "Visitor"
+            };
+            _visitorsLogCollection.InsertOne(visitorLog);
+        }
+
         if (User.Identity?.IsAuthenticated ?? false)
         {
             return RedirectToAction("Dashboard", "Dashboard");
@@ -79,6 +97,15 @@ public class AdminController : Controller
                 ExpiresUtc = DateTime.UtcNow.AddHours(24)
             }
         );
+
+        await _adminLogCollection.InsertOneAsync(new AdminLog
+        {
+            AdminId = admin.Id.ToString(),
+            AdminName = admin.Username ?? "Unknown",
+            Action = "Login",
+            PerformedBy = admin.Username ?? "Unknown",
+            Timestamp = DateTime.UtcNow
+        });
 
         return RedirectToAction("Dashboard", "Dashboard");
     }
@@ -262,6 +289,21 @@ public class AdminController : Controller
     [HttpPost]
     public async Task<IActionResult> Logout()
     {
+        var adminId = User.FindFirst("AdminId")?.Value;
+        var adminName = User.Identity?.Name;
+
+        if (adminId != null && adminName != null)
+        {
+            await _adminLogCollection.InsertOneAsync(new AdminLog
+            {
+                AdminId = adminId,
+                AdminName = adminName,
+                Action = "Logout",
+                PerformedBy = adminName,
+                Timestamp = DateTime.UtcNow
+            });
+        }
+
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         TempData["ErrorMessage"] = "You have been logged out.";
         return RedirectToAction("Login");

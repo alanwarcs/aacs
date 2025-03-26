@@ -25,4 +25,5 @@ public class MongoDbContext
     public IMongoCollection<Blog> Blog => _database.GetCollection<Blog>("Blog");
     public IMongoCollection<Contact> Contact => _database.GetCollection<Contact>("Contact");
     public IMongoCollection<VisitorsLog> VisitorsLog => _database.GetCollection<VisitorsLog>("VisitorsLog");
+    public IMongoCollection<AdminLog> AdminLog => _database.GetCollection<AdminLog>("AdminLog");
 }

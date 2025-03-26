@@ -1,141 +1,123 @@
 using Microsoft.AspNetCore.Http;
 using MongoDB.Driver;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using aacs.Models;
 using UAParser;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Caching.Memory;
-using System.Linq;
 
 public class VisitorTrackingMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly IMongoCollection<VisitorsLog> _visitorCollection;
-    private readonly ILogger<VisitorTrackingMiddleware> _logger;
+    private readonly IMongoCollection<VisitorsLog> _visitorsLogCollection;
     private readonly HttpClient _httpClient;
-    private readonly IMemoryCache _cache;
 
-    public VisitorTrackingMiddleware(RequestDelegate next, IMongoCollection<VisitorsLog> visitorCollection, ILogger<VisitorTrackingMiddleware> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache)
+    public VisitorTrackingMiddleware(RequestDelegate next, IMongoCollection<VisitorsLog> visitorsLogCollection)
     {
-        _next = next ?? throw new ArgumentNullException(nameof(next));
-        _visitorCollection = visitorCollection ?? throw new ArgumentNullException(nameof(visitorCollection));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _httpClient = httpClientFactory?.CreateClient() ?? throw new ArgumentNullException(nameof(httpClientFactory));
-        _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+        _next = next;
+        _visitorsLogCollection = visitorsLogCollection;
+        _httpClient = new HttpClient();
     }
 
-    public async Task Invoke(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
-        try
+        if (context.User?.Identity == null || !context.User.Identity.IsAuthenticated || !context.User.IsInRole("Admin"))
         {
-            // Ensure session is available
+            // Ensure session is enabled
             if (!context.Session.IsAvailable)
-                await context.Session.LoadAsync();
+            {
+                await _next(context);
+                return;
+            }
 
-            // Generate or retrieve session ID
-            string sessionId = context.Session.GetString("VisitorSessionId") ?? Guid.NewGuid().ToString();
-            context.Session.SetString("VisitorSessionId", sessionId);
+            // Get or Set Session ID (Prevents new visitor on every page load)
+            string sessionId = context.Session.GetString("SessionId") ?? string.Empty;
+            if (string.IsNullOrEmpty(sessionId))
+            {
+                sessionId = Guid.NewGuid().ToString();
+                context.Session.SetString("SessionId", sessionId);
+            }
 
-            // Extract User-Agent (handle missing values)
-            string userAgent = context.Request.Headers["User-Agent"].FirstOrDefault() ?? "Unknown";
+            // Extract User-Agent
+            var userAgent = context.Request.Headers["User-Agent"].ToString();
             var uaParser = Parser.GetDefault();
             var clientInfo = uaParser.Parse(userAgent);
-            string browser = clientInfo?.UA?.Family ?? "Unknown";
-            string device = clientInfo?.Device?.Family ?? "Unknown";
 
-            // Improved detection for Chromium-based browsers
-            if (userAgent.Contains("Edg/", StringComparison.OrdinalIgnoreCase)) browser = "Edge";
-            else if (userAgent.Contains("OPR", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Opera")) browser = "Opera";
-            else if (context.Request.Headers.TryGetValue("Sec-Ch-Ua-Brands", out var uaBrands) && uaBrands.ToString().Contains("Brave", StringComparison.OrdinalIgnoreCase))
-                browser = "Brave";
+            // Correct Browser Name (Detect Brave, Edge, Opera)
+            string browserName = DetectBrowser(userAgent, clientInfo.UA.Family);
 
-            // Detect Python-based or bot traffic
-            if (userAgent.Contains("python", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("aiohttp", StringComparison.OrdinalIgnoreCase))
-                browser = "Bot (Python Scraper)";
+            // Extract IP Address
+            var ipAddress = context.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
 
-            // Get the page visited
-            string pageVisited = context.Request.Path;
-
-            // Retrieve the real IP Address (considering proxy headers)
-            string ipAddress = context.Request.Headers["X-Forwarded-For"].FirstOrDefault()?.Split(',').FirstOrDefault()?.Trim()
-                               ?? context.Connection.RemoteIpAddress?.ToString()
-                               ?? "Unknown";
-
-            // Fetch geolocation data using IP
-            var (country, city, region) = await GetGeolocationFromIP(ipAddress);
-
-            // Find existing log by session ID
-            var filter = Builders<VisitorsLog>.Filter.Eq(x => x.SessionId, sessionId);
-            var existingLog = await _visitorCollection.Find(filter).FirstOrDefaultAsync();
-
-            if (existingLog != null)
+            // Handle Localhost Cases
+            string country = "Unknown", city = "Unknown";
+            if (ipAddress == "::1" || ipAddress == "127.0.0.1")  
             {
-                if (!existingLog.PagesVisited.Contains(pageVisited))
-                {
-                    var update = Builders<VisitorsLog>.Update.Push(x => x.PagesVisited, pageVisited);
-                    await _visitorCollection.UpdateOneAsync(filter, update);
-                }
+                country = "Localhost";
+                city = "N/A";
             }
             else
             {
+                try
+                {
+                    var response = await _httpClient.GetStringAsync($"https://ipwho.is/{ipAddress}");
+                    var geoInfo = JObject.Parse(response);
+                    if (geoInfo["success"]?.ToObject<bool>() == true)
+                    {
+                        country = geoInfo["country"]?.ToString() ?? "Unknown";
+                        city = geoInfo["city"]?.ToString() ?? "Unknown";
+                    }
+                }
+                catch { /* Ignore errors */ }
+            }
+
+            // Check if visitor already exists in the database
+            var existingVisitor = await _visitorsLogCollection
+                .Find(v => v.SessionId == sessionId)
+                .FirstOrDefaultAsync();
+
+            if (existingVisitor != null)
+            {
+                // Update pages visited
+                existingVisitor.PagesVisited.Add(context.Request.Path);
+                await _visitorsLogCollection.ReplaceOneAsync(v => v.Id == existingVisitor.Id, existingVisitor);
+            }
+            else
+            {
+                // Create new visitor log entry
                 var visitorLog = new VisitorsLog
                 {
                     SessionId = sessionId,
                     VisitDate = DateTime.UtcNow,
-                    Browser = browser,
-                    Device = device,
+                    IpAddress = ipAddress,
+                    Browser = browserName,
+                    Device = string.IsNullOrEmpty(clientInfo.Device.Family) ? "Unknown" : clientInfo.Device.Family,
+                    OS = clientInfo.OS.Family,
                     Country = country,
                     City = city,
-                    Region = region,
-                    PagesVisited = new List<string> { pageVisited },
-                    IpAddress = ipAddress
+                    PagesVisited = new List<string> { context.Request.Path },
+                    UserType = "Visitor"
                 };
 
-                await _visitorCollection.InsertOneAsync(visitorLog);
+                // Insert into MongoDB
+                await _visitorsLogCollection.InsertOneAsync(visitorLog);
             }
+        }
 
-            await _next(context);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Error saving visitor log: {ex.Message}");
-            await _next(context);
-        }
+        await _next(context);
     }
 
-    private async Task<(string Country, string City, string Region)> GetGeolocationFromIP(string ipAddress)
+    private string DetectBrowser(string userAgent, string defaultBrowser)
     {
-        if (_cache.TryGetValue(ipAddress, out (string Country, string City, string Region) cachedData))
-            return cachedData;
+        if (userAgent.Contains("Brave", StringComparison.OrdinalIgnoreCase))
+            return "Brave";
+        if (userAgent.Contains("Edg/", StringComparison.OrdinalIgnoreCase))
+            return "Edge";
+        if (userAgent.Contains("OPR", StringComparison.OrdinalIgnoreCase) || userAgent.Contains("Opera", StringComparison.OrdinalIgnoreCase))
+            return "Opera";
 
-        try
-        {
-            var response = await _httpClient.GetAsync($"https://ipwhois.app/json/{ipAddress}");
-            if (response != null && response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-                using var doc = JsonDocument.Parse(json);
-                string country = doc.RootElement.GetProperty("country").GetString() ?? "Unknown";
-                string city = doc.RootElement.GetProperty("city").GetString() ?? "Unknown";
-                string region = doc.RootElement.GetProperty("region").GetString() ?? "Unknown";
-
-                var result = (country, city, region);
-                _cache.Set(ipAddress, result, TimeSpan.FromHours(24)); // Cache the result
-                return result;
-            }
-            else
-            {
-                _logger.LogWarning($"IPWhois request failed for IP {ipAddress}. Status code: {response?.StatusCode}");
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Error fetching geolocation for IP {ipAddress}: {ex.Message}");
-        }
-
-        return ("Unknown", "Unknown", "Unknown");
+        return defaultBrowser;
     }
 }

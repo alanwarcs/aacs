@@ -40,6 +40,12 @@ builder.Services.AddSingleton<IMongoCollection<VisitorsLog>>(sp =>
     return database.GetCollection<VisitorsLog>("VisitorsLog");
 });
 
+builder.Services.AddSingleton<IMongoCollection<AdminLog>>(sp =>
+{
+    var database = sp.GetRequiredService<IMongoDatabase>();
+    return database.GetCollection<AdminLog>("AdminLog");
+});
+
 // Add HttpClientFactory
 builder.Services.AddHttpClient();
 
@@ -88,8 +94,13 @@ app.UseSession();
 
 // Add visitor tracking middleware
 app.UseMiddleware<VisitorTrackingMiddleware>();
-
 app.UseMiddleware<BotDetectionMiddleware>();
+
+// Update the default route for Access Denied
+app.MapControllerRoute(
+    name: "accessDenied",
+    pattern: "AccessDenied",
+    defaults: new { controller = "Home", action = "AccessDenied" });
 
 app.UseAuthentication();
 app.UseAuthorization();
