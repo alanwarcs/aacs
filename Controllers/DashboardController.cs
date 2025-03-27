@@ -15,6 +15,7 @@ namespace aacs.Controllers
         private readonly IMongoCollection<Contact> _contactCollection;
         private readonly IMongoCollection<Service> _servicesCollection;
         private readonly IMongoCollection<VisitorsLog> _visitorCollection;
+        private readonly IMongoCollection<AdminLog> _adminLogCollection;
 
         public DashboardController(IMongoDatabase database)
         {
@@ -22,6 +23,7 @@ namespace aacs.Controllers
             _contactCollection = database.GetCollection<Contact>("Contact");
             _servicesCollection = database.GetCollection<Service>("Service");
             _visitorCollection = database.GetCollection<VisitorsLog>("VisitorsLog");
+            _adminLogCollection = database.GetCollection<AdminLog>("AdminLog");
         }
 
         public async Task<IActionResult> Dashboard()
@@ -73,6 +75,36 @@ namespace aacs.Controllers
                     donutData.Add(new object[] { "Others", othersCount });
                 }
                 ViewBag.BrowserData = donutData;
+                
+                // NEW: Group visitors by country for map using RegionInfo to get full country name
+                var mapGroup = recentVisitors.GroupBy(v => v.Country)
+                                             .Select(g => new { Country = g.Key, Count = g.Count() })
+                                             .ToList();
+                var mapData = new List<object> { new object[] { "Country", "Visitors" } };
+                foreach (var group in mapGroup)
+                {
+                    if (group.Country != "Unknown")
+                    {
+                        string fullName;
+                        try
+                        {
+                            fullName = new System.Globalization.RegionInfo(group.Country).EnglishName;
+                        }
+                        catch
+                        {
+                            fullName = group.Country;
+                        }
+                        mapData.Add(new object[] { fullName, group.Count });
+                    }
+                }
+                ViewBag.MapData = mapData;
+                
+                // NEW: Fetch last 10 admin logs sorted by Timestamp descending
+                var adminLogs = await _adminLogCollection.Find(FilterDefinition<AdminLog>.Empty)
+                                                      .SortByDescending(x => x.Timestamp)
+                                                      .Limit(10)
+                                                      .ToListAsync();
+                ViewBag.AdminLogs = adminLogs;
                 
                 // Store counts in ViewBag
                 ViewBag.TotalBlogs = blogs.Count;
