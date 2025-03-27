@@ -1,5 +1,6 @@
 User-agent: *
 Disallow: /Admin/
+Disallow: /api/
 Disallow: /Admin/Login
 Disallow: /Admin/Dashboard
 Disallow: /Temp/  # Example: Disallow a temporary directory
@@ -11,6 +12,28 @@ Allow: / # Allow all other content
 Crawl-delay: 10 # Add a crawl delay
 
 Sitemap: https://alanwar.studio/sitemap.xml
+
+# Disallow specific bad bots
+User-agent: BadBot
+Disallow: /
+
+User-agent: EvilScraper
+Disallow: /
+
+User-agent: wget
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+User-agent: python-requests
+Disallow: /
+
+User-agent: Scrapy
+Disallow: /
+
+User-agent: httpclient
+Disallow: /
 
 # Specific rules for Googlebot
 User-agent: Googlebot

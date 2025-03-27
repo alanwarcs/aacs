@@ -45,14 +45,17 @@ public class VisitorTrackingMiddleware
 
         if (visitor == null)
         {
+            var userAgent = context.Request.Headers["User-Agent"].ToString();
+            var parsedUA = Parser.GetDefault().Parse(userAgent);
+
             var visitorLog = new VisitorsLog
             {
                 SessionId = sessionId,
                 VisitDate = DateTime.UtcNow,
                 IpAddress = ipAddress,
-                Browser = "Fetching...",  // Placeholder for browser
-                OS = "Fetching...",       // Placeholder for OS
-                Device = "Fetching...",   // Placeholder for device
+                Browser = parsedUA.UA.Family,  // Detect browser manually
+                OS = parsedUA.OS.Family,       // Detect OS manually
+                Device = string.IsNullOrEmpty(parsedUA.Device.Family) ? "Desktop" : parsedUA.Device.Family, // Detect device manually
                 Country = "Fetching...",
                 City = "Fetching...",
                 PagesVisited = new List<string> { context.Request.Path },

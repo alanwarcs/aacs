@@ -1,3 +1,12 @@
+/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.csproj.AssemblyReference.cache
+/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.GeneratedMSBuildEditorConfig.editorconfig
+/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.AssemblyInfoInputs.cache
+/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.AssemblyInfo.cs
+/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.csproj.CoreCompileInputs.cache
+/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.MvcApplicationPartsAssemblyInfo.cache
+/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.RazorAssemblyInfo.cache
+/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.RazorAssemblyInfo.cs
+/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.sourcelink.json
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/appsettings.Development.json
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/appsettings.json
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/aacs.staticwebassets.runtime.json
@@ -75,6 +84,7 @@
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/System.Text.Encodings.Web.dll
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/System.Text.Json.dll
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/System.Windows.Extensions.dll
+/Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/UAParser.dll
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/ZstdSharp.dll
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/cs/Microsoft.CodeAnalysis.resources.dll
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/de/Microsoft.CodeAnalysis.resources.dll
@@ -154,15 +164,6 @@
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Security.Cryptography.ProtectedData.dll
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Windows.Extensions.dll
-/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.csproj.AssemblyReference.cache
-/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.GeneratedMSBuildEditorConfig.editorconfig
-/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.AssemblyInfoInputs.cache
-/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.AssemblyInfo.cs
-/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.csproj.CoreCompileInputs.cache
-/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.MvcApplicationPartsAssemblyInfo.cache
-/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.RazorAssemblyInfo.cache
-/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.RazorAssemblyInfo.cs
-/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.sourcelink.json
 /Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/staticwebassets.build.json
 /Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/staticwebassets.development.json
 /Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/staticwebassets/msbuild.aacs.Microsoft.AspNetCore.StaticWebAssets.props
@@ -179,4 +180,3 @@
 /Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.pdb
 /Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/aacs.genruntimeconfig.cache
 /Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/ref/aacs.dll
-/Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/UAParser.dll
