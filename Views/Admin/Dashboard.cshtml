@@ -107,43 +107,63 @@
             </div>
         </div>
 
-        <!-- Performance Chart -->
-        <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header">
-                    <h5>Website Traffic (Last 7 Days)</h5>
+        <!-- Performance Chart and Donut Chart -->
+        <div class="row">
+            <!-- Website Traffic Line Chart -->
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5>Website Traffic (Last 7 Days)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="trafficChart" style="width: 100%; height: 250px;"></div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <canvas id="trafficChart" width="fit" height="250px"></canvas>
+            </div>
+            <!-- Donut Chart for Browser Usage -->
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h5>Browsers Used by Visitors</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="browserChart" style="width: 100%; height: 250px;"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Chart.js Script for Traffic Chart -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    var ctx = document.getElementById('trafficChart').getContext('2d');
-    var trafficChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            datasets: [{
-                label: 'Visitors',
-                data: [50, 100, 75, 150, 200, 250, 300],
-                backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                borderColor: 'rgba(0, 123, 255, 1)',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+<!-- Load Google Charts and draw the charts -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawCharts);
+    function drawCharts() {
+        drawLineChart();
+        drawDonutChart();
+    }
+    function drawLineChart() {
+        var dynamicData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.TrafficData));
+        var data = google.visualization.arrayToDataTable(dynamicData);
+        var options = {
+            title: 'Website Traffic (Last 7 Days)',
+            curveType: 'function',
+            legend: { position: 'bottom' },
+            vAxis: { viewWindow: { min: 0 } }
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('trafficChart'));
+        chart.draw(data, options);
+    }
+    function drawDonutChart() {
+        var browserData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.BrowserData));
+        var data = google.visualization.arrayToDataTable(browserData);
+        var options = {
+            title: 'Browsers Used by Visitors',
+            pieHole: 0.4
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('browserChart'));
+        chart.draw(data, options);
+    }
 </script>
