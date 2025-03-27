@@ -92,6 +92,16 @@ app.UseRouting();
 // Enable session middleware
 app.UseSession();
 
+// Add middleware to enable JSON request handling
+app.Use(async (context, next) =>
+{
+    if (context.Request.ContentType == "application/json")
+    {
+        context.Request.EnableBuffering();
+    }
+    await next();
+});
+
 // Add visitor tracking middleware
 app.UseMiddleware<VisitorTrackingMiddleware>();
 app.UseMiddleware<BotDetectionMiddleware>();

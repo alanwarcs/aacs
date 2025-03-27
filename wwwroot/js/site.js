@@ -349,6 +349,43 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+async function getBrowserInfo() {
+    let browser = "Unknown";
+
+    if (navigator.brave && await navigator.brave.isBrave()) {
+        browser = "Brave";
+    } else if (navigator.userAgent.includes("Edg/")) {
+        browser = "Edge";
+    } else if (navigator.userAgent.includes("Vivaldi")) {
+        browser = "Vivaldi";
+    } else if (navigator.userAgent.includes("OPR") || navigator.userAgent.includes("Opera")) {
+        browser = "Opera";
+    } else if (navigator.userAgent.includes("SamsungBrowser")) {
+        browser = "Samsung Internet";
+    } else if (navigator.userAgent.includes("Chrome") && !navigator.userAgent.includes("Edg/")) {
+        browser = "Chrome";
+    } else if (navigator.userAgent.includes("Safari") && !navigator.userAgent.includes("Chrome")) {
+        browser = "Safari";
+    } else if (navigator.userAgent.includes("Firefox")) {
+        browser = "Firefox";
+    }
+
+    let os = "Unknown";
+    if (navigator.userAgent.includes("Windows")) os = "Windows";
+    else if (navigator.userAgent.includes("Mac OS X")) os = "Mac OS X";
+    else if (navigator.userAgent.includes("Linux")) os = "Linux";
+    else if (navigator.userAgent.includes("Android")) os = "Android";
+    else if (navigator.userAgent.includes("iPhone") || navigator.userAgent.includes("iPad")) os = "iOS";
+
+    fetch("/api/visitor-info", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ browser, os })
+    });
+}
+
+getBrowserInfo();
+
 function typeText(elementId, text, speed) {
     let i = 0;
     let element = document.getElementById(elementId);

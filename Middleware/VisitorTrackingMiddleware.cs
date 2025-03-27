@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using UAParser;
+using System.IO;
 
 public class VisitorTrackingMiddleware
 {
@@ -44,22 +45,18 @@ public class VisitorTrackingMiddleware
 
         if (visitor == null)
         {
-            // Detect user details
-            var userAgent = context.Request.Headers["User-Agent"].ToString();
-            var parsedUA = Parser.GetDefault().Parse(userAgent);
-
             var visitorLog = new VisitorsLog
             {
                 SessionId = sessionId,
                 VisitDate = DateTime.UtcNow,
                 IpAddress = ipAddress,
-                Browser = parsedUA.UA.Family,  // Detect browser
-                OS = parsedUA.OS.Family,        // Detect OS
-                Device = string.IsNullOrEmpty(parsedUA.Device.Family) ? "Desktop" : parsedUA.Device.Family, // Detect device
+                Browser = "Fetching...",  // Placeholder for browser
+                OS = "Fetching...",       // Placeholder for OS
+                Device = "Fetching...",   // Placeholder for device
                 Country = "Fetching...",
                 City = "Fetching...",
                 PagesVisited = new List<string> { context.Request.Path },
-                UserType = isAdmin ? "Admin" : "Visitor"  // Set user type based on login status
+                UserType = isAdmin ? "Admin" : "Visitor"
             };
 
             // Fetch IP location data
@@ -82,6 +79,24 @@ public class VisitorTrackingMiddleware
             }
 
             await _visitorsLogCollection.ReplaceOneAsync(v => v.Id == visitor.Id, visitor);
+        }
+
+        // Handle browser and OS updates from JavaScript
+        if (context.Request.Path == "/api/visitor-info" && context.Request.Method == "POST")
+        {
+            using var reader = new StreamReader(context.Request.Body);
+            var body = await reader.ReadToEndAsync();
+            var visitorInfo = JsonSerializer.Deserialize<Dictionary<string, string>>(body);
+
+            if (visitorInfo != null && visitor != null)
+            {
+                visitor.Browser = visitorInfo.GetValueOrDefault("browser", "Unknown");
+                visitor.OS = visitorInfo.GetValueOrDefault("os", "Unknown");
+                await _visitorsLogCollection.ReplaceOneAsync(v => v.Id == visitor.Id, visitor);
+            }
+
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            return;
         }
 
         await _next(context);
