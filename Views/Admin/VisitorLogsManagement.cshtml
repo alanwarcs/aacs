@@ -1,0 +1,132 @@
+@model PaginatedList<AggregatedVisitorLog>
+
+@{
+    ViewData["Title"] = "Visitor Logs Management";
+}
+<div class="container-fluid visitorlogs-management p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Visitor Logs Management</h2>
+    </div>
+    <!-- Success and Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="m-0">Manage Visitor Logs</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>IP Address</th>
+                        <th>Login Date</th>
+                        <th>Country</th>
+                        <th>Browser</th>
+                        <th>Visit Count</th>
+                        <th>Blocked</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    int count = 1;
+                    foreach (var agg in Model)
+                    {
+                        <tr>
+                            <td>@count</td>
+                            <td>@agg.IpAddress</td>
+                            <td>@agg.LastVisitDate.ToLocalTime().ToString("dd.MM.yyyy hh:mm tt")</td>
+                            <td>
+                                @{
+                                    string fullCountry;
+                                    try {
+                                        fullCountry = new System.Globalization.RegionInfo(agg.Country).EnglishName;
+                                    } catch {
+                                        fullCountry = agg.Country;
+                                    }
+                                }
+                                @fullCountry
+                            </td>
+                            <td>@agg.Browser</td>
+                            <td>@agg.VisitCount</td>
+                            <td>
+                                <span class="badge @(agg.Blocked ? "bg-danger" : "bg-success")">
+                                    @(agg.Blocked ? "Yes" : "No")
+                                </span>
+                            </td>
+                            <td>
+                                @if(agg.Blocked)
+                                {
+                                    <form asp-action="Unblock" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@agg.Sessions.First().Id" />
+                                        <button type="submit" class="btn btn-success btn-sm">Unblock</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="Block" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@agg.Sessions.First().Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Block</button>
+                                    </form>
+                                }
+                                <form asp-action="DeleteVisitor" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this visitor history?');">
+                                    <input type="hidden" name="id" value="@agg.Sessions.First().Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                                <a class="btn btn-primary p-2 btn-sm d-inline" href="@Url.Action("Details", "VisitorLog", new { ip = agg.IpAddress })">View</a>
+                            </td>
+                        </tr>
+                        count++;
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center">No Visitor Logs found.</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <!-- Pagination Controls -->
+            @if (ViewData["TotalPages"] != null && ViewData["CurrentPage"] != null)
+            {
+                int totalPages = ViewData["TotalPages"] as int? ?? 0;
+                int currentPage = ViewData["CurrentPage"] as int? ?? 0;
+                <nav>
+                    <ul class="pagination">
+                        @if (currentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("VisitorLogsManagement", new { page = currentPage - 1 })">Previous</a>
+                            </li>
+                        }
+                        @for (int i = 1; i <= totalPages; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("VisitorLogsManagement", new { page = i })">@i</a>
+                            </li>
+                        }
+                        @if (currentPage < totalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="@Url.Action("VisitorLogsManagement", new { page = currentPage + 1 })">Next</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+    </div>
+</div>

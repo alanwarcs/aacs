@@ -1,0 +1,59 @@
+@model AggregatedVisitorLog
+@{
+    ViewData["Title"] = "Visitor Details";
+}
+<div class="container-fluid p-4">
+    <h2>Visitor Details - @Model.IpAddress</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p><strong>Last Login Date:</strong> @Model.LastVisitDate.ToLocalTime().ToString("dd.MM.yyyy hh:mm tt")</p>
+            <p><strong>Country:</strong> 
+                @{
+                    string fullCountry;
+                    try {
+                        fullCountry = new System.Globalization.RegionInfo(Model.Country).EnglishName;
+                    } catch {
+                        fullCountry = Model.Country;
+                    }
+                }
+                @fullCountry
+            </p>
+            <p><strong>Browser:</strong> @Model.Browser</p>
+            <p><strong>Blocked:</strong> @(Model.Blocked ? "Yes" : "No")</p>
+            <p><strong>Visit Count:</strong> @Model.VisitCount</p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h5>Session Details</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Session Id</th>
+                        <th>Login Date</th>
+                        <th>Page(s) Visited</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int count = 1;
+                        foreach(var session in Model.Sessions)
+                        {
+                            <tr>
+                                <td>@count</td>
+                                <td>@session.SessionId</td>
+                                <td>@session.VisitDate.ToLocalTime().ToString("dd.MM.yyyy hh:mm tt")</td>
+                                <td>@string.Join(", ", session.PagesVisited)</td>
+                            </tr>
+                            count++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a href="@Url.Action("VisitorLogsManagement", "VisitorLog")" class="btn btn-secondary mt-3">Back to Visitor Logs</a>
+</div>

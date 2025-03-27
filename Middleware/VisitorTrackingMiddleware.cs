@@ -43,6 +43,20 @@ public class VisitorTrackingMiddleware
         // Get real IP
         string ipAddress = await GetRealIpAddress(context);
 
+        // Check if the user is blocked
+        var blockedVisitor = await _visitorsLogCollection.Find(v => v.IpAddress == ipAddress).FirstOrDefaultAsync();
+        if (blockedVisitor != null && blockedVisitor.Blocked)
+        {
+            // If already on AccessDenied, simply call the next handler
+            if (context.Request.Path.Equals("/AccessDenied", StringComparison.OrdinalIgnoreCase))
+            {
+                await _next(context);
+                return;
+            }
+            context.Response.Redirect("/AccessDenied");
+            return;
+        }
+
         if (visitor == null)
         {
             var userAgent = context.Request.Headers["User-Agent"].ToString();
