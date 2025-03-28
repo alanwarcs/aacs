@@ -55,7 +55,7 @@ public class AdminController : Controller
         }
 
         // Retrieve and verify Turnstile response token
-        string turnstileToken = Request.Form["cf-turnstile-response"];
+        string turnstileToken = Request.Form["cf-turnstile-response"].FirstOrDefault() ?? string.Empty;
         if (string.IsNullOrEmpty(turnstileToken) || !await VerifyTurnstileTokenAsync(turnstileToken))
         {
             ViewBag.Error = "Turnstile validation failed.";
@@ -129,14 +129,20 @@ public class AdminController : Controller
             };
             var content = new FormUrlEncodedContent(postData);
             var response = await client.PostAsync("https://challenges.cloudflare.com/turnstile/v0/siteverify", content);
-
-            if (!response.IsSuccessStatusCode)
+            var jsonString = await response.Content.ReadAsStringAsync();
+            // DEBUG: Log the full response for inspection (remove in production)
+            System.Diagnostics.Debug.WriteLine("Turnstile response: " + jsonString);
+            dynamic? result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
+            if (result == null)
             {
+                System.Diagnostics.Debug.WriteLine("Turnstile response deserialization failed.");
                 return false;
             }
-
-            var jsonString = await response.Content.ReadAsStringAsync();
-            dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
+            if (result.success != true)
+            {
+                // DEBUG: Log error codes for further details
+                System.Diagnostics.Debug.WriteLine("Turnstile error codes: " + string.Join(", ", (result["error-codes"] as string[]) ?? new string[0]));
+            }
             return result.success == true;
         }
     }
