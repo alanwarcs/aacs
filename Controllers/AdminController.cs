@@ -54,6 +54,14 @@ public class AdminController : Controller
             return View();
         }
 
+        // Retrieve and verify Turnstile response token
+        string turnstileToken = Request.Form["cf-turnstile-response"];
+        if (string.IsNullOrEmpty(turnstileToken) || !await VerifyTurnstileTokenAsync(turnstileToken))
+        {
+            ViewBag.Error = "Turnstile validation failed.";
+            return View();
+        }
+
         // Hash the password for comparison
         string hashedPassword = HashPassword(password);
 
@@ -107,6 +115,30 @@ public class AdminController : Controller
         }
 
         return RedirectToAction("Dashboard", "Dashboard");
+    }
+
+    private async Task<bool> VerifyTurnstileTokenAsync(string token)
+    {
+        using (var client = new HttpClient())
+        {
+            var secretKey = Environment.GetEnvironmentVariable("TURNSTILE_SECRET_KEY") ?? "YOUR_TURNSTILE_SECRET_KEY";
+            var postData = new Dictionary<string, string>
+            {
+                { "secret", secretKey },
+                { "response", token }
+            };
+            var content = new FormUrlEncodedContent(postData);
+            var response = await client.PostAsync("https://challenges.cloudflare.com/turnstile/v0/siteverify", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+
+            var jsonString = await response.Content.ReadAsStringAsync();
+            dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
+            return result.success == true;
+        }
     }
 
     [HttpGet]

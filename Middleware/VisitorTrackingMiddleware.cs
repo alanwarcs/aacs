@@ -47,12 +47,6 @@ public class VisitorTrackingMiddleware
         var blockedVisitor = await _visitorsLogCollection.Find(v => v.IpAddress == ipAddress).FirstOrDefaultAsync();
         if (blockedVisitor != null && blockedVisitor.Blocked)
         {
-            // If already on AccessDenied, simply call the next handler
-            if (context.Request.Path.Equals("/AccessDenied", StringComparison.OrdinalIgnoreCase))
-            {
-                await _next(context);
-                return;
-            }
             context.Response.Redirect("/AccessDenied");
             return;
         }

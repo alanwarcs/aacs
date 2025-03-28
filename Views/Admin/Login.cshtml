@@ -1,6 +1,7 @@
 @{
     Layout = null; // Disable the default layout for this page
     ViewBag.Title = "Admin Login - AACS";
+    var turnstileSiteKey = Environment.GetEnvironmentVariable("TURNSTILE_SITE_KEY") ?? "TURNSTILE_SITE_KEY";
 }
 
 <!DOCTYPE html>
@@ -15,6 +16,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/elements.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/aacs.styles.css" asp-append-version="true" />
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 <body class="admin-login m-0">
@@ -41,6 +43,9 @@
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="••••••••"
                         required>
+                </div>
+                <div class="m-3">
+                    <div class="cf-turnstile" data-sitekey="@turnstileSiteKey"></div>
                 </div>
                 <div class="text-end">
                     <a href="#" class="m-3 text-end">Forgot password?</a>
