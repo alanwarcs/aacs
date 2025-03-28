@@ -33,8 +33,8 @@
                         <th>Login Date</th>
                         <th>Country</th>
                         <th>Browser</th>
-                        <th>Visit Count</th>
-                        <th>Blocked</th>
+                        <th>Visits</th>
+                        <th>User Type</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -47,7 +47,7 @@
                         <tr>
                             <td>@count</td>
                             <td>@agg.IpAddress</td>
-                            <td>@agg.LastVisitDate.ToLocalTime().ToString("dd.MM.yyyy hh:mm tt")</td>
+                            <td>@agg.LastVisitDate.ToLocalTime().ToString("dd.MM.yyyy")</td>
                             <td>
                                 @{
                                     string fullCountry;
@@ -62,9 +62,22 @@
                             <td>@agg.Browser</td>
                             <td>@agg.VisitCount</td>
                             <td>
-                                <span class="badge @(agg.Blocked ? "bg-danger" : "bg-success")">
-                                    @(agg.Blocked ? "Yes" : "No")
-                                </span>
+                                @if(agg.UserType == "Flagged")
+                                {
+                                    <span class="badge bg-danger">@agg.UserType</span>
+                                }
+                                else if(agg.UserType == "Admin")
+                                {
+                                    <span class="badge bg-success">@agg.UserType</span>
+                                }
+                                else if(agg.UserType == "Visitor")
+                                {
+                                    <span class="badge bg-primary">@agg.UserType</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@agg.UserType</span>
+                                }
                             </td>
                             <td>
                                 @if(agg.Blocked)
@@ -94,7 +107,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="8" class="text-center">No Visitor Logs found.</td>
+                        <td colspan="9" class="text-center">No Visitor Logs found.</td>
                     </tr>
                 }
                 </tbody>

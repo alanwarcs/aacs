@@ -37,15 +37,16 @@ namespace aacs.Controllers
                     Browser = g.First().Browser,
                     Blocked = g.Any(x => x.Blocked),
                     VisitCount = g.Count(),
+                    UserType = g.First().UserType, // Added new property initializer
                     Sessions = g.ToList()
                 })
                 .OrderByDescending(a => a.LastVisitDate)
                 .ToList();
 
-            // Apply pagination on aggregated logs
+            // Apply pagination on aggregated logs using Count() extension
             var pagedLogs = aggregatedLogs.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-            int totalPages = (int)Math.Ceiling(aggregatedLogs.Count / (double)pageSize);
-            var model = new PaginatedList<AggregatedVisitorLog>(pagedLogs, aggregatedLogs.Count, page, pageSize);
+            int totalPages = (int)Math.Ceiling(aggregatedLogs.Count() / (double)pageSize);
+            var model = new PaginatedList<AggregatedVisitorLog>(pagedLogs, aggregatedLogs.Count(), page, pageSize);
             ViewData["TotalPages"] = totalPages;
             ViewData["CurrentPage"] = page;
             return View("~/Views/Admin/VisitorLogsManagement.cshtml", model);
@@ -60,7 +61,7 @@ namespace aacs.Controllers
                 var filter = Builders<VisitorsLog>.Filter.Eq(v => v.IpAddress, visitor.IpAddress);
                 var update = Builders<VisitorsLog>.Update
                     .Set(v => v.Blocked, true)
-                    .Set(v => v.UserType, "Hacker"); // Set UserType to "Hacker" or "Malware"
+                    .Set(v => v.UserType, "Flagged"); // Set UserType to "" or "Flagged"
                 await _visitorCollection.UpdateManyAsync(filter, update);
             }
             return RedirectToAction("VisitorLogsManagement");

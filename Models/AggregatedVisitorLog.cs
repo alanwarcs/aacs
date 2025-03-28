@@ -10,5 +10,6 @@ public class AggregatedVisitorLog
     public string Browser { get; set; } = "Unknown";
     public bool Blocked { get; set; }
     public int VisitCount { get; set; }
+    public string UserType { get; set; } = "Visitor";
     public List<VisitorsLog> Sessions { get; set; } = new List<VisitorsLog>();
 }
