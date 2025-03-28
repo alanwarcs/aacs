@@ -60,7 +60,7 @@ public class BotDetectionMiddleware
             "Google-Structured-Data-Testing-Tool", "Google-Rich-Snippets-Testing-Tool",
             "Google-AdSense", "Google-AdWords", "Google-Keyword-Planner", "Google-Web-Preview",
             "Google-Page-Speed-Insights", "Googlebot-Image", "Googlebot-News", "Googlebot-Video",
-            "Googlebot-Mobile", "Googlebot-Mobile", "Googlebot-Mobile", "Googlebot-Mobile",
+            "Googlebot-Mobile", "Googlebot-Mobile", "Googlebot-Mobile", "Googlebot-Mobile",	"Googlebot-Image"
         };
 
         foreach (var keyword in botKeywords)
