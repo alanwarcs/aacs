@@ -421,8 +421,14 @@ function viewMessage(message, name, email, phone, contactId) {
     document.getElementById('contactPhone').innerText = phone;
     document.getElementById('contactMessage').innerText = message;
     document.getElementById('viewModal').style.display = 'flex';
-    // Mark message as read via an AJAX POST call.
-    $.post('/Contact/MarkAsRead', { id: contactId });
+    // Mark message as read via AJAX POST using the global URL variable
+    $.post(markAsReadUrl, { id: contactId })
+      .done(function(response) {
+          console.log("Message marked as read:", response);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+          console.error("Failed marking message as read:", textStatus, errorThrown);
+      });
 }
 
 document.getElementById('viewModalClose').addEventListener('click', function () {

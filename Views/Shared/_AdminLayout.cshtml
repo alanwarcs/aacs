@@ -126,6 +126,10 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
     <script>
+        // Expose the URL for marking a message as read
+        var markAsReadUrl = '@Url.Action("MarkAsRead", "Contact")';
+    </script>
+    <script>
         $(document).ready(function(){
             $.getJSON('@Url.Action("GetUnreadMessagesCount", "Admin")', function(data){
                 console.log("Unread messages data:", data);
