@@ -101,4 +101,14 @@ public class ContactController : Controller
 
         return RedirectToAction("ContactsManagement");
     }
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult MarkAsRead(string id)
+    {
+        var filter = Builders<Contact>.Filter.Eq(c => c.Id, new MongoDB.Bson.ObjectId(id));
+        var update = Builders<Contact>.Update.Set(c => c.IsRead, true);
+        _context.Contact.UpdateOne(filter, update);
+        return Json(new { success = true });
+    }
 }

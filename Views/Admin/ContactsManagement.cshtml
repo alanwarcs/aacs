@@ -64,9 +64,10 @@
                                 <td>@contact.Phone</td>
                                 <td>
                                     <button class="btn btn-sm btn-success" onclick="viewMessage(`@Html.Raw(contact.Message?.Replace("`", "\\`").Replace("\n", " ").Replace("\r", " "))`, 
-                                 `@Html.Raw(contact.Name)`, 
-                                 `@Html.Raw(contact.Email)`, 
-                                 `@Html.Raw(contact.Phone)`)">
+                                         `@Html.Raw(contact.Name)`, 
+                                         `@Html.Raw(contact.Email)`, 
+                                         `@Html.Raw(contact.Phone)`, 
+                                         '@contact.Id')">
                                         View
                                     </button>
 

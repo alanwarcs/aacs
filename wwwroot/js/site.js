@@ -415,12 +415,14 @@ function toggleCustomDropdown(event) {
     });
 }
 
-function viewMessage(message, name, email, phone) {
+function viewMessage(message, name, email, phone, contactId) {
     document.getElementById('contactName').innerText = name;
     document.getElementById('contactEmail').innerText = email;
     document.getElementById('contactPhone').innerText = phone;
     document.getElementById('contactMessage').innerText = message;
     document.getElementById('viewModal').style.display = 'flex';
+    // Mark message as read via an AJAX POST call.
+    $.post('/Contact/MarkAsRead', { id: contactId });
 }
 
 document.getElementById('viewModalClose').addEventListener('click', function () {
