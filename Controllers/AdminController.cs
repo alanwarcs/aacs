@@ -370,4 +370,50 @@ public class AdminController : Controller
         System.Diagnostics.Debug.WriteLine("Unread messages count: " + count);
         return Json(new { count = count });
     }
+
+    [HttpGet]
+    [Authorize]
+    public IActionResult EditProfile()
+    {
+        var adminId = User.FindFirst("AdminId")?.Value;
+        if (string.IsNullOrEmpty(adminId))
+        {
+            return RedirectToAction("Login");
+        }
+        var admin = _context.Admins.Find(a => a.Id == new MongoDB.Bson.ObjectId(adminId)).FirstOrDefault();
+        if (admin == null)
+        {
+            return NotFound();
+        }
+        return View(admin);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult EditProfile(Admin updatedProfile, string newPassword)
+    {
+        var adminId = User.FindFirst("AdminId")?.Value;
+        if (string.IsNullOrEmpty(adminId))
+        {
+            return RedirectToAction("Login");
+        }
+        var admin = _context.Admins.Find(a => a.Id == new MongoDB.Bson.ObjectId(adminId)).FirstOrDefault();
+        if (admin == null)
+        {
+            return NotFound();
+        }
+        // Update editable fields
+        admin.Username = updatedProfile.Username;
+        admin.Email = updatedProfile.Email;
+        admin.Phone = updatedProfile.Phone;
+        admin.Address = updatedProfile.Address;
+
+        if (!string.IsNullOrEmpty(newPassword))
+        {
+            admin.PasswordHash = HashPassword(newPassword);
+        }
+        _context.Admins.ReplaceOne(a => a.Id == admin.Id, admin);
+        TempData["SuccessMessage"] = "Profile updated successfully!";
+        return RedirectToAction("EditProfile");
+    }
 }
