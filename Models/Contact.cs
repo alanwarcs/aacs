@@ -26,5 +26,8 @@ public class Contact
     [StringLength(500)]
     public required string Message { get; set; }
 
+    [Required]
+    public bool IsRead { get; set; } = false;
+
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 }

@@ -361,4 +361,11 @@ public class AdminController : Controller
             return builder.ToString();
         }
     }
+
+    [HttpGet]
+    public IActionResult GetUnreadMessagesCount()
+    {
+        int count = (int)_context.Contact.Find(m => m.IsRead == false).CountDocuments();
+        return Json(new { count = count });
+    }
 }
