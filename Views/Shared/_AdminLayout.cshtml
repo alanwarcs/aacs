@@ -128,9 +128,12 @@
     <script>
         $(document).ready(function(){
             $.getJSON('/Admin/GetUnreadMessagesCount', function(data){
+                console.log("Unread messages data:", data);
                 if(data.count > 0){
                     $('#contactsNotification').show();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                console.error("Error fetching unread messages:", textStatus, errorThrown);
             });
         });
     </script>
