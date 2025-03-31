@@ -56,10 +56,13 @@
                     </a>
                 </li>
                 <li class="my-1">
-                    <a class="d-flex justify-content-between  nav-link link-dark @ActiveClass("Contact", "ContactsManagement")" asp-controller="Contact" asp-action="ContactsManagement">
+                    <a class="d-flex justify-content-between nav-link link-dark @ActiveClass("Contact", "ContactsManagement")" asp-controller="Contact" asp-action="ContactsManagement">
                         Contacts Management
-                        <span class="mx-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail text-warning"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <span class="mx-2" id="contactsNotification" style="display:none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail text-warning">
+                                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                            </svg>
                         </span>
                     </a>
                 </li>
@@ -122,6 +125,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(document).ready(function(){
+            $.getJSON('/Admin/GetUnreadMessagesCount', function(data){
+                if(data.count > 0){
+                    $('#contactsNotification').show();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
