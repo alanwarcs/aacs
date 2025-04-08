@@ -87,20 +87,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.Use(async (context, next) =>
-{
-    var allowedHosts = new[] { "alanwar.studio", "www.alanwar.studio" };
-    var requestHost = context.Request.Host.Host.ToLower();
-
-    if (!allowedHosts.Contains(requestHost))
-    {
-        context.Response.StatusCode = 403;
-        await context.Response.WriteAsync("Access Denied");
-        return;
-    }
-    await next();
-});
-
 app.UseRouting();
 
 // Enable session middleware
