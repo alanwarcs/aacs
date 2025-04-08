@@ -54,11 +54,11 @@ public class AdminController : Controller
             return View();
         }
 
-        // Retrieve and verify Turnstile response token
-        string turnstileToken = Request.Form["cf-turnstile-response"].FirstOrDefault() ?? string.Empty;
-        if (string.IsNullOrEmpty(turnstileToken) || !await VerifyTurnstileTokenAsync(turnstileToken))
+        // Validate Google reCAPTCHA
+        var recaptchaResponse = Request.Form["g-recaptcha-response"].FirstOrDefault();
+        if (string.IsNullOrEmpty(recaptchaResponse) || !await VerifyRecaptchaAsync(recaptchaResponse))
         {
-            ViewBag.Error = "Turnstile validation failed.";
+            ViewBag.Error = "reCAPTCHA verification failed.";
             return View();
         }
 
@@ -117,33 +117,21 @@ public class AdminController : Controller
         return RedirectToAction("Dashboard", "Dashboard");
     }
 
-    private async Task<bool> VerifyTurnstileTokenAsync(string token)
+    private async Task<bool> VerifyRecaptchaAsync(string token)
     {
         using (var client = new HttpClient())
         {
-            var secretKey = Environment.GetEnvironmentVariable("TURNSTILE_SECRET_KEY") ?? "YOUR_TURNSTILE_SECRET_KEY";
+            var secretKey = Environment.GetEnvironmentVariable("RECAPTCHA_SECRET_KEY") ?? "YOUR_RECAPTCHA_SECRET_KEY";
             var postData = new Dictionary<string, string>
             {
                 { "secret", secretKey },
                 { "response", token }
             };
             var content = new FormUrlEncodedContent(postData);
-            var response = await client.PostAsync("https://challenges.cloudflare.com/turnstile/v0/siteverify", content);
+            var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
             var jsonString = await response.Content.ReadAsStringAsync();
-            // DEBUG: Log the full response for inspection (remove in production)
-            System.Diagnostics.Debug.WriteLine("Turnstile response: " + jsonString);
             dynamic? result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
-            if (result == null)
-            {
-                System.Diagnostics.Debug.WriteLine("Turnstile response deserialization failed.");
-                return false;
-            }
-            if (result.success != true)
-            {
-                // DEBUG: Log error codes for further details
-                System.Diagnostics.Debug.WriteLine("Turnstile error codes: " + string.Join(", ", (result["error-codes"] as string[]) ?? new string[0]));
-            }
-            return result.success == true;
+            return result?.success == true;
         }
     }
 

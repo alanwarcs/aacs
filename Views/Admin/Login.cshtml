@@ -1,7 +1,7 @@
 @{
     Layout = null; // Disable the default layout for this page
     ViewBag.Title = "Admin Login - AACS";
-    var turnstileSiteKey = Environment.GetEnvironmentVariable("TURNSTILE_SITE_KEY") ?? "TURNSTILE_SITE_KEY";
+    var recaptchaSiteKey = Environment.GetEnvironmentVariable("RECAPTCHA_SITE_KEY") ?? "YOUR_RECAPTCHA_SITE_KEY";
 }
 
 <!DOCTYPE html>
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/elements.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/aacs.styles.css" asp-append-version="true" />
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body class="admin-login m-0">
@@ -45,7 +45,7 @@
                         required>
                 </div>
                 <div class="m-3">
-                    <div class="cf-turnstile" data-sitekey="@turnstileSiteKey"></div>
+                    <div class="g-recaptcha" data-sitekey="@recaptchaSiteKey"></div>
                 </div>
                 <div class="text-end">
                     <button type="submit" class="btn m-3 btn-custom">Login</button>
