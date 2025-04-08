@@ -1,3 +1,5 @@
+
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using CloudinaryDotNet;
 using DotNetEnv;
@@ -5,9 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Http;
-using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -76,11 +79,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 // Configuration options for rate limiting
-builder.Services.Configure<IpRateLimitingOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
 
 // Configure RateLimit stores
-builder.Services.AddSingleton<IIpPolicyStore, MemoryIpPolicyStore>();
-builder.Services.AddSingleton<IRateLimitCounterStore, MemoryRateLimitCounterStore>();
+builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 builder.Services.AddInMemoryRateLimiting();
 
