@@ -29,7 +29,8 @@ public class BotDetectionMiddleware
                 }
             }
 
-            await _next(context);
+            // Redirect bots to AccessDenied page
+            context.Response.Redirect("/AccessDenied");
             return;
         }
 
@@ -43,9 +44,15 @@ public class BotDetectionMiddleware
             return true; // Empty User-Agent is suspicious
         }
 
+        // Check if User-Agent contains "bot"
+        if (userAgent.Contains("bot", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
         string[] botKeywords = new[]
         {
-            "bot", "crawl", "spider", "slurp", "mediapartners", "wget", "curl", 
+            "crawl", "spider", "slurp", "mediapartners", "wget", "curl", 
             "python-requests", "scrapy", "httpclient", "SiteLockSpider", "bingbot",
             "ahrefsbot", "semrushbot", "mj12bot", "yandexbot", "dotbot", "teoma",
             "baiduspider", "gigabot", "exabot", "sogou", "ia_archiver", "archive.org_bot",
@@ -60,8 +67,9 @@ public class BotDetectionMiddleware
             "Google-Structured-Data-Testing-Tool", "Google-Rich-Snippets-Testing-Tool",
             "Google-AdSense", "Google-AdWords", "Google-Keyword-Planner", "Google-Web-Preview",
             "Google-Page-Speed-Insights", "Googlebot-Image", "Googlebot-News", "Googlebot-Video",
-            "Googlebot-Mobile", "Googlebot-Mobile", "Googlebot-Mobile", "Googlebot-Mobile",	"Googlebot-Image"
-        };
+            "Googlebot-Mobile", "Googlebot-Mobile", "Googlebot-Mobile", "Googlebot-Mobile",	"Googlebot-Image",
+                "Go-http-client"
+            };
 
         foreach (var keyword in botKeywords)
         {
