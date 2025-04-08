@@ -203,3 +203,31 @@ public class PublicIpData
 {
     public string Ip { get; set; } = string.Empty;
 }
+
+public class YourRateLimitingMiddleware
+{
+    private readonly RequestDelegate _next;
+    private readonly int _rateLimit;
+    // ... other dependencies ...
+
+    public YourRateLimitingMiddleware(RequestDelegate next, int rateLimit /*, ... other dependencies */)
+    {
+        _next = next;
+        _rateLimit = rateLimit;
+        // ... initialize dependencies ...
+    }
+
+    public async Task InvokeAsync(HttpContext context)
+    {
+        // ✅ IMPORTANT: Bypass rate limiting for /AccessDenied
+        if (context.Request.Path.StartsWithSegments("/AccessDenied"))
+        {
+            await _next(context);
+            return;
+        }
+
+        // ... your existing rate limiting logic ...
+        // Check rate limit, etc.
+        // ...
+    }
+}
