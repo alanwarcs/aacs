@@ -23,6 +23,13 @@ public class VisitorTrackingMiddleware
 
     public async Task InvokeAsync(HttpContext context)
     {
+        // 🚫 Bypass middleware for /AccessDenied to prevent redirect loops
+        if (context.Request.Path.StartsWithSegments("/AccessDenied"))
+        {
+            await _next(context);
+            return;
+        }
+
         // Ensure session is available
         if (!context.Session.IsAvailable)
         {
@@ -34,6 +41,7 @@ public class VisitorTrackingMiddleware
         string sessionId = context.Session.GetString("SessionId") ?? Guid.NewGuid().ToString();
         context.Session.SetString("SessionId", sessionId);
 
+        // Fetch visitor details from MongoDB
         var visitor = await _visitorsLogCollection
             .Find(v => v.SessionId == sessionId)
             .FirstOrDefaultAsync();
@@ -43,11 +51,16 @@ public class VisitorTrackingMiddleware
         // Get real IP
         string ipAddress = await GetRealIpAddress(context);
 
-        // Check if the user is blocked
-        var blockedVisitor = await _visitorsLogCollection.Find(v => v.IpAddress == ipAddress).FirstOrDefaultAsync();
-        if (blockedVisitor != null && blockedVisitor.Blocked)
+        // 🔍 Check if the user is blocked (only the latest record)
+        var blockedVisitor = await _visitorsLogCollection
+            .Find(v => v.IpAddress == ipAddress && v.Blocked)
+            .SortByDescending(v => v.VisitDate)
+            .FirstOrDefaultAsync();
+
+        if (blockedVisitor != null)
         {
             context.Response.Redirect("/AccessDenied");
+            await context.Response.CompleteAsync(); // ✅ Ensure execution stops
             return;
         }
 
@@ -202,32 +215,4 @@ public class GeoData
 public class PublicIpData
 {
     public string Ip { get; set; } = string.Empty;
-}
-
-public class YourRateLimitingMiddleware
-{
-    private readonly RequestDelegate _next;
-    private readonly int _rateLimit;
-    // ... other dependencies ...
-
-    public YourRateLimitingMiddleware(RequestDelegate next, int rateLimit /*, ... other dependencies */)
-    {
-        _next = next;
-        _rateLimit = rateLimit;
-        // ... initialize dependencies ...
-    }
-
-    public async Task InvokeAsync(HttpContext context)
-    {
-        // ✅ IMPORTANT: Bypass rate limiting for /AccessDenied
-        if (context.Request.Path.StartsWithSegments("/AccessDenied"))
-        {
-            await _next(context);
-            return;
-        }
-
-        // ... your existing rate limiting logic ...
-        // Check rate limit, etc.
-        // ...
-    }
 }

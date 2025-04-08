@@ -115,8 +115,6 @@ app.MapControllerRoute(
 app.UseAuthentication();
 app.UseAuthorization();
 
-// app.UseRateLimiting(rateLimit: 100); // Removed invalid method call
-
 app.MapControllers();
 
 // Default routes for public pages
