@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using CloudinaryDotNet;
 using DotNetEnv;
 using Microsoft.Extensions.DependencyInjection;
-using MongoDB.Driver; // Add this using statement
+using MongoDB.Driver;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Http;
+using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +75,18 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         };
     });
 
+// Configuration options for rate limiting
+builder.Services.Configure<IpRateLimitingOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+
+// Configure RateLimit stores
+builder.Services.AddSingleton<IIpPolicyStore, MemoryIpPolicyStore>();
+builder.Services.AddSingleton<IRateLimitCounterStore, MemoryRateLimitCounterStore>();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.AddInMemoryRateLimiting();
+
+// Add framework services.
+builder.Services.AddOptions();
+
 builder.Services.AddControllers();
 builder.Services.AddLogging();
 
@@ -105,6 +120,9 @@ app.Use(async (context, next) =>
 // Add visitor tracking middleware
 app.UseMiddleware<VisitorTrackingMiddleware>();
 app.UseMiddleware<BotDetectionMiddleware>();
+
+// Enable rate limiting
+app.UseIpRateLimiting();
 
 // Update the default route for Access Denied
 app.MapControllerRoute(
