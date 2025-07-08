@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v8.0": {
       "aacs/1.0.0": {
         "dependencies": {
+          "AspNetCoreRateLimit": "5.0.0",
           "CloudinaryDotNet": "1.27.4",
           "DotNetEnv": "3.1.1",
           "Microsoft.AspNetCore.Cryptography.KeyDerivation": "9.0.0",
@@ -19,6 +20,20 @@
         },
         "runtime": {
           "aacs.dll": {}
+        }
+      },
+      "AspNetCoreRateLimit/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Caching.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Options": "9.0.0",
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/AspNetCoreRateLimit.dll": {
+            "assemblyVersion": "4.0.2.0",
+            "fileVersion": "4.0.2.0"
+          }
         }
       },
       "Azure.Core/1.38.0": {
@@ -1812,6 +1827,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "AspNetCoreRateLimit/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6fq9+o1maGADUmpK/PvcF0DtXW2+7bSkIL7MDIo/agbIHKN8XkMQF4oze60DO731WaQmHmK260hB30FwPzCmEg==",
+      "path": "aspnetcoreratelimit/5.0.0",
+      "hashPath": "aspnetcoreratelimit.5.0.0.nupkg.sha512"
     },
     "Azure.Core/1.38.0": {
       "type": "package",

@@ -10,61 +10,53 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly MongoDbContext _context;
+    private readonly string _frontendUrl;
 
-    public HomeController(ILogger<HomeController> logger, MongoDbContext context)
+    public HomeController(ILogger<HomeController> logger, MongoDbContext context, IConfiguration configuration)
     {
         _logger = logger;
         _context = context;
+        _frontendUrl = configuration["FrontendBaseUrl"]!;
     }
+
 
     public IActionResult Index()
     {
-        return View();
+        return Redirect(_frontendUrl);
     }
 
-    public IActionResult Services()
+    [HttpGet("api/services")]
+    public IActionResult GetServicesJson()
     {
         var services = _context.Service?
-            .Find(s => s.Status == "Published") // Fetch all services
+            .Find(s => s.Status == "Published")
             .ToList() ?? new List<Service>();
 
-        return View(services);
+        return Ok(services); // ✅ returns 200 OK with JSON
     }
 
-    [Route("Blogs")]
-    public IActionResult Blogs()
+    [HttpGet("api/blogs")]
+    public IActionResult GetBlogsJson()
     {
         var blogs = _context.Blog?
             .Find(b => b.Status == "Published")
-            .Project<Blog>(Builders<Blog>.Projection
-                .Include(b => b.Title)
-                .Include(b => b.Author)
-                .Include(b => b.Description)
-                .Include(b => b.HeaderImageUrl)
-                .Include(b => b.Slug)         // Needed for generating SEO-friendly links
-                .Include(b => b.DatePublished) // For sorting and display
-            )
             .SortByDescending(b => b.DatePublished)
             .ToList() ?? new List<Blog>();
 
-        return View(blogs);
+        return Ok(blogs);
     }
 
-    [Route("Blogs/{slug}")]
-    public IActionResult BlogDetails(string slug)
+    [HttpGet("api/blogs/{slug}")]
+    public IActionResult GetBlogBySlug(string slug)
     {
         var blog = _context.Blog?
             .Find(b => b.Slug == slug && b.Status == "Published")
             .FirstOrDefault();
 
-        if (blog == null)
-        {
-            return NotFound(); // Returns 404 if the blog is not found
-        }
+        if (blog == null) return NotFound();
 
-        return View(blog);
+        return Ok(blog);
     }
-
 
     public IActionResult Contact()
     {

@@ -1,10 +1,6 @@
 {
   "Files": [
     {
-      "Id": "/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/scopedcss/projectbundle/aacs.bundle.scp.css",
-      "PackagePath": "staticwebassets/aacs.bundle.scp.css"
-    },
-    {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/css/elements.css",
       "PackagePath": "staticwebassets/css/elements.css"
     },
@@ -51,6 +47,10 @@
     {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/logo_1.png",
       "PackagePath": "staticwebassets/images/logo_1.png"
+    },
+    {
+      "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/profile.webp",
+      "PackagePath": "staticwebassets/images/profile.webp"
     },
     {
       "Id": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/js/site.js",

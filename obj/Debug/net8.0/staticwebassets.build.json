@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "BjdGaeIRC6/pjp67fMTY9wf/TU8WMnDBnLpfj58X8OI=",
+  "Hash": "sOdM52+KIc46DLTc4mjdOsXeweB03ImUE+KkEERaayU=",
   "Source": "aacs",
   "BasePath": "_content/aacs",
   "Mode": "Default",
@@ -16,44 +16,6 @@
     }
   ],
   "Assets": [
-    {
-      "Identity": "/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/scopedcss/bundle/aacs.styles.css",
-      "SourceId": "aacs",
-      "SourceType": "Computed",
-      "ContentRoot": "/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/scopedcss/bundle/",
-      "BasePath": "_content/aacs",
-      "RelativePath": "aacs.styles.css",
-      "AssetKind": "All",
-      "AssetMode": "CurrentProject",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "ScopedCss",
-      "AssetTraitValue": "ApplicationBundle",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/scopedcss/bundle/aacs.styles.css"
-    },
-    {
-      "Identity": "/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/scopedcss/projectbundle/aacs.bundle.scp.css",
-      "SourceId": "aacs",
-      "SourceType": "Computed",
-      "ContentRoot": "/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/scopedcss/projectbundle/",
-      "BasePath": "_content/aacs",
-      "RelativePath": "aacs.bundle.scp.css",
-      "AssetKind": "All",
-      "AssetMode": "Reference",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "ScopedCss",
-      "AssetTraitValue": "ProjectBundle",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "/Users/murtaza/Desktop/dotnet/aacs/obj/Debug/net8.0/scopedcss/projectbundle/aacs.bundle.scp.css"
-    },
     {
       "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/css/elements.css",
       "SourceId": "aacs",
@@ -281,6 +243,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/images/logo.png"
+    },
+    {
+      "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/images/profile.webp",
+      "SourceId": "aacs",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/",
+      "BasePath": "_content/aacs",
+      "RelativePath": "images/profile.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/profile.webp"
     },
     {
       "Identity": "/Users/murtaza/Desktop/dotnet/aacs/wwwroot/js/site.js",

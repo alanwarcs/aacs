@@ -54,14 +54,6 @@ public class AdminController : Controller
             return View();
         }
 
-        // Validate Google reCAPTCHA
-        var recaptchaResponse = Request.Form["g-recaptcha-response"].FirstOrDefault();
-        if (string.IsNullOrEmpty(recaptchaResponse) || !await VerifyRecaptchaAsync(recaptchaResponse))
-        {
-            ViewBag.Error = "reCAPTCHA verification failed.";
-            return View();
-        }
-
         // Hash the password for comparison
         string hashedPassword = HashPassword(password);
 
@@ -115,24 +107,6 @@ public class AdminController : Controller
         }
 
         return RedirectToAction("Dashboard", "Dashboard");
-    }
-
-    private async Task<bool> VerifyRecaptchaAsync(string token)
-    {
-        using (var client = new HttpClient())
-        {
-            var secretKey = Environment.GetEnvironmentVariable("RECAPTCHA_SECRET_KEY") ?? "YOUR_RECAPTCHA_SECRET_KEY";
-            var postData = new Dictionary<string, string>
-            {
-                { "secret", secretKey },
-                { "response", token }
-            };
-            var content = new FormUrlEncodedContent(postData);
-            var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
-            var jsonString = await response.Content.ReadAsStringAsync();
-            dynamic? result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
-            return result?.success == true;
-        }
     }
 
     [HttpGet]
