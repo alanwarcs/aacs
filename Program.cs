@@ -97,7 +97,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowVite", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // Vite frontend
+        policy.WithOrigins("http://localhost:5173", "https://www.alanwar.studio")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
