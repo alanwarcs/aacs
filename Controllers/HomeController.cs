@@ -25,7 +25,7 @@ public class HomeController : Controller
         return Redirect(_frontendUrl);
     }
 
-    [HttpGet("api/services")]
+    [HttpGet("/api/services")]
     public IActionResult GetServicesJson()
     {
         var services = _context.Service?
@@ -35,7 +35,7 @@ public class HomeController : Controller
         return Ok(services); // ✅ returns 200 OK with JSON
     }
 
-    [HttpGet("api/blogs")]
+    [HttpGet("/api/blogs")]
     public IActionResult GetBlogsJson()
     {
         var blogs = _context.Blog?
@@ -46,7 +46,7 @@ public class HomeController : Controller
         return Ok(blogs);
     }
 
-    [HttpGet("api/blogs/{slug}")]
+    [HttpGet("/api/blogs/{slug}")]
     public IActionResult GetBlogBySlug(string slug)
     {
         var blog = _context.Blog?
