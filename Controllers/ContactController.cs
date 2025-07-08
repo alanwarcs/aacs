@@ -36,46 +36,29 @@ public class ContactController : Controller
         return View("~/Views/Admin/ContactsManagement.cshtml", model);
     }
 
-    [HttpPost]
-    public IActionResult CreateContact(Contact contact)
+    [HttpPost("api/contact")]
+    [AllowAnonymous] // ⛔ Important: Allow anonymous access
+    public IActionResult CreateContact([FromBody] Contact contact)
     {
         if (ModelState.IsValid)
         {
             try
             {
                 _context.Contact.InsertOne(contact);
-                TempData["SuccessMessage"] = "Message sent successfully! Thank you for reaching out—we'll be in touch soon.";
-
-                // Redirect to the original location
-                var referer = Request.Headers["Referer"].ToString();
-                if (!string.IsNullOrEmpty(referer))
-                {
-                    return Redirect(referer);
-                }
-                return RedirectToAction("Index", "Home");
+                return Ok(new { success = true, message = "Message sent successfully!" });
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Database error: " + ex.Message;
+                return StatusCode(500, new { success = false, message = "Database error: " + ex.Message });
             }
         }
-        else
-        {
-            var errorMessages = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
 
-            TempData["ValidationErrors"] = errorMessages;
-        }
+        var errors = ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage)
+            .ToList();
 
-        // If we reach here, it means there was a validation error or an exception
-        var refererUrl = Request.Headers["Referer"].ToString();
-        if (refererUrl.Contains("Contact"))
-        {
-            return View("~/Views/Home/Contact.cshtml", contact);
-        }
-        return View("~/Views/Home/Index.cshtml", contact);
+        return BadRequest(new { success = false, errors });
     }
 
     [HttpPost]
