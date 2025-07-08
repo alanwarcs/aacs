@@ -11,5 +11,4 @@ public class AggregatedVisitorLog
     public bool Blocked { get; set; }
     public int VisitCount { get; set; }
     public string UserType { get; set; } = "Visitor";
-    public List<VisitorsLog> Sessions { get; set; } = new List<VisitorsLog>();
 }

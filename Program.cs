@@ -40,12 +40,6 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
     return mongoDbContext.Database;
 });
 
-builder.Services.AddSingleton<IMongoCollection<VisitorsLog>>(sp =>
-{
-    var database = sp.GetRequiredService<IMongoDatabase>();
-    return database.GetCollection<VisitorsLog>("VisitorsLog");
-});
-
 builder.Services.AddSingleton<IMongoCollection<AdminLog>>(sp =>
 {
     var database = sp.GetRequiredService<IMongoDatabase>();
@@ -131,10 +125,6 @@ app.Use(async (context, next) =>
     }
     await next();
 });
-
-// Add visitor tracking middleware
-app.UseMiddleware<VisitorTrackingMiddleware>();
-app.UseMiddleware<BotDetectionMiddleware>();
 
 // Enable rate limiting
 app.UseIpRateLimiting();

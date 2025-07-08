@@ -14,7 +14,6 @@ namespace aacs.Controllers
         private readonly IMongoCollection<Blog> _blogCollection;
         private readonly IMongoCollection<Contact> _contactCollection;
         private readonly IMongoCollection<Service> _servicesCollection;
-        private readonly IMongoCollection<VisitorsLog> _visitorCollection;
         private readonly IMongoCollection<AdminLog> _adminLogCollection;
 
         public DashboardController(IMongoDatabase database)
@@ -22,95 +21,19 @@ namespace aacs.Controllers
             _blogCollection = database.GetCollection<Blog>("Blog");
             _contactCollection = database.GetCollection<Contact>("Contact");
             _servicesCollection = database.GetCollection<Service>("Service");
-            _visitorCollection = database.GetCollection<VisitorsLog>("VisitorsLog");
             _adminLogCollection = database.GetCollection<AdminLog>("AdminLog");
         }
 
         public async Task<IActionResult> Dashboard()
         {
             try
-            {
-                // Filter to count only userType "Visitor" entries (ignores Admin and bots)
-                var filter = Builders<VisitorsLog>.Filter.Eq(v => v.UserType, "Visitor");
-                var totalVisitors = await _visitorCollection.CountDocumentsAsync(filter);
-                
-                // Fetch and log actual data
-                var blogs = await _blogCollection.Find(FilterDefinition<Blog>.Empty).ToListAsync();
-                var contacts = await _contactCollection.Find(FilterDefinition<Contact>.Empty).ToListAsync();
-                var services = await _servicesCollection.Find(FilterDefinition<Service>.Empty).ToListAsync();
-                
-                // Compute dynamic website traffic data for last 7 days using VisitorsLog
-                var startDate = DateTime.UtcNow.Date.AddDays(-6);
-                var endDate = DateTime.UtcNow.Date.AddDays(1);
-                var dateFilter = Builders<VisitorsLog>.Filter.And(
-                    Builders<VisitorsLog>.Filter.Eq(v => v.UserType, "Visitor"),
-                    Builders<VisitorsLog>.Filter.Gte(v => v.VisitDate, startDate),
-                    Builders<VisitorsLog>.Filter.Lt(v => v.VisitDate, endDate)
-                );
-                var recentVisitors = await _visitorCollection.Find(dateFilter).ToListAsync();
-                var trafficData = new List<object> { new object[] { "Day", "Visitors" } };
-                for (int i = 0; i < 7; i++)
-                {
-                    var date = startDate.AddDays(i);
-                    var dayLabel = date.ToString("ddd");
-                    var count = recentVisitors.Count(v => v.VisitDate.Date == date);
-                    trafficData.Add(new object[] { dayLabel, count });
-                }
-                ViewBag.TrafficData = trafficData;
-                
-                // Group browsers used by visitors for donut chart, merging browsers beyond top 4 into "Others"
-                var browserGroup = recentVisitors.GroupBy(v => v.Browser)
-                                                 .Select(g => new { Browser = g.Key, Count = g.Count() })
-                                                 .OrderByDescending(x => x.Count)
-                                                 .ToList();
-                var donutData = new List<object> { new object[] { "Browser", "Count" } };
-                var top4 = browserGroup.Take(4).ToList();
-                foreach (var group in top4)
-                {
-                    donutData.Add(new object[] { group.Browser, group.Count });
-                }
-                var othersCount = browserGroup.Skip(4).Sum(x => x.Count);
-                if (othersCount > 0)
-                {
-                    donutData.Add(new object[] { "Others", othersCount });
-                }
-                ViewBag.BrowserData = donutData;
-                
-                // NEW: Group visitors by country for map using RegionInfo to get full country name
-                var mapGroup = recentVisitors.GroupBy(v => v.Country)
-                                             .Select(g => new { Country = g.Key, Count = g.Count() })
-                                             .ToList();
-                var mapData = new List<object> { new object[] { "Country", "Visitors" } };
-                foreach (var group in mapGroup)
-                {
-                    if (group.Country != "Unknown")
-                    {
-                        string fullName;
-                        try
-                        {
-                            fullName = new System.Globalization.RegionInfo(group.Country).EnglishName;
-                        }
-                        catch
-                        {
-                            fullName = group.Country;
-                        }
-                        mapData.Add(new object[] { fullName, group.Count });
-                    }
-                }
-                ViewBag.MapData = mapData;
-                
+            {                
                 // NEW: Fetch last 10 admin logs sorted by Timestamp descending
                 var adminLogs = await _adminLogCollection.Find(FilterDefinition<AdminLog>.Empty)
                                                       .SortByDescending(x => x.Timestamp)
                                                       .Limit(10)
                                                       .ToListAsync();
                 ViewBag.AdminLogs = adminLogs;
-                
-                // Store counts in ViewBag
-                ViewBag.TotalBlogs = blogs.Count;
-                ViewBag.NewContacts = contacts.Count;
-                ViewBag.TotalServices = services.Count;
-                ViewBag.TotalVisitors = totalVisitors;
                 
                 return View("~/Views/Admin/Dashboard.cshtml");
             }

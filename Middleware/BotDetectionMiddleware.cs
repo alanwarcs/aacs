@@ -5,36 +5,10 @@ using System.Threading.Tasks;
 public class BotDetectionMiddleware
 {
     private readonly RequestDelegate _next;
-    private readonly IMongoCollection<VisitorsLog> _visitorsLogCollection;
 
-    public BotDetectionMiddleware(RequestDelegate next, IMongoCollection<VisitorsLog> visitorsLogCollection)
+    public BotDetectionMiddleware(RequestDelegate next)
     {
         _next = next;
-        _visitorsLogCollection = visitorsLogCollection;
-    }
-
-    public async Task InvokeAsync(HttpContext context)
-    {
-        var userAgent = context.Request.Headers["User-Agent"].ToString();
-        if (IsBotUserAgent(userAgent)) // Manual bot detection
-        {
-            var sessionId = context.Session.GetString("SessionId");
-            if (!string.IsNullOrEmpty(sessionId))
-            {
-                var visitor = await _visitorsLogCollection.Find(v => v.SessionId == sessionId).FirstOrDefaultAsync();
-                if (visitor != null && visitor.UserType != "Bot")
-                {
-                    visitor.UserType = "Bot";
-                    await _visitorsLogCollection.ReplaceOneAsync(v => v.Id == visitor.Id, visitor);
-                }
-            }
-
-            // Redirect bots to AccessDenied page
-            context.Response.Redirect("/AccessDenied");
-            return;
-        }
-
-        await _next(context);
     }
 
     private bool IsBotUserAgent(string userAgent)

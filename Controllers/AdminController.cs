@@ -15,13 +15,11 @@ public class AdminController : Controller
 {
     private readonly MongoDbContext _context;
     private readonly IMongoCollection<AdminLog> _adminLogCollection;
-    private readonly IMongoCollection<VisitorsLog> _visitorsLogCollection;
 
-    public AdminController(MongoDbContext context, IMongoCollection<AdminLog> adminLogCollection, IMongoCollection<VisitorsLog> visitorsLogCollection)
+    public AdminController(MongoDbContext context, IMongoCollection<AdminLog> adminLogCollection)
     {
         _context = context;
         _adminLogCollection = adminLogCollection;
-        _visitorsLogCollection = visitorsLogCollection;
     }
 
     [HttpGet]
@@ -93,18 +91,6 @@ public class AdminController : Controller
             PerformedBy = admin.Username ?? "Unknown",
             Timestamp = DateTime.UtcNow
         });
-
-        // ✅ Update visitor log to set UserType to "Admin"
-        var sessionId = HttpContext.Session.GetString("SessionId");
-        if (!string.IsNullOrEmpty(sessionId))
-        {
-            var visitor = await _visitorsLogCollection.Find(v => v.SessionId == sessionId).FirstOrDefaultAsync();
-            if (visitor != null && visitor.UserType != "Admin")
-            {
-                visitor.UserType = "Admin";
-                await _visitorsLogCollection.ReplaceOneAsync(v => v.Id == visitor.Id, visitor);
-            }
-        }
 
         return RedirectToAction("Dashboard", "Dashboard");
     }
