@@ -27,19 +27,22 @@ namespace aacs.Controllers
         public async Task<IActionResult> Dashboard()
         {
             try
-            {                
-                // NEW: Fetch last 10 admin logs sorted by Timestamp descending
+            {
                 var adminLogs = await _adminLogCollection.Find(FilterDefinition<AdminLog>.Empty)
-                                                      .SortByDescending(x => x.Timestamp)
-                                                      .Limit(10)
-                                                      .ToListAsync();
+                                                          .SortByDescending(x => x.Timestamp)
+                                                          .Limit(10)
+                                                          .ToListAsync();
                 ViewBag.AdminLogs = adminLogs;
-                
+
+                var analytics = new AnalyticsService();
+                var countryData = await analytics.GetUsersByCountryAsync();
+                ViewBag.CountryData = countryData;
+
                 return View("~/Views/Admin/Dashboard.cshtml");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ViewBag.ErrorMessage = "Error fetching dashboard data. Please check the logs.";
+                ViewBag.ErrorMessage = $"Error fetching dashboard data: {ex.Message}";
                 return View("~/Views/Admin/Dashboard.cshtml");
             }
         }

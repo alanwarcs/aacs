@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 var builder = WebApplication.CreateBuilder(args);
 
 // Load environment variables from .env file
-Env.Load();
+DotNetEnv.Env.Load(); // This will load .env file values into Environment
 
 // Read Cloudinary credentials from environment variables
 var cloudinaryAccount = new Account(

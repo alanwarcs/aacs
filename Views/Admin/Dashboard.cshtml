@@ -4,6 +4,7 @@
 
 <div class="container-fluid p-4">
     <h2 class="mb-4">Admin Dashboard</h2>
+    <canvas id="countryChart" width="400" height="200"></canvas>
     <!-- Recent Activity -->
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
@@ -28,3 +29,31 @@
         </div>
     </div>
 </div>
+<script>
+    const countryData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.CountryData));
+
+    const labels = Object.keys(countryData);
+    const data = Object.values(countryData);
+
+    new Chart(document.getElementById('countryChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Users by Country',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
