@@ -208,6 +208,23 @@
           }
         }
       },
+      "Google.Apis.AnalyticsData.v1beta/1.68.0.3608": {
+        "type": "package",
+        "dependencies": {
+          "Google.Apis": "1.68.0",
+          "Google.Apis.Auth": "1.68.0"
+        },
+        "compile": {
+          "lib/net6.0/Google.Apis.AnalyticsData.v1beta.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Google.Apis.AnalyticsData.v1beta.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
       "Google.Apis.AnalyticsReporting.v4/1.68.0.2484": {
         "type": "package",
         "dependencies": {
@@ -3539,6 +3556,28 @@
         "lib/netstandard2.0/Google.Apis.dll",
         "lib/netstandard2.0/Google.Apis.pdb",
         "lib/netstandard2.0/Google.Apis.xml"
+      ]
+    },
+    "Google.Apis.AnalyticsData.v1beta/1.68.0.3608": {
+      "sha512": "y9BdpAyCIKmRSFPUZEwyD2CtqXgzC8L0gqCqfoeDIn2bBu3RBp+uiLfCe/ns20AuArfnyIJgR4unmvap+9CpHQ==",
+      "type": "package",
+      "path": "google.apis.analyticsdata.v1beta/1.68.0.3608",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "NuGetIcon.png",
+        "google.apis.analyticsdata.v1beta.1.68.0.3608.nupkg.sha512",
+        "google.apis.analyticsdata.v1beta.nuspec",
+        "lib/net462/Google.Apis.AnalyticsData.v1beta.dll",
+        "lib/net462/Google.Apis.AnalyticsData.v1beta.pdb",
+        "lib/net462/Google.Apis.AnalyticsData.v1beta.xml",
+        "lib/net6.0/Google.Apis.AnalyticsData.v1beta.dll",
+        "lib/net6.0/Google.Apis.AnalyticsData.v1beta.pdb",
+        "lib/net6.0/Google.Apis.AnalyticsData.v1beta.xml",
+        "lib/netstandard2.0/Google.Apis.AnalyticsData.v1beta.dll",
+        "lib/netstandard2.0/Google.Apis.AnalyticsData.v1beta.pdb",
+        "lib/netstandard2.0/Google.Apis.AnalyticsData.v1beta.xml"
       ]
     },
     "Google.Apis.AnalyticsReporting.v4/1.68.0.2484": {
@@ -10046,6 +10085,7 @@
       "CloudinaryDotNet >= 1.27.4",
       "DotNetEnv >= 3.1.1",
       "Google.Analytics.Data.V1Beta >= 2.0.0-beta09",
+      "Google.Apis.AnalyticsData.v1beta >= 1.68.0.3608",
       "Google.Apis.AnalyticsReporting.v4 >= 1.68.0.2484",
       "Google.Apis.Auth >= 1.70.0",
       "Google.Apis.Core >= 1.70.0",
@@ -10114,6 +10154,10 @@
           "Google.Analytics.Data.V1Beta": {
             "target": "Package",
             "version": "[2.0.0-beta09, )"
+          },
+          "Google.Apis.AnalyticsData.v1beta": {
+            "target": "Package",
+            "version": "[1.68.0.3608, )"
           },
           "Google.Apis.AnalyticsReporting.v4": {
             "target": "Package",

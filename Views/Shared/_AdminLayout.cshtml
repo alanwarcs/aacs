@@ -19,7 +19,6 @@
         rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/elements.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/aacs.styles.css" asp-append-version="true" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="m-0">
@@ -126,7 +125,6 @@
     <script>
         $(document).ready(function(){
             $.getJSON('@Url.Action("GetUnreadMessagesCount", "Admin")', function(data){
-                console.log("Unread messages data:", data);
                 if(data.count > 0){
                     $('#contactsNotification').show();
                 }

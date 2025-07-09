@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "z9/v7KhBhOw=",
+  "dgSpecHash": "XSKva+TtQM0=",
   "success": true,
   "projectFilePath": "/Users/murtaza/Desktop/dotnet/aacs/aacs.csproj",
   "expectedPackageFiles": [
@@ -15,6 +15,7 @@
     "/Users/murtaza/.nuget/packages/google.api.gax/4.9.0/google.api.gax.4.9.0.nupkg.sha512",
     "/Users/murtaza/.nuget/packages/google.api.gax.grpc/4.9.0/google.api.gax.grpc.4.9.0.nupkg.sha512",
     "/Users/murtaza/.nuget/packages/google.apis/1.70.0/google.apis.1.70.0.nupkg.sha512",
+    "/Users/murtaza/.nuget/packages/google.apis.analyticsdata.v1beta/1.68.0.3608/google.apis.analyticsdata.v1beta.1.68.0.3608.nupkg.sha512",
     "/Users/murtaza/.nuget/packages/google.apis.analyticsreporting.v4/1.68.0.2484/google.apis.analyticsreporting.v4.1.68.0.2484.nupkg.sha512",
     "/Users/murtaza/.nuget/packages/google.apis.auth/1.70.0/google.apis.auth.1.70.0.nupkg.sha512",
     "/Users/murtaza/.nuget/packages/google.apis.core/1.70.0/google.apis.core.1.70.0.nupkg.sha512",

@@ -195,3 +195,4 @@
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/System.Management.dll
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/runtimes/win/lib/net7.0/System.Management.dll
 /Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/Google.Apis.AnalyticsReporting.v4.dll
+/Users/murtaza/Desktop/dotnet/aacs/bin/Debug/net8.0/Google.Apis.AnalyticsData.v1beta.dll

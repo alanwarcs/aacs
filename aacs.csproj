@@ -11,6 +11,7 @@
     <PackageReference Include="CloudinaryDotNet" Version="1.27.4" />
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Google.Analytics.Data.V1Beta" Version="2.0.0-beta09" />
+    <PackageReference Include="Google.Apis.AnalyticsData.v1beta" Version="1.68.0.3608" />
     <PackageReference Include="Google.Apis.AnalyticsReporting.v4" Version="1.68.0.2484" />
     <PackageReference Include="Google.Apis.Auth" Version="1.70.0" />
     <PackageReference Include="Google.Apis.Core" Version="1.70.0" />

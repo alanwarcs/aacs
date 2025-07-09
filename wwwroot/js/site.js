@@ -376,12 +376,6 @@ async function getBrowserInfo() {
     else if (navigator.userAgent.includes("Linux")) os = "Linux";
     else if (navigator.userAgent.includes("Android")) os = "Android";
     else if (navigator.userAgent.includes("iPhone") || navigator.userAgent.includes("iPad")) os = "iOS";
-
-    fetch("/api/visitor-info", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ browser, os })
-    });
 }
 
 getBrowserInfo();

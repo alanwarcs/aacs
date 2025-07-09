@@ -59,6 +59,10 @@
               "target": "Package",
               "version": "[2.0.0-beta09, )"
             },
+            "Google.Apis.AnalyticsData.v1beta": {
+              "target": "Package",
+              "version": "[1.68.0.3608, )"
+            },
             "Google.Apis.AnalyticsReporting.v4": {
               "target": "Package",
               "version": "[1.68.0.2484, )"
