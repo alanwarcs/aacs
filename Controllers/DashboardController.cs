@@ -65,21 +65,31 @@ namespace aacs.Controllers
         {
             try
             {
+                // Validate configuration
+                var propertyId = _configuration["GA_PROPERTY_ID"];
+                if (string.IsNullOrEmpty(propertyId))
+                {
+                    _logger.LogError("GA_PROPERTY_ID is missing in configuration.");
+                    throw new InvalidOperationException("GA_PROPERTY_ID is not configured.");
+                }
+
                 // Construct service account credentials JSON
                 var credentialJson = JsonConvert.SerializeObject(new
                 {
-                    type = _configuration["GA_TYPE"],
+                    type = _configuration["GA_TYPE"] ?? "service_account",
                     project_id = _configuration["GA_PROJECT_ID"],
                     private_key_id = _configuration["GA_PRIVATE_KEY_ID"],
-                    private_key = _configuration["GA_PRIVATE_KEY"]?.Replace("\\n", "\n"), // Replace escaped newlines
+                    private_key = _configuration["GA_PRIVATE_KEY"]?.Replace("\\n", "\n"),
                     client_email = _configuration["GA_CLIENT_EMAIL"],
                     client_id = _configuration["GA_CLIENT_ID"],
                     auth_uri = _configuration["GA_AUTH_URI"],
                     token_uri = _configuration["GA_TOKEN_URI"],
                     auth_provider_x509_cert_url = _configuration["GA_AUTH_PROVIDER_CERT_URL"],
                     client_x509_cert_url = _configuration["GA_CLIENT_CERT_URL"],
-                    universe_domain = _configuration["GA_UNIVERSE_DOMAIN"]
-                });
+                    universe_domain = _configuration["GA_UNIVERSE_DOMAIN"] ?? "googleapis.com"
+                }, Formatting.None);
+
+                _logger.LogInformation("Generated credential JSON: {CredentialJson}", credentialJson);
 
                 // Load service account credentials
                 var credential = GoogleCredential.FromJson(credentialJson)
@@ -94,18 +104,25 @@ namespace aacs.Controllers
                 // Create the RunReport request for total sessions
                 var request = new RunReportRequest
                 {
-                    Metrics = new List<Metric> { new Metric { Name = "sessions scrapped sessions" } },
-                    DateRanges = new List<DateRange> { new DateRange { StartDate = "2020-01-01", EndDate = "today" } }
+                    Metrics = new List<Metric> { new Metric { Name = "sessions" } },
+                    DateRanges = new List<DateRange> { new DateRange { StartDate = "2024-01-01", EndDate = "today" } }
                 };
 
+                _logger.LogInformation("Sending GA4 API request for property: properties/{PropertyId}", propertyId);
+
                 // Execute the request
-                var response = await service.Properties.RunReport(request, $"properties/{_configuration["GA_PROPERTY_ID"]}").ExecuteAsync();
+                var response = await service.Properties.RunReport(request, $"properties/{propertyId}").ExecuteAsync();
 
                 // Process the response
                 long totalSessions = 0;
                 if (response.Rows != null && response.Rows.Any())
                 {
                     totalSessions = long.Parse(response.Rows[0].MetricValues[0].Value);
+                    _logger.LogInformation("Total sessions retrieved: {TotalSessions}", totalSessions);
+                }
+                else
+                {
+                    _logger.LogWarning("No data returned from GA4 API for property {PropertyId}.", propertyId);
                 }
 
                 return totalSessions;
@@ -113,6 +130,7 @@ namespace aacs.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error fetching Google Analytics data");
+                ViewBag.ErrorMessage = $"Error fetching Google Analytics data: {ex.Message}";
                 return 0;
             }
         }

@@ -12,8 +12,15 @@
                 <h5>Total Website Visits</h5>
             </div>
             <div class="card-body">
-                <h3 class="display-4">@(ViewBag.TotalSessions ?? 0)</h3>
-                <p class="text-muted">Total visits to the website</p>
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <p class="text-danger">@ViewBag.ErrorMessage</p>
+                }
+                else
+                {
+                    <h3 class="display-4">@(ViewBag.TotalSessions ?? 0)</h3>
+                    <p class="text-muted">Total visits to the website since tracking began</p>
+                }
             </div>
         </div>
     </div>
